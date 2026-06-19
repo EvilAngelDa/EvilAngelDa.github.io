@@ -198,215 +198,22 @@ h1 {
   font-size: 14px;
 }
 
-.goddess {
-  --look-x: 0;
-  --look-y: 0;
-  position: fixed;
-  right: max(18px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: 20;
-  width: clamp(132px, 16vw, 190px);
-  aspect-ratio: 220 / 280;
-  pointer-events: none;
-  filter: drop-shadow(0 22px 28px rgba(66, 52, 111, 0.24));
+#waifu {
+  left: auto !important;
+  right: max(8px, env(safe-area-inset-right)) !important;
+  bottom: max(0px, env(safe-area-inset-bottom)) !important;
+  z-index: 30 !important;
+  transform-origin: right bottom;
 }
 
-.goddess-glow {
-  position: absolute;
-  inset: 20% 0 0;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 48% 34%, rgba(235, 217, 255, 0.92), transparent 43%),
-    radial-gradient(circle at 64% 72%, rgba(47, 111, 115, 0.24), transparent 54%),
-    radial-gradient(circle at 27% 70%, rgba(240, 189, 114, 0.24), transparent 48%);
-  transform: rotate(-8deg);
-  filter: blur(9px);
+#waifu-tool {
+  right: 10px;
 }
 
-.goddess-figure {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  animation: goddess-float 4.8s ease-in-out infinite;
-}
-
-.goddess-hair {
-  fill: url(#hairGradient);
-}
-
-.hair-back {
-  stroke: rgba(93, 76, 162, 0.28);
-  stroke-width: 2.2;
-}
-
-.goddess-face {
-  fill: url(#faceGlow);
-  stroke: rgba(172, 103, 126, 0.25);
-  stroke-width: 2;
-}
-
-.goddess-bangs,
-.goddess-curl {
-  fill: #26384a;
-}
-
-.goddess-bangs {
-  fill: url(#hairGradient);
-  stroke: rgba(103, 83, 181, 0.18);
-  stroke-width: 1.5;
-}
-
-.goddess-curl {
-  fill: none;
-  stroke: url(#hairShadow);
-  stroke-width: 16;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.95;
-}
-
-.curl-left-b,
-.curl-right-b {
-  stroke-width: 14;
-  opacity: 0.86;
-}
-
-.goddess-hair-shine {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.5);
-  stroke-width: 4;
-  stroke-linecap: round;
-  opacity: 0.78;
-}
-
-.goddess-neck {
-  fill: #f0beb9;
-}
-
-.goddess-jacket {
-  fill: url(#jacketGradient);
-  stroke: rgba(31, 41, 51, 0.12);
-  stroke-width: 2;
-}
-
-.goddess-shirt {
-  fill: #dfe5fb;
-  stroke: rgba(84, 75, 125, 0.16);
-  stroke-width: 1.5;
-}
-
-.goddess-tie {
-  fill: #7657d9;
-  opacity: 0.95;
-}
-
-.goddess-bow {
-  fill: #f16f8e;
-  stroke: rgba(119, 58, 84, 0.18);
-  stroke-width: 2;
-}
-
-.goddess-bow-knot {
-  fill: #d84d78;
-}
-
-.goddess-nose,
-.goddess-smile,
-.goddess-lip {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.eye-lash {
-  fill: none;
-  stroke: #40315d;
-  stroke-width: 4.2;
-  stroke-linecap: round;
-}
-
-.eye-white {
-  fill: #fff9ff;
-  stroke: rgba(83, 56, 113, 0.22);
-  stroke-width: 1.2;
-}
-
-.iris {
-  fill: url(#irisGradient);
-  stroke: rgba(47, 31, 78, 0.3);
-  stroke-width: 1.2;
-}
-
-.pupil {
-  fill: #1f1835;
-  transform-box: fill-box;
-  transform-origin: center;
-  transition: transform 90ms ease-out;
-}
-
-.pupil-left,
-.pupil-right {
-  transform: translate(
-    calc(var(--look-x) * 6px),
-    calc(var(--look-y) * 5px)
-  );
-}
-
-.eye-sparkle {
-  fill: #ffffff;
-  opacity: 0.95;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.goddess-smile {
-  stroke: #b13f62;
-  stroke-width: 3;
-}
-
-.goddess-nose {
-  stroke: rgba(160, 91, 107, 0.36);
-  stroke-width: 2.2;
-}
-
-.goddess-lip {
-  stroke: rgba(255, 255, 255, 0.58);
-  stroke-width: 1.5;
-}
-
-.goddess-blush {
-  fill: rgba(236, 111, 141, 0.32);
-}
-
-.goddess-earrings path {
-  fill: #f0bd72;
-  stroke: rgba(117, 76, 65, 0.2);
-  stroke-width: 1.2;
-}
-
-.goddess-hand {
-  fill: #f4c3bd;
-  stroke: rgba(160, 91, 107, 0.18);
-  stroke-width: 2;
-}
-
-.goddess-light {
-  fill: #ffffff;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 16px rgba(173, 139, 255, 0.7));
-  animation: twinkle 1.8s ease-in-out infinite;
-}
-
-.goddess-letter {
-  fill: #ffffff;
-  stroke: rgba(84, 75, 125, 0.22);
-  stroke-width: 2;
-}
-
-.goddess-letter-mark {
-  fill: none;
-  stroke: #79c35a;
-  stroke-linecap: round;
-  stroke-width: 4;
+#waifu-tips {
+  border-color: rgba(47, 111, 115, 0.24) !important;
+  color: var(--text) !important;
+  box-shadow: 0 10px 26px rgba(31, 41, 51, 0.12) !important;
 }
 
 .cursor-trail,
@@ -448,30 +255,6 @@ h1 {
 
 .click-sparkle.is-moon {
   color: #62839c;
-}
-
-@keyframes goddess-float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-1.5deg);
-  }
-
-  50% {
-    transform: translateY(-8px) rotate(1.5deg);
-  }
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.9);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.18);
-  }
 }
 
 @keyframes trail-fade {
@@ -522,9 +305,8 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .goddess {
-    width: 104px;
-    opacity: 0.94;
+  #waifu {
+    transform: scale(0.72);
   }
 }
 

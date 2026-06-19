@@ -1,4 +1,3 @@
-const goddess = document.querySelector(".goddess");
 const root = document.documentElement;
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
@@ -9,19 +8,6 @@ const sparkleGlyphs = {
 };
 
 let lastTrailAt = 0;
-
-function updateGaze(clientX, clientY) {
-  if (!goddess) return;
-
-  const rect = goddess.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  const lookX = Math.max(-1, Math.min(1, (clientX - centerX) / 320));
-  const lookY = Math.max(-1, Math.min(1, (clientY - centerY) / 260));
-
-  goddess.style.setProperty("--look-x", lookX.toFixed(3));
-  goddess.style.setProperty("--look-y", lookY.toFixed(3));
-}
 
 function createTrail(clientX, clientY) {
   const now = performance.now();
@@ -61,14 +47,12 @@ function popSparkles(clientX, clientY) {
   }
 }
 
-if (goddess && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   window.addEventListener("pointermove", (event) => {
-    updateGaze(event.clientX, event.clientY);
     createTrail(event.clientX, event.clientY);
   });
 
   window.addEventListener("pointerdown", (event) => {
-    updateGaze(event.clientX, event.clientY);
     popSparkles(event.clientX, event.clientY);
     root.classList.add("is-clicking");
     window.setTimeout(() => root.classList.remove("is-clicking"), 180);
