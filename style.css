@@ -25,6 +25,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   line-height: 1.7;
+  overflow-x: hidden;
 }
 
 a {
@@ -197,6 +198,298 @@ h1 {
   font-size: 14px;
 }
 
+.goddess {
+  --look-x: 0;
+  --look-y: 0;
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 20;
+  width: clamp(118px, 15vw, 168px);
+  aspect-ratio: 180 / 230;
+  pointer-events: none;
+  filter: drop-shadow(0 22px 26px rgba(31, 41, 51, 0.18));
+}
+
+.goddess-glow {
+  position: absolute;
+  inset: 26% 4% 2%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 45% 35%, rgba(255, 244, 206, 0.92), transparent 43%),
+    radial-gradient(circle at 68% 70%, rgba(47, 111, 115, 0.24), transparent 54%);
+  transform: rotate(-8deg);
+  filter: blur(7px);
+}
+
+.goddess-figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: goddess-float 4.8s ease-in-out infinite;
+}
+
+.goddess-hair {
+  fill: url(#hairGradient);
+}
+
+.goddess-face {
+  fill: url(#faceGlow);
+  stroke: rgba(117, 76, 65, 0.18);
+  stroke-width: 2;
+}
+
+.goddess-bangs {
+  fill: #26384a;
+  opacity: 0.94;
+}
+
+.goddess-neck {
+  fill: #efc3a5;
+}
+
+.goddess-dress {
+  fill: url(#dressGradient);
+  stroke: rgba(31, 41, 51, 0.12);
+  stroke-width: 2;
+}
+
+.goddess-wing {
+  fill: rgba(255, 255, 255, 0.84);
+  stroke: rgba(47, 111, 115, 0.22);
+  stroke-width: 2;
+}
+
+.wing-left {
+  transform-origin: 59px 106px;
+  animation: wing-left 5.4s ease-in-out infinite;
+}
+
+.wing-right {
+  transform-origin: 121px 106px;
+  animation: wing-right 5.4s ease-in-out infinite;
+}
+
+.goddess-crown {
+  fill: #f0bd72;
+  stroke: rgba(87, 72, 43, 0.22);
+  stroke-width: 2;
+}
+
+.goddess-crown-line,
+.goddess-smile,
+.goddess-arm,
+.goddess-wand {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.goddess-crown-line {
+  stroke: #8e7344;
+  stroke-width: 3;
+}
+
+.goddess-glasses {
+  fill: rgba(255, 255, 255, 0.13);
+  stroke: #365d68;
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.eye-white {
+  fill: #fffefa;
+}
+
+.pupil {
+  fill: #1f2933;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 90ms ease-out;
+}
+
+.pupil-left,
+.pupil-right {
+  transform: translate(
+    calc(var(--look-x) * 5px),
+    calc(var(--look-y) * 4px)
+  );
+}
+
+.goddess-smile {
+  stroke: #8a4f55;
+  stroke-width: 3;
+}
+
+.goddess-blush {
+  fill: rgba(236, 111, 124, 0.34);
+}
+
+.goddess-arm {
+  stroke: #efc3a5;
+  stroke-width: 9;
+}
+
+.arm-right {
+  animation: wand-wave 3.6s ease-in-out infinite;
+  transform-origin: 121px 154px;
+}
+
+.goddess-wand {
+  stroke: #365d68;
+  stroke-width: 4;
+  animation: wand-wave 3.6s ease-in-out infinite;
+  transform-origin: 125px 156px;
+}
+
+.goddess-wand-star,
+.goddess-star {
+  fill: #f0bd72;
+  stroke: rgba(117, 76, 65, 0.2);
+  stroke-width: 1.2;
+}
+
+.star-one,
+.star-two {
+  animation: twinkle 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.star-two {
+  animation-delay: 0.7s;
+}
+
+.cursor-trail,
+.click-sparkle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-trail {
+  width: var(--trail-size);
+  height: var(--trail-size);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, hsl(var(--trail-hue) 72% 74% / 0.9), hsl(var(--trail-hue) 68% 56% / 0.1) 68%, transparent 72%);
+  box-shadow: 0 0 18px hsl(var(--trail-hue) 80% 64% / 0.28);
+  animation: trail-fade 740ms ease-out forwards;
+}
+
+.click-sparkle {
+  color: #e96283;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 4px 12px rgba(233, 98, 131, 0.26);
+  animation: sparkle-pop 820ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.click-sparkle.is-star {
+  color: #f0bd72;
+}
+
+.click-sparkle.is-flower {
+  color: #2f6f73;
+}
+
+.click-sparkle.is-moon {
+  color: #62839c;
+}
+
+@keyframes goddess-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes wing-left {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes wing-right {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes wand-wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes trail-fade {
+  0% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.4);
+  }
+}
+
+@keyframes sparkle-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.35) rotate(0deg);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
+      scale(1.22)
+      rotate(calc(var(--spin) * 95deg));
+  }
+}
+
 @media (max-width: 720px) {
   .site-header,
   .section-title,
@@ -212,5 +505,26 @@ h1 {
 
   .post-list {
     grid-template-columns: 1fr;
+  }
+
+  .goddess {
+    width: 104px;
+    opacity: 0.94;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .cursor-trail,
+  .click-sparkle {
+    display: none;
   }
 }
