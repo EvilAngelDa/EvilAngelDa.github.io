@@ -205,21 +205,22 @@ h1 {
   right: max(18px, env(safe-area-inset-right));
   bottom: max(16px, env(safe-area-inset-bottom));
   z-index: 20;
-  width: clamp(118px, 15vw, 168px);
-  aspect-ratio: 180 / 230;
+  width: clamp(132px, 16vw, 190px);
+  aspect-ratio: 220 / 280;
   pointer-events: none;
-  filter: drop-shadow(0 22px 26px rgba(31, 41, 51, 0.18));
+  filter: drop-shadow(0 22px 28px rgba(66, 52, 111, 0.24));
 }
 
 .goddess-glow {
   position: absolute;
-  inset: 26% 4% 2%;
+  inset: 20% 0 0;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 45% 35%, rgba(255, 244, 206, 0.92), transparent 43%),
-    radial-gradient(circle at 68% 70%, rgba(47, 111, 115, 0.24), transparent 54%);
+    radial-gradient(circle at 48% 34%, rgba(235, 217, 255, 0.92), transparent 43%),
+    radial-gradient(circle at 64% 72%, rgba(47, 111, 115, 0.24), transparent 54%),
+    radial-gradient(circle at 27% 70%, rgba(240, 189, 114, 0.24), transparent 48%);
   transform: rotate(-8deg);
-  filter: blur(7px);
+  filter: blur(9px);
 }
 
 .goddess-figure {
@@ -233,77 +234,111 @@ h1 {
   fill: url(#hairGradient);
 }
 
+.hair-back {
+  stroke: rgba(93, 76, 162, 0.28);
+  stroke-width: 2.2;
+}
+
 .goddess-face {
   fill: url(#faceGlow);
-  stroke: rgba(117, 76, 65, 0.18);
+  stroke: rgba(172, 103, 126, 0.25);
   stroke-width: 2;
 }
 
-.goddess-bangs {
+.goddess-bangs,
+.goddess-curl {
   fill: #26384a;
-  opacity: 0.94;
+}
+
+.goddess-bangs {
+  fill: url(#hairGradient);
+  stroke: rgba(103, 83, 181, 0.18);
+  stroke-width: 1.5;
+}
+
+.goddess-curl {
+  fill: none;
+  stroke: url(#hairShadow);
+  stroke-width: 16;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.95;
+}
+
+.curl-left-b,
+.curl-right-b {
+  stroke-width: 14;
+  opacity: 0.86;
+}
+
+.goddess-hair-shine {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.78;
 }
 
 .goddess-neck {
-  fill: #efc3a5;
+  fill: #f0beb9;
 }
 
-.goddess-dress {
-  fill: url(#dressGradient);
+.goddess-jacket {
+  fill: url(#jacketGradient);
   stroke: rgba(31, 41, 51, 0.12);
   stroke-width: 2;
 }
 
-.goddess-wing {
-  fill: rgba(255, 255, 255, 0.84);
-  stroke: rgba(47, 111, 115, 0.22);
+.goddess-shirt {
+  fill: #dfe5fb;
+  stroke: rgba(84, 75, 125, 0.16);
+  stroke-width: 1.5;
+}
+
+.goddess-tie {
+  fill: #7657d9;
+  opacity: 0.95;
+}
+
+.goddess-bow {
+  fill: #f16f8e;
+  stroke: rgba(119, 58, 84, 0.18);
   stroke-width: 2;
 }
 
-.wing-left {
-  transform-origin: 59px 106px;
-  animation: wing-left 5.4s ease-in-out infinite;
+.goddess-bow-knot {
+  fill: #d84d78;
 }
 
-.wing-right {
-  transform-origin: 121px 106px;
-  animation: wing-right 5.4s ease-in-out infinite;
-}
-
-.goddess-crown {
-  fill: #f0bd72;
-  stroke: rgba(87, 72, 43, 0.22);
-  stroke-width: 2;
-}
-
-.goddess-crown-line,
+.goddess-nose,
 .goddess-smile,
-.goddess-arm,
-.goddess-wand {
+.goddess-lip {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.goddess-crown-line {
-  stroke: #8e7344;
-  stroke-width: 3;
-}
-
-.goddess-glasses {
-  fill: rgba(255, 255, 255, 0.13);
-  stroke: #365d68;
-  stroke-width: 3.6;
+.eye-lash {
+  fill: none;
+  stroke: #40315d;
+  stroke-width: 4.2;
   stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .eye-white {
-  fill: #fffefa;
+  fill: #fff9ff;
+  stroke: rgba(83, 56, 113, 0.22);
+  stroke-width: 1.2;
+}
+
+.iris {
+  fill: url(#irisGradient);
+  stroke: rgba(47, 31, 78, 0.3);
+  stroke-width: 1.2;
 }
 
 .pupil {
-  fill: #1f2933;
+  fill: #1f1835;
   transform-box: fill-box;
   transform-origin: center;
   transition: transform 90ms ease-out;
@@ -312,53 +347,66 @@ h1 {
 .pupil-left,
 .pupil-right {
   transform: translate(
-    calc(var(--look-x) * 5px),
-    calc(var(--look-y) * 4px)
+    calc(var(--look-x) * 6px),
+    calc(var(--look-y) * 5px)
   );
 }
 
+.eye-sparkle {
+  fill: #ffffff;
+  opacity: 0.95;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
 .goddess-smile {
-  stroke: #8a4f55;
+  stroke: #b13f62;
   stroke-width: 3;
 }
 
+.goddess-nose {
+  stroke: rgba(160, 91, 107, 0.36);
+  stroke-width: 2.2;
+}
+
+.goddess-lip {
+  stroke: rgba(255, 255, 255, 0.58);
+  stroke-width: 1.5;
+}
+
 .goddess-blush {
-  fill: rgba(236, 111, 124, 0.34);
+  fill: rgba(236, 111, 141, 0.32);
 }
 
-.goddess-arm {
-  stroke: #efc3a5;
-  stroke-width: 9;
-}
-
-.arm-right {
-  animation: wand-wave 3.6s ease-in-out infinite;
-  transform-origin: 121px 154px;
-}
-
-.goddess-wand {
-  stroke: #365d68;
-  stroke-width: 4;
-  animation: wand-wave 3.6s ease-in-out infinite;
-  transform-origin: 125px 156px;
-}
-
-.goddess-wand-star,
-.goddess-star {
+.goddess-earrings path {
   fill: #f0bd72;
   stroke: rgba(117, 76, 65, 0.2);
   stroke-width: 1.2;
 }
 
-.star-one,
-.star-two {
-  animation: twinkle 2.4s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center;
+.goddess-hand {
+  fill: #f4c3bd;
+  stroke: rgba(160, 91, 107, 0.18);
+  stroke-width: 2;
 }
 
-.star-two {
-  animation-delay: 0.7s;
+.goddess-light {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 16px rgba(173, 139, 255, 0.7));
+  animation: twinkle 1.8s ease-in-out infinite;
+}
+
+.goddess-letter {
+  fill: #ffffff;
+  stroke: rgba(84, 75, 125, 0.22);
+  stroke-width: 2;
+}
+
+.goddess-letter-mark {
+  fill: none;
+  stroke: #79c35a;
+  stroke-linecap: round;
+  stroke-width: 4;
 }
 
 .cursor-trail,
@@ -410,39 +458,6 @@ h1 {
 
   50% {
     transform: translateY(-8px) rotate(1.5deg);
-  }
-}
-
-@keyframes wing-left {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  50% {
-    transform: rotate(-5deg);
-  }
-}
-
-@keyframes wing-right {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  50% {
-    transform: rotate(5deg);
-  }
-}
-
-@keyframes wand-wave {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  50% {
-    transform: rotate(4deg);
   }
 }
 

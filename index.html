@@ -64,57 +64,85 @@
 
     <div class="goddess" aria-hidden="true">
       <div class="goddess-glow"></div>
-      <svg class="goddess-figure" viewBox="0 0 180 230" role="img">
+      <svg class="goddess-figure" viewBox="0 0 220 280" role="img">
         <defs>
-          <linearGradient id="hairGradient" x1="28" y1="18" x2="152" y2="172" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#26384a" />
-            <stop offset="0.54" stop-color="#557b89" />
-            <stop offset="1" stop-color="#d7b08a" />
+          <linearGradient id="hairGradient" x1="38" y1="12" x2="184" y2="174" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#f5edff" />
+            <stop offset="0.45" stop-color="#c8a8ff" />
+            <stop offset="1" stop-color="#8d74e8" />
           </linearGradient>
-          <linearGradient id="dressGradient" x1="44" y1="138" x2="138" y2="224" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#2f6f73" />
-            <stop offset="1" stop-color="#f0bd72" />
+          <linearGradient id="hairShadow" x1="54" y1="34" x2="158" y2="178" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.82" />
+            <stop offset="1" stop-color="#775fd3" stop-opacity="0.76" />
+          </linearGradient>
+          <linearGradient id="jacketGradient" x1="54" y1="162" x2="174" y2="270" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#fffafd" />
+            <stop offset="1" stop-color="#d6e2f3" />
           </linearGradient>
           <radialGradient id="faceGlow" cx="50%" cy="40%" r="70%">
-            <stop offset="0" stop-color="#fff6e8" />
-            <stop offset="1" stop-color="#f0c6a6" />
+            <stop offset="0" stop-color="#fff7ef" />
+            <stop offset="0.65" stop-color="#ffd5c7" />
+            <stop offset="1" stop-color="#efb4b8" />
+          </radialGradient>
+          <radialGradient id="irisGradient" cx="38%" cy="32%" r="70%">
+            <stop offset="0" stop-color="#f9efff" />
+            <stop offset="0.38" stop-color="#9f7cf3" />
+            <stop offset="1" stop-color="#46346f" />
           </radialGradient>
         </defs>
 
-        <path class="goddess-wing wing-left" d="M57 108C25 107 9 88 13 66c24 1 43 15 53 39z" />
-        <path class="goddess-wing wing-right" d="M123 108c32-1 48-20 44-42-24 1-43 15-53 39z" />
-        <path class="goddess-hair" d="M42 102C33 62 48 25 88 20c41-5 65 24 63 65-1 25-13 61-31 76H62c-9-16-15-36-20-59z" />
-        <path class="goddess-dress" d="M57 143c11-16 55-16 66 0l24 73H33z" />
-        <path class="goddess-neck" d="M76 125h28l5 28H71z" />
-        <circle class="goddess-face" cx="90" cy="82" r="43" />
-        <path class="goddess-bangs" d="M48 75c12-35 46-50 80-29 4 11 4 25 1 38-18-12-47-11-81-9z" />
-        <path class="goddess-crown" d="M66 36l10-16 14 14 17-18 9 23z" />
-        <path class="goddess-crown-line" d="M65 40c17 5 35 5 53 0" />
+        <path class="goddess-hair hair-back" d="M29 140C4 80 38 17 105 16c71-1 111 64 84 126 18 23 8 63-26 70-14 32-76 31-95 3-37 4-58-31-39-75z" />
+        <path class="goddess-curl curl-left-a" d="M48 84c-31 16-34 67-5 77 28 10 34-37 8-33-23 3-17 39 14 35" />
+        <path class="goddess-curl curl-left-b" d="M34 127c-33 33-6 85 33 72 26-9 17-44-7-34-20 8-8 33 17 26" />
+        <path class="goddess-curl curl-right-a" d="M166 79c33 14 40 62 12 76-28 14-39-33-12-32 23 1 21 37-10 38" />
+        <path class="goddess-curl curl-right-b" d="M184 126c35 30 12 84-29 74-27-7-21-43 4-35 21 7 11 33-14 27" />
 
-        <g class="goddess-glasses">
-          <path d="M52 83c6-8 24-8 31 0" />
-          <path d="M97 83c7-8 25-8 31 0" />
-          <path d="M83 85c5-3 9-3 14 0" />
-          <circle cx="68" cy="91" r="16" />
-          <circle cx="112" cy="91" r="16" />
-        </g>
+        <path class="goddess-neck" d="M91 145h38l6 32H85z" />
+        <path class="goddess-jacket" d="M58 177c25-26 82-26 108 0l22 92H37z" />
+        <path class="goddess-shirt" d="M88 172h45l12 90H74z" />
+        <path class="goddess-tie" d="M104 190h17l8 72h-33z" />
+        <path class="goddess-bow bow-left" d="M111 187c-24-15-42-5-39 13 3 15 24 13 39-2z" />
+        <path class="goddess-bow bow-right" d="M112 187c24-15 42-5 39 13-3 15-24 13-39-2z" />
+        <circle class="goddess-bow-knot" cx="111" cy="194" r="9" />
+
+        <ellipse class="goddess-face" cx="110" cy="98" rx="47" ry="54" />
+        <path class="goddess-bangs bang-a" d="M52 82c11-41 43-64 89-56 35 6 55 33 56 65-20-14-43-22-70-20-22 1-49 7-75 11z" />
+        <path class="goddess-bangs bang-b" d="M73 61c26-35 71-32 85 2-18-7-40-4-58 7-11 7-20 12-42 14 4-8 8-15 15-23z" />
+        <path class="goddess-bangs bang-c" d="M120 41c28 3 47 20 50 45-19-12-42-13-67-5 4-16 8-29 17-40z" />
+        <path class="goddess-hair-shine shine-a" d="M75 47c-16 12-23 28-24 47" />
+        <path class="goddess-hair-shine shine-b" d="M142 38c19 10 29 26 31 48" />
+        <path class="goddess-hair-shine shine-c" d="M99 37c-13 20-18 36-15 54" />
 
         <g class="goddess-eyes">
-          <circle class="eye-white" cx="68" cy="91" r="8" />
-          <circle class="eye-white" cx="112" cy="91" r="8" />
-          <circle class="pupil pupil-left" cx="68" cy="91" r="3.2" />
-          <circle class="pupil pupil-right" cx="112" cy="91" r="3.2" />
+          <path class="eye-lash" d="M61 96c8-14 31-16 42-1" />
+          <path class="eye-lash" d="M119 96c11-15 34-13 42 1" />
+          <ellipse class="eye-white" cx="83" cy="103" rx="17" ry="14" />
+          <ellipse class="eye-white" cx="137" cy="103" rx="17" ry="14" />
+          <circle class="iris" cx="83" cy="103" r="10" />
+          <circle class="iris" cx="137" cy="103" r="10" />
+          <circle class="pupil pupil-left" cx="83" cy="103" r="4.2" />
+          <circle class="pupil pupil-right" cx="137" cy="103" r="4.2" />
+          <circle class="eye-sparkle sparkle-left-a" cx="78" cy="98" r="3.2" />
+          <circle class="eye-sparkle sparkle-left-b" cx="88" cy="109" r="1.6" />
+          <circle class="eye-sparkle sparkle-right-a" cx="132" cy="98" r="3.2" />
+          <circle class="eye-sparkle sparkle-right-b" cx="142" cy="109" r="1.6" />
         </g>
 
-        <path class="goddess-smile" d="M78 109c7 8 18 8 25 0" />
-        <circle class="goddess-blush" cx="57" cy="104" r="7" />
-        <circle class="goddess-blush" cx="123" cy="104" r="7" />
-        <path class="goddess-arm arm-left" d="M59 154c-15 9-25 22-31 39" />
-        <path class="goddess-arm arm-right" d="M121 154c15 9 25 22 31 39" />
-        <circle class="goddess-star star-one" cx="41" cy="43" r="4" />
-        <circle class="goddess-star star-two" cx="143" cy="55" r="3" />
-        <path class="goddess-wand" d="M125 156l29-31" />
-        <path class="goddess-wand-star" d="M154 116l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z" />
+        <path class="goddess-nose" d="M111 108c-4 8-2 13 4 14" />
+        <path class="goddess-smile" d="M93 130c10 10 28 10 38 0" />
+        <path class="goddess-lip" d="M99 128c8 4 17 4 25 0" />
+        <circle class="goddess-blush" cx="69" cy="122" r="9" />
+        <circle class="goddess-blush" cx="151" cy="122" r="9" />
+
+        <g class="goddess-earrings">
+          <path d="M58 112l-7 11 8 11 7-11z" />
+          <path d="M162 112l-7 11 8 11 7-11z" />
+        </g>
+
+        <path class="goddess-hand" d="M45 194c-19 0-24-22-10-33 9-8 22-2 21 12" />
+        <circle class="goddess-light" cx="42" cy="160" r="8" />
+        <path class="goddess-letter" d="M158 194l19-4 13 53-20 5z" />
+        <path class="goddess-letter-mark" d="M167 207l11 26" />
       </svg>
     </div>
 
