@@ -1,4 +1,8 @@
 const root = document.documentElement;
+const openButtons = document.querySelectorAll("[data-open]");
+const windows = document.querySelectorAll("[data-window]");
+const filterInputs = document.querySelectorAll("[data-filter]");
+const clock = document.querySelector("#system-clock");
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
   heart: "♥",
@@ -8,6 +12,54 @@ const sparkleGlyphs = {
 };
 
 let lastTrailAt = 0;
+
+function focusWindow(id) {
+  const target = document.querySelector(`#${id}`);
+
+  openButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.open === id);
+  });
+
+  windows.forEach((windowPanel) => {
+    windowPanel.classList.toggle("is-active-window", windowPanel.id === id);
+  });
+
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+openButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    focusWindow(button.dataset.open);
+  });
+});
+
+filterInputs.forEach((input) => {
+  input.addEventListener("input", () => {
+    const list = document.querySelector(`[data-list="${input.dataset.filter}"]`);
+    const query = input.value.trim().toLowerCase();
+    if (!list) return;
+
+    list.querySelectorAll("[data-keywords]").forEach((card) => {
+      const haystack = `${card.textContent} ${card.dataset.keywords}`.toLowerCase();
+      card.classList.toggle("is-hidden", !haystack.includes(query));
+    });
+  });
+});
+
+function updateClock() {
+  if (!clock) return;
+
+  clock.textContent = new Intl.DateTimeFormat("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
+
+updateClock();
+window.setInterval(updateClock, 30 * 1000);
 
 function createTrail(clientX, clientY) {
   const now = performance.now();

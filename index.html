@@ -3,63 +3,199 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>yangyangnao</title>
-    <meta name="description" content="yangyangnao 的个人博客。">
+    <title>yangyangnao OS</title>
+    <meta name="description" content="yangyangnao 的个人桌面网站。">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="./">yangyangnao</a>
-      <nav class="nav" aria-label="主导航">
-        <a href="#posts">文章</a>
-        <a href="#about">关于</a>
+    <div class="desktop">
+      <header class="menu-bar">
+        <a class="system-brand" href="./" aria-label="yangyangnao 首页">
+          <span class="brand-mark"></span>
+          yangyangnao OS
+        </a>
+        <nav class="menu-links" aria-label="主导航">
+          <button data-open="home" type="button">首页</button>
+          <button data-open="about" type="button">关于我</button>
+          <button data-open="articles" type="button">我的文章</button>
+          <button data-open="works" type="button">我的作品</button>
+        </nav>
+        <div class="status-area">
+          <span class="status-pill">Live</span>
+          <time id="system-clock">--:--</time>
+        </div>
+      </header>
+
+      <aside class="desktop-icons" aria-label="桌面快捷方式">
+        <button class="desktop-icon" data-open="about" type="button">
+          <span class="icon-tile icon-user">⌘</span>
+          <span>About.me</span>
+        </button>
+        <button class="desktop-icon" data-open="articles" type="button">
+          <span class="icon-tile icon-note">✎</span>
+          <span>Articles</span>
+        </button>
+        <button class="desktop-icon" data-open="works" type="button">
+          <span class="icon-tile icon-work">◆</span>
+          <span>Works</span>
+        </button>
+        <a class="desktop-icon" href="https://github.com/EvilAngelDa" target="_blank" rel="noreferrer">
+          <span class="icon-tile icon-github">GH</span>
+          <span>GitHub</span>
+        </a>
+      </aside>
+
+      <main class="workspace" id="home">
+        <section class="window hero-window is-active-window" id="home" data-window>
+          <div class="window-titlebar">
+            <div class="traffic-lights" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <strong>home.md</strong>
+            <span class="window-chip">Productivity desktop</span>
+          </div>
+          <div class="window-body hero-body">
+            <div class="hero-copy">
+              <p class="eyebrow">Personal operating system</p>
+              <h1>记录想法、项目和一点点日常。</h1>
+              <p>
+                这里是 yangyangnao 的个人桌面。文章、作品、灵感碎片和一些奇奇怪怪的小工具，先放进窗口里慢慢整理。
+              </p>
+              <div class="hero-actions">
+                <button class="primary-action" data-open="works" type="button">打开作品集</button>
+                <button class="secondary-action" data-open="articles" type="button">阅读文章</button>
+              </div>
+            </div>
+            <div class="desktop-preview" aria-hidden="true">
+              <div class="mini-window one"></div>
+              <div class="mini-window two"></div>
+              <div class="mini-window three"></div>
+              <div class="mini-dock">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="window about-window" id="about" data-window>
+          <div class="window-titlebar">
+            <div class="traffic-lights" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <strong>about.profile</strong>
+            <span class="window-chip pink">身份卡</span>
+          </div>
+          <div class="window-body about-body">
+            <div>
+              <p class="eyebrow">About me</p>
+              <h2>一个正在给自己搭系统的人。</h2>
+              <p>
+                我喜欢把模糊想法变成能点击、能运行、能复盘的东西。现在主要关注产品、AI 编程、个人知识管理和内容表达。
+              </p>
+              <p>
+                这个网站会逐渐变成我的控制台：放文章、作品、项目记录，以及那些暂时不知道该丢到哪里的脑内碎片。
+              </p>
+            </div>
+            <div class="profile-card">
+              <div class="avatar-orbit">
+                <span></span>
+                <strong>羊羊脑</strong>
+              </div>
+              <dl>
+                <div><dt>Status</dt><dd>building</dd></div>
+                <div><dt>Focus</dt><dd>AI / Product / Web</dd></div>
+                <div><dt>Mood</dt><dd>vibe coding</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section class="window articles-window" id="articles" data-window>
+          <div class="window-titlebar">
+            <div class="traffic-lights" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <strong>articles.table</strong>
+            <span class="window-chip green">3 rows</span>
+          </div>
+          <div class="window-body">
+            <div class="window-heading">
+              <div>
+                <p class="eyebrow">My articles</p>
+                <h2>我的文章</h2>
+              </div>
+              <label class="search-field">
+                <span>⌕</span>
+                <input data-filter="articles" type="search" placeholder="搜索文章...">
+              </label>
+            </div>
+            <div class="list-grid" data-list="articles">
+              <article class="list-card" data-keywords="博客 github pages 建站">
+                <time>2026.06.17</time>
+                <h3>博客上线记录</h3>
+                <p>先把 GitHub Pages 跑通，后面再调整样式、文章页和分类。</p>
+              </article>
+              <article class="list-card" data-keywords="项目 复盘 产品">
+                <time>2026.06.20</time>
+                <h3>待写：第一个项目复盘</h3>
+                <p>记录目标、过程、踩坑和结果，让下一次更轻一点。</p>
+              </article>
+              <article class="list-card" data-keywords="ai 编程 工具">
+                <time>2026.06.25</time>
+                <h3>AI 编程小记</h3>
+                <p>把一些重复劳动交给工具，然后把省下来的脑力拿去做判断。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="window works-window" id="works" data-window>
+          <div class="window-titlebar">
+            <div class="traffic-lights" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <strong>works.board</strong>
+            <span class="window-chip yellow">prototype</span>
+          </div>
+          <div class="window-body">
+            <div class="window-heading">
+              <div>
+                <p class="eyebrow">My works</p>
+                <h2>我的作品</h2>
+              </div>
+              <label class="search-field">
+                <span>⌕</span>
+                <input data-filter="works" type="search" placeholder="搜索作品...">
+              </label>
+            </div>
+            <div class="kanban-grid" data-list="works">
+              <article class="work-card" data-keywords="吃饭 随机 餐厅 地图">
+                <span class="tag">#001</span>
+                <h3>等会儿吃啥?</h3>
+                <p>基于位置随机抽一家附近餐厅，专治“吃什么”的世纪难题。</p>
+              </article>
+              <article class="work-card" data-keywords="个人网站 github pages">
+                <span class="tag blue">#002</span>
+                <h3>个人网站</h3>
+                <p>一个会不断变化的个人主页，用来收纳文章、作品和灵感。</p>
+              </article>
+              <article class="work-card" data-keywords="ai 自动化 编程">
+                <span class="tag green">#003</span>
+                <h3>AI 小助手实验</h3>
+                <p>尝试把日常重复任务拆给 AI 和脚本，看看能省多少脑细胞。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="dock" aria-label="快捷 Dock">
+        <button data-open="home" type="button"><span>⌂</span><small>首页</small></button>
+        <button data-open="about" type="button"><span>☻</span><small>关于</small></button>
+        <button data-open="articles" type="button"><span>✎</span><small>文章</small></button>
+        <button data-open="works" type="button"><span>◆</span><small>作品</small></button>
       </nav>
-    </header>
-
-    <main>
-      <section class="hero">
-        <p class="eyebrow">Personal Blog</p>
-        <h1>记录想法、项目和一点点日常。</h1>
-        <p class="intro">
-          这里会慢慢整理技术笔记、阅读记录、项目复盘，以及当下觉得值得保存的东西。
-        </p>
-      </section>
-
-      <section id="posts" class="section">
-        <div class="section-title">
-          <h2>最新文章</h2>
-          <p>先占个位，后续文章可以继续往这里加。</p>
-        </div>
-
-        <div class="post-list">
-          <article class="post">
-            <time datetime="2026-06-17">2026.06.17</time>
-            <h3>博客上线记录</h3>
-            <p>先把 GitHub Pages 跑通，后面再调整样式、文章页和分类。</p>
-          </article>
-
-          <article class="post">
-            <time datetime="2026-06-17">2026.06.17</time>
-            <h3>待写：第一个项目复盘</h3>
-            <p>可以写最近做过的项目，记录目标、过程、踩坑和结果。</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="about" class="section about">
-        <div>
-          <h2>关于我</h2>
-          <p>
-            这里是 yangyangnao 的个人空间。暂时先保持简单，等内容多起来后再加标签、归档、搜索和独立文章页。
-          </p>
-        </div>
-        <a class="button" href="https://github.com/EvilAngelDa">查看 GitHub</a>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <span>© 2026 yangyangnao</span>
-    </footer>
+    </div>
 
     <script src="script.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
