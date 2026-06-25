@@ -1,4 +1,6 @@
 const root = document.documentElement;
+const tabs = document.querySelectorAll("[data-tab]");
+const panels = document.querySelectorAll(".tab-panel");
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
   heart: "♥",
@@ -8,6 +10,38 @@ const sparkleGlyphs = {
 };
 
 let lastTrailAt = 0;
+
+function activateTab(tabId) {
+  tabs.forEach((tab) => {
+    tab.classList.toggle("is-active", tab.dataset.tab === tabId);
+  });
+
+  panels.forEach((panel) => {
+    panel.classList.toggle("is-active", panel.id === tabId);
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    activateTab(tab.dataset.tab);
+  });
+});
+
+document.querySelectorAll("[data-filter]").forEach((input) => {
+  input.addEventListener("input", () => {
+    const list = document.querySelector(`[data-list="${input.dataset.filter}"]`);
+    const query = input.value.trim().toLowerCase();
+    if (!list) return;
+
+    list.querySelectorAll("[data-keywords]").forEach((card) => {
+      const text = card.textContent.toLowerCase();
+      const keywords = card.dataset.keywords.toLowerCase();
+      card.classList.toggle("is-hidden", !`${text} ${keywords}`.includes(query));
+    });
+  });
+});
 
 function createTrail(clientX, clientY) {
   const now = performance.now();

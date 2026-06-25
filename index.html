@@ -4,64 +4,217 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>yangyangnao</title>
-    <meta name="description" content="yangyangnao 的个人博客。">
+    <meta name="description" content="yangyangnao 的个人网站。">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="./">yangyangnao</a>
-      <nav class="nav" aria-label="主导航">
-        <a href="#posts">文章</a>
-        <a href="#about">关于</a>
+    <header class="site-shell">
+      <nav class="bubble-nav" aria-label="主导航">
+        <button class="nav-tab is-active" data-tab="home" type="button">首页</button>
+        <button class="nav-tab" data-tab="about" type="button">关于我</button>
+        <button class="nav-tab" data-tab="articles" type="button">我的文章</button>
+        <button class="nav-tab" data-tab="works" type="button">我的作品</button>
       </nav>
     </header>
 
-    <main>
-      <section class="hero">
-        <p class="eyebrow">Personal Blog</p>
-        <h1>记录想法、项目和一点点日常。</h1>
-        <p class="intro">
-          这里会慢慢整理技术笔记、阅读记录、项目复盘，以及当下觉得值得保存的东西。
-        </p>
+    <main class="site-main">
+      <section class="tab-panel is-active" id="home" aria-labelledby="tab-home">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="kicker">Hello, I am</p>
+            <h1 class="hero-title">
+              <span>yangyangnao</span>
+              <mark>一个正在升级的创作者</mark>
+              <span>A vibe builder.</span>
+            </h1>
+            <p class="hero-lead">
+              这里收纳我的文章、作品和一点点脑内噪声。白天研究产品与代码，晚上把灵感做成能跑起来的小东西。
+            </p>
+            <button class="chunky-button" data-tab="about" type="button">
+              More about me
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="portrait-card">
+            <svg class="avatar" viewBox="0 0 420 420" role="img" aria-label="卡通头像">
+              <rect x="10" y="10" width="400" height="400" rx="52"></rect>
+              <circle class="avatar-bg-dot" cx="338" cy="78" r="34"></circle>
+              <path class="avatar-hair" d="M130 176c-10-78 38-126 92-126 63 0 105 48 94 130l-15 105H144z"></path>
+              <path class="avatar-face" d="M140 166c8-55 54-88 106-78 40 8 68 42 73 87 8 75-27 130-88 133-65 3-104-52-91-142z"></path>
+              <path class="avatar-bangs" d="M135 158c24-63 78-83 137-62 29 10 48 34 54 68-42-30-90-32-139-15-16 6-32 9-52 9z"></path>
+              <circle class="avatar-blush" cx="165" cy="212" r="19"></circle>
+              <circle class="avatar-blush" cx="282" cy="212" r="19"></circle>
+              <circle class="avatar-eye" cx="181" cy="192" r="11"></circle>
+              <circle class="avatar-eye" cx="260" cy="192" r="11"></circle>
+              <path class="avatar-glasses" d="M149 190c7-24 58-24 65 0 6 23-39 38-57 17-5-5-7-11-8-17zm83 0c7-24 58-24 65 0 6 23-39 38-57 17-5-5-7-11-8-17zm-18 2c6-5 12-5 18 0"></path>
+              <path class="avatar-smile" d="M199 244c16 18 45 18 61 0"></path>
+              <path class="avatar-jacket" d="M116 319c30-48 178-48 212 0l24 91H92z"></path>
+              <path class="avatar-scarf" d="M156 315h132v95H156z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <section class="section-block">
+          <div class="section-heading">
+            <h2>Some of My <mark>Vibe-coded Creations</mark></h2>
+            <p>半夜写出来的小工具，先好玩，再慢慢变好用。</p>
+          </div>
+          <div class="feature-cards two-col">
+            <article class="neo-card">
+              <div class="card-icon blue">Ψ</div>
+              <h3>等会儿吃啥?</h3>
+              <p>基于位置随机抽一家附近餐厅，专治“吃什么”这类人类终极难题。</p>
+            </article>
+            <article class="neo-card ghost">
+              <h3>更多作品开发中...</h3>
+              <p>COMING SOON</p>
+            </article>
+          </div>
+        </section>
       </section>
 
-      <section id="posts" class="section">
-        <div class="section-title">
-          <h2>最新文章</h2>
-          <p>先占个位，后续文章可以继续往这里加。</p>
+      <section class="tab-panel" id="about" aria-labelledby="tab-about">
+        <div class="about-grid">
+          <div class="about-copy">
+            <h1 class="page-title">Welcome to <mark>我的世界!</mark></h1>
+            <p>
+              我是一个喜欢把混乱想法做成页面、脚本、小工具的人。现实里有点慢热，网络上比较话多。
+            </p>
+            <p>
+              目前关注产品、AI 编程、个人知识管理和内容表达。这个网站会慢慢长成我的作品柜、文章库和生活记录册。
+            </p>
+            <p>
+              我正在朝着自己喜欢的方向前进。不知道几年后的我会过上什么样的生活，但至少今天先把网页做漂亮一点。
+            </p>
+          </div>
+
+          <aside class="id-card">
+            <div class="id-header">
+              <strong>ID CARD</strong>
+              <span>YANGYANGNAO</span>
+            </div>
+            <div class="id-body">
+              <div class="id-avatar">
+                <svg viewBox="0 0 160 160" aria-hidden="true">
+                  <rect x="8" y="8" width="144" height="144" rx="28"></rect>
+                  <path d="M43 70c-5-31 14-54 39-54 29 0 46 24 40 57l-8 48H51z" fill="#111"></path>
+                  <circle cx="80" cy="76" r="38" fill="#ffd0bd"></circle>
+                  <circle cx="65" cy="76" r="5" fill="#111"></circle>
+                  <circle cx="95" cy="76" r="5" fill="#111"></circle>
+                  <path d="M61 73c6-12 28-12 34 0m-18 25c9 8 21 8 30 0" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"></path>
+                  <path d="M36 129c20-31 69-31 88 0z" fill="#4b7df2"></path>
+                  <path d="M48 129c18-22 46-22 64 0z" fill="#f065b4"></path>
+                </svg>
+              </div>
+              <div class="id-fields">
+                <div><small>NAME</small><strong>羊羊脑</strong></div>
+                <div><small>ROLE</small><strong>产品 / AI 编程</strong></div>
+                <div><small>MODE</small><strong>Vibe Builder</strong></div>
+              </div>
+            </div>
+            <div class="barcode" aria-hidden="true"></div>
+          </aside>
         </div>
 
-        <div class="post-list">
-          <article class="post">
-            <time datetime="2026-06-17">2026.06.17</time>
-            <h3>博客上线记录</h3>
-            <p>先把 GitHub Pages 跑通，后面再调整样式、文章页和分类。</p>
-          </article>
+        <section class="statement">
+          <span>STATEMENT</span>
+          <p>每一个看起来离经叛道的选择，都可能是在靠近真实的自己。</p>
+        </section>
 
-          <article class="post">
-            <time datetime="2026-06-17">2026.06.17</time>
-            <h3>待写：第一个项目复盘</h3>
-            <p>可以写最近做过的项目，记录目标、过程、踩坑和结果。</p>
+        <section class="updates">
+          <h2><mark>近日生活</mark> Recent Updates</h2>
+          <div class="update-row">
+            <article class="mini-card blue"><strong>最近在读</strong><span>《纳瓦尔宝典》</span></article>
+            <article class="mini-card pink"><strong>最近折腾</strong><span>个人网站重构</span></article>
+            <article class="mini-card green"><strong>最近感兴趣</strong><span>AI 编程</span></article>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="articles" aria-labelledby="tab-articles">
+        <div class="library-head">
+          <div>
+            <h1 class="page-title">The <mark class="mark-green">Journal</mark></h1>
+            <p>记录乱七八糟但值得存档的想法。</p>
+          </div>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input data-filter="articles" type="search" placeholder="搜索文章标题或关键词...">
+          </label>
+        </div>
+
+        <div class="article-list" data-list="articles">
+          <article class="wide-card" data-keywords="博客 github pages 建站">
+            <div class="wide-thumb photo-one"></div>
+            <div class="wide-content">
+              <div class="meta"><b>随笔</b><time>2026-06-17</time></div>
+              <h3>博客上线记录</h3>
+              <p>先把 GitHub Pages 跑通，后面再调整样式、文章页和分类。</p>
+            </div>
+            <span class="round-arrow">→</span>
+          </article>
+          <article class="wide-card" data-keywords="项目 复盘 产品">
+            <div class="wide-thumb blue-blank"></div>
+            <div class="wide-content">
+              <div class="meta"><b>复盘</b><time>2026-06-20</time></div>
+              <h3>待写：第一个项目复盘</h3>
+              <p>记录目标、过程、踩坑和结果，让下次少走一点弯路。</p>
+            </div>
+            <span class="round-arrow">→</span>
+          </article>
+          <article class="wide-card" data-keywords="ai 编程 工具">
+            <div class="wide-thumb code-blank"></div>
+            <div class="wide-content">
+              <div class="meta"><b>成长</b><time>2026-06-25</time></div>
+              <h3>读工科的女孩子</h3>
+              <p>在代码和图纸之间，寻找属于自己的色彩。</p>
+            </div>
+            <span class="round-arrow">→</span>
           </article>
         </div>
       </section>
 
-      <section id="about" class="section about">
-        <div>
-          <h2>关于我</h2>
-          <p>
-            这里是 yangyangnao 的个人空间。暂时先保持简单，等内容多起来后再加标签、归档、搜索和独立文章页。
-          </p>
+      <section class="tab-panel" id="works" aria-labelledby="tab-works">
+        <div class="library-head">
+          <div>
+            <h1 class="page-title">Vibe <mark class="mark-yellow">Workshop</mark></h1>
+            <p>为了让生活和工作简单、有趣一点点，和 AI 一起搓出来的代码边角料。</p>
+          </div>
+          <label class="search-box compact">
+            <span aria-hidden="true">⌕</span>
+            <input data-filter="works" type="search" placeholder="搜索作品...">
+          </label>
         </div>
-        <a class="button" href="https://github.com/EvilAngelDa">查看 GitHub</a>
+
+        <div class="work-grid" data-list="works">
+          <article class="work-card" data-keywords="吃饭 地图 随机 餐厅">
+            <span class="serial"># 001</span>
+            <h3>等会儿吃啥?</h3>
+            <p>基于 LBS 地理位置自动获取周边餐厅，并随机抽取一家「盲盒」餐厅。</p>
+            <a href="#" aria-label="查看等会儿吃啥">View Product <span>→</span></a>
+          </article>
+          <article class="work-card pink-card" data-keywords="个人网站 github pages">
+            <span class="serial"># 002</span>
+            <h3>个人网站</h3>
+            <p>一个粗黑描边、贴纸风格、收纳文章和作品的小主页。</p>
+            <a href="#" aria-label="查看个人网站">View Product <span>→</span></a>
+          </article>
+          <article class="work-card green-card" data-keywords="ai 编程 自动化">
+            <span class="serial"># 003</span>
+            <h3>AI 小助手实验</h3>
+            <p>把重复的小任务交给脚本和 AI，腾出脑子做更有趣的判断。</p>
+            <a href="#" aria-label="查看 AI 小助手实验">View Product <span>→</span></a>
+          </article>
+        </div>
       </section>
     </main>
 
     <footer class="site-footer">
+      <strong>Let’s build something interesting.</strong>
       <span>© 2026 yangyangnao</span>
     </footer>
 
     <script src="script.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
   </body>
 </html>
