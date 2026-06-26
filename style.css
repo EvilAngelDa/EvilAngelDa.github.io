@@ -845,16 +845,12 @@ h3 {
 }
 
 #waifu {
-  right: -12px !important;
+  right: 50px !important;
   left: auto !important;
   bottom: 94px !important;
   z-index: 100 !important;
   transform-origin: bottom right;
   transform: scale(0.82);
-}
-
-#waifu-toggle {
-  display: none !important;
 }
 
 @keyframes trail-fade {
@@ -981,6 +977,7 @@ h3 {
   }
 
   #waifu {
+    right: 20px !important;
     transform: scale(0.72);
     bottom: 116px !important;
   }
@@ -1040,7 +1037,7 @@ h3 {
   }
 
   #waifu {
-    right: -18px !important;
+    right: 8px !important;
     transform: scale(0.66);
   }
 }
