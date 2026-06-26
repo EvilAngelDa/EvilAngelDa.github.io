@@ -1,8 +1,12 @@
 const root = document.documentElement;
-const openButtons = document.querySelectorAll("[data-open]");
-const windows = document.querySelectorAll("[data-window]");
-const filterInputs = document.querySelectorAll("[data-filter]");
+const pageBody = document.body;
+const openButtons = [...document.querySelectorAll("[data-open]")];
+const closeButtons = [...document.querySelectorAll("[data-close]")];
+const centerButtons = [...document.querySelectorAll("[data-center]")];
+const windows = [...document.querySelectorAll(".app-window")];
+const filterInputs = [...document.querySelectorAll("[data-filter]")];
 const clock = document.querySelector("#system-clock");
+const windowLayer = document.querySelector(".window-layer");
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
   heart: "♥",
@@ -11,27 +15,220 @@ const sparkleGlyphs = {
   moon: "☾",
 };
 
+let activeWindowKey = "";
+let topZIndex = 20;
 let lastTrailAt = 0;
+let pendingOpenTimer = 0;
+const windowState = new Map(
+  windows.map((panel) => [
+    panel.dataset.window || "",
+    {
+      dragged: false,
+      left: null,
+      top: null,
+    },
+  ]),
+);
 
-function focusWindow(id) {
-  const target = document.querySelector(`#${id}`);
+function getWindowByKey(key) {
+  return document.querySelector(`.app-window[data-window="${key}"]`);
+}
 
+function syncLauncherState() {
   openButtons.forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.open === id);
+    button.classList.toggle("is-active", button.dataset.open === activeWindowKey);
   });
+}
 
-  windows.forEach((windowPanel) => {
-    windowPanel.classList.toggle("is-active-window", windowPanel.id === id);
-  });
+function syncWindowEnvironment() {
+  const hasOpenWindow = windows.some((item) => item.classList.contains("is-open"));
+  root.classList.toggle("has-open-window", hasOpenWindow);
+  pageBody.classList.toggle("has-open-window", hasOpenWindow);
+  windowLayer?.classList.toggle("is-active", hasOpenWindow);
+}
 
-  if (target) {
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
+function centerWindow(panel, options = {}) {
+  if (!panel) {
+    return;
   }
+
+  const key = panel.dataset.window || "";
+  const state = windowState.get(key);
+
+  if (window.innerWidth <= 920) {
+    panel.style.left = "";
+    panel.style.top = "";
+    panel.style.right = "";
+    panel.style.bottom = "";
+
+    if (state) {
+      state.dragged = false;
+      state.left = null;
+      state.top = null;
+    }
+
+    return;
+  }
+
+  const rect = panel.getBoundingClientRect();
+  const panelWidth = rect.width || panel.offsetWidth;
+  const panelHeight = rect.height || panel.offsetHeight;
+  const nextLeft = Math.max(12, Math.round((window.innerWidth - panelWidth) / 2));
+  const nextTop = Math.max(76, Math.round((window.innerHeight - panelHeight) / 2));
+
+  panel.style.left = `${nextLeft}px`;
+  panel.style.top = `${nextTop}px`;
+  panel.style.right = "auto";
+  panel.style.bottom = "auto";
+
+  if (state) {
+    state.dragged = Boolean(options.rememberPosition);
+    state.left = options.rememberPosition ? nextLeft : null;
+    state.top = options.rememberPosition ? nextTop : null;
+  }
+}
+
+function applyWindowPlacement(panel) {
+  const key = panel?.dataset.window || "";
+  const state = windowState.get(key);
+
+  if (!panel) {
+    return;
+  }
+
+  if (window.innerWidth <= 920) {
+    panel.style.left = "";
+    panel.style.top = "";
+    panel.style.right = "";
+    panel.style.bottom = "";
+    return;
+  }
+
+  if (state?.dragged && state.left !== null && state.top !== null) {
+    panel.style.left = `${state.left}px`;
+    panel.style.top = `${state.top}px`;
+    panel.style.right = "auto";
+    panel.style.bottom = "auto";
+    return;
+  }
+
+  centerWindow(panel);
+}
+
+function focusWindow(panel) {
+  if (!panel) {
+    return;
+  }
+
+  activeWindowKey = panel.dataset.window || "";
+  topZIndex += 1;
+  panel.style.zIndex = String(topZIndex);
+
+  windows.forEach((item) => {
+    item.classList.toggle("is-focused", item === panel);
+  });
+
+  syncLauncherState();
+}
+
+function openWindow(key) {
+  const panel = getWindowByKey(key);
+  if (!panel) {
+    return;
+  }
+
+  window.clearTimeout(pendingOpenTimer);
+
+  if (panel.classList.contains("is-open")) {
+    focusWindow(panel);
+    syncWindowEnvironment();
+    return;
+  }
+
+  const currentOpenPanel = windows.find((item) => item.classList.contains("is-open"));
+
+  if (currentOpenPanel && currentOpenPanel !== panel) {
+    closeWindow(currentOpenPanel.dataset.window || "");
+    pendingOpenTimer = window.setTimeout(() => {
+      applyWindowPlacement(panel);
+      panel.classList.add("is-open");
+      panel.setAttribute("aria-hidden", "false");
+      focusWindow(panel);
+      syncWindowEnvironment();
+    }, 150);
+    return;
+  }
+
+  applyWindowPlacement(panel);
+  panel.classList.add("is-open");
+  panel.setAttribute("aria-hidden", "false");
+  focusWindow(panel);
+  syncWindowEnvironment();
+}
+
+function closeWindow(key) {
+  const panel = getWindowByKey(key);
+  if (!panel) {
+    return;
+  }
+
+  panel.classList.remove("is-open", "is-focused", "is-dragging");
+  panel.setAttribute("aria-hidden", "true");
+
+  if (activeWindowKey === key) {
+    activeWindowKey = "";
+  }
+
+  syncLauncherState();
+  syncWindowEnvironment();
 }
 
 openButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    focusWindow(button.dataset.open);
+    openWindow(button.dataset.open);
+  });
+});
+
+closeButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    closeWindow(button.dataset.close);
+  });
+});
+
+centerButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const panel = getWindowByKey(button.dataset.center);
+    centerWindow(panel);
+    focusWindow(panel);
+  });
+});
+
+windows.forEach((panel) => {
+  panel.addEventListener("pointerdown", () => {
+    if (panel.classList.contains("is-open")) {
+      focusWindow(panel);
+    }
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && activeWindowKey) {
+    closeWindow(activeWindowKey);
+  }
+});
+
+window.addEventListener("resize", () => {
+  windows.forEach((panel) => {
+    const state = windowState.get(panel.dataset.window || "");
+    if (!panel.classList.contains("is-open")) {
+      return;
+    }
+
+    if (!state?.dragged) {
+      centerWindow(panel);
+    }
   });
 });
 
@@ -39,7 +236,10 @@ filterInputs.forEach((input) => {
   input.addEventListener("input", () => {
     const list = document.querySelector(`[data-list="${input.dataset.filter}"]`);
     const query = input.value.trim().toLowerCase();
-    if (!list) return;
+
+    if (!list) {
+      return;
+    }
 
     list.querySelectorAll("[data-keywords]").forEach((card) => {
       const haystack = `${card.textContent} ${card.dataset.keywords}`.toLowerCase();
@@ -49,7 +249,9 @@ filterInputs.forEach((input) => {
 });
 
 function updateClock() {
-  if (!clock) return;
+  if (!clock) {
+    return;
+  }
 
   clock.textContent = new Intl.DateTimeFormat("zh-CN", {
     hour: "2-digit",
@@ -61,9 +263,74 @@ function updateClock() {
 updateClock();
 window.setInterval(updateClock, 30 * 1000);
 
+function makeWindowDraggable(panel) {
+  const handle = panel.querySelector("[data-drag-handle]");
+
+  if (!handle) {
+    return;
+  }
+
+  handle.addEventListener("pointerdown", (event) => {
+    if (window.innerWidth <= 920) {
+      return;
+    }
+
+    if (event.target.closest("button, input, a")) {
+      return;
+    }
+
+    focusWindow(panel);
+
+    const rect = panel.getBoundingClientRect();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const offsetX = startX - rect.left;
+    const offsetY = startY - rect.top;
+
+    panel.classList.add("is-dragging");
+    panel.style.left = `${rect.left}px`;
+    panel.style.top = `${rect.top}px`;
+    panel.style.right = "auto";
+    panel.style.bottom = "auto";
+
+    function onPointerMove(moveEvent) {
+      const maxLeft = window.innerWidth - rect.width - 12;
+      const maxTop = window.innerHeight - rect.height - 96;
+      const nextLeft = Math.min(Math.max(12, moveEvent.clientX - offsetX), Math.max(12, maxLeft));
+      const nextTop = Math.min(Math.max(76, moveEvent.clientY - offsetY), Math.max(76, maxTop));
+
+      panel.style.left = `${nextLeft}px`;
+      panel.style.top = `${nextTop}px`;
+    }
+
+    function onPointerUp() {
+      const state = windowState.get(panel.dataset.window || "");
+      const finalRect = panel.getBoundingClientRect();
+
+      if (state) {
+        state.dragged = true;
+        state.left = Math.round(finalRect.left);
+        state.top = Math.round(finalRect.top);
+      }
+
+      panel.classList.remove("is-dragging");
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    }
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp, { once: true });
+  });
+}
+
+windows.forEach(makeWindowDraggable);
+
 function createTrail(clientX, clientY) {
   const now = performance.now();
-  if (now - lastTrailAt < 34) return;
+  if (now - lastTrailAt < 34) {
+    return;
+  }
+
   lastTrailAt = now;
 
   const trail = document.createElement("span");
@@ -110,3 +377,5 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     window.setTimeout(() => root.classList.remove("is-clicking"), 180);
   });
 }
+
+syncWindowEnvironment();
