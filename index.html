@@ -30,6 +30,10 @@
             <span class="icon-tile icon-home">⌂</span>
             <span>首页</span>
           </button>
+          <button class="desktop-icon" data-open="games" type="button">
+            <span class="icon-tile icon-games">▣</span>
+            <span>我的游戏</span>
+          </button>
           <button class="desktop-icon" data-open="about" type="button">
             <span class="icon-tile icon-about">☻</span>
             <span>关于我</span>
@@ -53,24 +57,25 @@
             <p class="card-kicker">Desktop welcome</p>
             <h1>像桌面一样打开我。</h1>
             <p class="card-copy">
-              首次进入先看到桌面。四个入口像桌面快捷方式一样摆在上面，点击再弹出大窗口查看内容。
+              首次进入先看到桌面。五个入口像桌面快捷方式一样摆在上面，点击再弹出大窗口查看内容。
             </p>
             <div class="hero-actions">
               <button class="primary-action" data-open="home" type="button">进入首页窗口</button>
-              <button class="secondary-action" data-open="works" type="button">查看作品</button>
+              <button class="secondary-action" data-open="games" type="button">打开游戏中心</button>
             </div>
           </article>
 
           <article class="desktop-card stack-card">
             <div class="stack-head">
               <strong>桌面便签</strong>
-              <span>4 apps</span>
+              <span>5 apps</span>
             </div>
             <ul class="note-list">
               <li>桌面图标负责打开内容窗口</li>
+              <li>新增统一 games 目录收纳网页游戏</li>
               <li>大窗口支持滚动查看</li>
               <li>底部 Dock 也可以重复唤起窗口</li>
-              <li>Live2D、拖影、点击图案继续保留</li>
+              <li>点击游戏封面可以直接进入游玩页面</li>
             </ul>
           </article>
 
@@ -130,11 +135,11 @@
                 </article>
                 <article>
                   <span>Projects</span>
-                  <strong>03</strong>
+                  <strong>04</strong>
                 </article>
                 <article>
                   <span>Windows</span>
-                  <strong>04</strong>
+                  <strong>05</strong>
                 </article>
               </section>
               <section class="window-section home-grid">
@@ -144,11 +149,55 @@
                 </article>
                 <article class="soft-panel">
                   <h3>近期方向</h3>
-                  <p>先把个人网站做成一个更有叙事感的桌面，再慢慢补进文章、作品细节和更真实的个人信息。</p>
+                  <p>先把个人网站做成一个更有叙事感的桌面，再慢慢补进文章、作品、游戏和更真实的个人信息。</p>
                 </article>
                 <article class="soft-panel">
                   <h3>下一步计划</h3>
-                  <p>补真实作品截图、文章详情页、窗口过渡动画，以及更像系统桌面的文件夹层级。</p>
+                  <p>补真实作品截图、文章详情页、更多可玩的小游戏，以及更像系统桌面的文件夹层级。</p>
+                </article>
+              </section>
+            </div>
+          </article>
+
+          <article class="app-window" data-window="games" id="window-games" aria-hidden="true">
+            <div class="window-titlebar" data-drag-handle>
+              <div class="traffic-lights">
+                <span class="window-dot close"></span>
+                <span class="window-dot mid"></span>
+                <span class="window-dot end"></span>
+              </div>
+              <strong>我的游戏</strong>
+              <div class="window-toolbar">
+                <span class="window-meta">desktop://games</span>
+                <button class="window-center-button" data-center="games" type="button" aria-label="将游戏窗口居中">居中</button>
+                <button class="window-close-button" data-close="games" type="button" aria-label="关闭游戏窗口">关闭 ×</button>
+              </div>
+            </div>
+            <div class="window-scroll">
+              <section class="window-section">
+                <div class="window-heading">
+                  <div>
+                    <p class="section-kicker">Games</p>
+                  </div>
+                </div>
+              </section>
+              <section class="window-section games-grid">
+                <article class="game-card">
+                  <a class="game-cover-link" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer" aria-label="开始 Zombie Mower">
+                    <img class="game-cover" src="./games/zombie-mower/cover.svg" alt="Zombie Mower 游戏封面">
+                  </a>
+                  <div class="game-copy">
+                    <div class="game-header">
+                      <span class="project-tag green">#GAME-001</span>
+                      <span class="game-platform">HTML / Canvas</span>
+                    </div>
+                    <h3>Zombie Mower</h3>
+                    <p>俯视角割草打草怪：自动攻击、刷怪围攻、经验升级，适合后续继续加音效和关卡。</p>
+                    <div class="game-actions">
+                      <a class="game-action primary-game-action" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer">开始游戏</a>
+                      <a class="game-action" href="./games/zombie-mower/README.md" target="_blank" rel="noreferrer">查看说明</a>
+                    </div>
+                  </div>
                 </article>
               </section>
             </div>
@@ -329,6 +378,7 @@
 
       <nav class="dock" aria-label="快捷 Dock">
         <button data-open="home" type="button"><span>⌂</span><small>首页</small></button>
+        <button data-open="games" type="button"><span>▣</span><small>游戏</small></button>
         <button data-open="about" type="button"><span>☻</span><small>关于</small></button>
         <button data-open="articles" type="button"><span>✎</span><small>文章</small></button>
         <button data-open="works" type="button"><span>◆</span><small>作品</small></button>

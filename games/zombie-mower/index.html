@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Mower Prototype</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hud-panel">
+        <div class="brand">
+          <p class="eyebrow">Web Arcade Prototype</p>
+          <h1>Zombie Mower</h1>
+          <p class="subtitle">俯视角割草打草怪</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <span>生命</span>
+            <strong id="healthValue">100</strong>
+          </div>
+          <div class="stat-card">
+            <span>等级</span>
+            <strong id="levelValue">1</strong>
+          </div>
+          <div class="stat-card">
+            <span>击杀</span>
+            <strong id="killsValue">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>时间</span>
+            <strong id="timeValue">0.0s</strong>
+          </div>
+        </div>
+
+        <div class="bars">
+          <div class="bar-group">
+            <label for="xpBar">经验</label>
+            <div class="bar-track">
+              <div id="xpBar" class="bar-fill xp-fill"></div>
+            </div>
+          </div>
+          <div class="bar-group">
+            <label for="dashBar">冲刺冷却</label>
+            <div class="bar-track">
+              <div id="dashBar" class="bar-fill dash-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <p><kbd>WASD</kbd> / <kbd>方向键</kbd> 移动</p>
+          <p><kbd>Shift</kbd> 冲刺</p>
+          <p>割草机会自动朝最近草怪开火</p>
+        </div>
+      </section>
+
+      <section class="game-panel">
+        <canvas
+          id="gameCanvas"
+          width="1280"
+          height="720"
+          aria-label="Zombie Mower game canvas"
+        ></canvas>
+
+        <div id="levelUpModal" class="overlay hidden" role="dialog" aria-modal="true">
+          <div class="modal-card">
+            <p class="eyebrow">Level Up</p>
+            <h2>选择一个强化</h2>
+            <div id="upgradeOptions" class="upgrade-options"></div>
+          </div>
+        </div>
+
+        <div id="gameOverModal" class="overlay hidden" role="dialog" aria-modal="true">
+          <div class="modal-card">
+            <p class="eyebrow">Run Ended</p>
+            <h2>僵尸把你包围了</h2>
+            <p id="gameOverSummary" class="summary"></p>
+            <button id="restartButton" class="action-button" type="button">再来一局</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

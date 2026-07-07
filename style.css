@@ -240,6 +240,10 @@ a {
   background: linear-gradient(135deg, #fff4fb, #f4bad0);
 }
 
+.icon-games {
+  background: linear-gradient(135deg, #f3ffe6, #bdf0a8);
+}
+
 .icon-articles {
   background: linear-gradient(135deg, #eff5ff, #bfd5ff);
 }
@@ -455,6 +459,11 @@ h3 {
   box-shadow: 0 44px 120px rgba(35, 25, 17, 0.3);
 }
 
+#window-games {
+  top: 120px;
+  left: clamp(180px, 25vw, 460px);
+}
+
 #window-home {
   top: 108px;
   left: clamp(150px, 20vw, 320px);
@@ -627,7 +636,8 @@ h3 {
 
 .home-grid,
 .info-columns,
-.works-grid {
+.works-grid,
+.games-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
@@ -715,8 +725,91 @@ h3 {
 }
 
 .card-list,
-.works-grid {
+.works-grid,
+.games-grid {
   gap: 16px;
+}
+
+.games-grid {
+  grid-template-columns: 1fr;
+}
+
+.game-card {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid rgba(31, 23, 16, 0.08);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.game-cover-link {
+  display: block;
+  overflow: hidden;
+  border-radius: 22px;
+  background: rgba(18, 37, 31, 0.84);
+  box-shadow: 0 18px 42px rgba(35, 25, 17, 0.12);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.game-cover-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(35, 25, 17, 0.16);
+}
+
+.game-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.game-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.game-platform {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.game-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.game-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(31, 23, 16, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.primary-game-action {
+  background: var(--ink);
+  color: #fff;
 }
 
 .list-card time,
@@ -895,6 +988,7 @@ h3 {
   }
 
   #window-home,
+  #window-games,
   #window-about,
   #window-articles,
   #window-works {
@@ -929,6 +1023,7 @@ h3 {
   .home-grid,
   .info-columns,
   .works-grid,
+  .games-grid,
   .profile-hero,
   .metric-strip,
   .status-grid {
@@ -951,6 +1046,7 @@ h3 {
 
   .app-window,
   #window-home,
+  #window-games,
   #window-about,
   #window-articles,
   #window-works {
@@ -995,6 +1091,10 @@ h3 {
 
   .desktop-icon {
     width: auto;
+  }
+
+  .game-card {
+    grid-template-columns: 1fr;
   }
 
   .window-titlebar {
