@@ -263,6 +263,35 @@ function updateClock() {
 updateClock();
 window.setInterval(updateClock, 30 * 1000);
 
+function getPanelScale(panel) {
+  const rect = panel.getBoundingClientRect();
+  const width = panel.offsetWidth || rect.width;
+
+  if (!width) {
+    return 1;
+  }
+
+  return rect.width / width || 1;
+}
+
+function getPanelPosition(panel) {
+  const styles = window.getComputedStyle(panel);
+  const scale = getPanelScale(panel);
+  const left = Number.parseFloat(styles.left);
+  const top = Number.parseFloat(styles.top);
+
+  if (Number.isFinite(left) && Number.isFinite(top)) {
+    return { left, top, scale };
+  }
+
+  const rect = panel.getBoundingClientRect();
+  return {
+    left: rect.left / scale,
+    top: rect.top / scale,
+    scale,
+  };
+}
+
 function makeWindowDraggable(panel) {
   const handle = panel.querySelector("[data-drag-handle]");
 
@@ -282,22 +311,27 @@ function makeWindowDraggable(panel) {
     focusWindow(panel);
 
     const rect = panel.getBoundingClientRect();
+    const { left: startLeft, top: startTop, scale } = getPanelPosition(panel);
     const startX = event.clientX;
     const startY = event.clientY;
-    const offsetX = startX - rect.left;
-    const offsetY = startY - rect.top;
+    const panelWidth = panel.offsetWidth || rect.width / scale;
+    const panelHeight = panel.offsetHeight || rect.height / scale;
+
+    event.preventDefault();
 
     panel.classList.add("is-dragging");
-    panel.style.left = `${rect.left}px`;
-    panel.style.top = `${rect.top}px`;
+    panel.style.left = `${startLeft}px`;
+    panel.style.top = `${startTop}px`;
     panel.style.right = "auto";
     panel.style.bottom = "auto";
 
     function onPointerMove(moveEvent) {
-      const maxLeft = window.innerWidth - rect.width - 12;
-      const maxTop = window.innerHeight - rect.height - 96;
-      const nextLeft = Math.min(Math.max(12, moveEvent.clientX - offsetX), Math.max(12, maxLeft));
-      const nextTop = Math.min(Math.max(76, moveEvent.clientY - offsetY), Math.max(76, maxTop));
+      const deltaX = (moveEvent.clientX - startX) / scale;
+      const deltaY = (moveEvent.clientY - startY) / scale;
+      const maxLeft = Math.max(12, window.innerWidth / scale - panelWidth - 12);
+      const maxTop = Math.max(76, window.innerHeight / scale - panelHeight - 96);
+      const nextLeft = Math.min(Math.max(12, startLeft + deltaX), maxLeft);
+      const nextTop = Math.min(Math.max(76, startTop + deltaY), maxTop);
 
       panel.style.left = `${nextLeft}px`;
       panel.style.top = `${nextTop}px`;
@@ -305,12 +339,13 @@ function makeWindowDraggable(panel) {
 
     function onPointerUp() {
       const state = windowState.get(panel.dataset.window || "");
-      const finalRect = panel.getBoundingClientRect();
+      const finalLeft = Number.parseFloat(panel.style.left);
+      const finalTop = Number.parseFloat(panel.style.top);
 
       if (state) {
         state.dragged = true;
-        state.left = Math.round(finalRect.left);
-        state.top = Math.round(finalRect.top);
+        state.left = Math.round(finalLeft);
+        state.top = Math.round(finalTop);
       }
 
       panel.classList.remove("is-dragging");
