@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>yangyangnao OS</title>
     <meta name="description" content="yangyangnao 的个人桌面网站。">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260711-sphere26">
   </head>
   <body>
     <div class="desktop-shell">
@@ -270,7 +270,7 @@
             </div>
           </article>
 
-          <article class="app-window" data-window="articles" id="window-articles" aria-hidden="true">
+          <article class="app-window immersive-window article-experience" data-window="articles" id="window-articles" aria-hidden="true">
             <div class="window-titlebar" data-drag-handle>
               <div class="traffic-lights">
                 <span class="window-dot close"></span>
@@ -284,45 +284,73 @@
                 <button class="window-close-button" data-close="articles" type="button" aria-label="关闭文章窗口">关闭 ×</button>
               </div>
             </div>
-            <div class="window-scroll">
-              <section class="window-section">
-                <div class="window-heading">
-                  <div>
-                    <p class="section-kicker">Articles</p>
-                    <h2>一些正在写、准备写和值得留下来的文字。</h2>
+            <div class="window-scroll immersive-scroll" data-particle-zone tabindex="0" aria-label="文章球形轮播">
+              <section class="article-stage">
+                <div class="immersive-backdrop article-backdrop" aria-hidden="true"></div>
+                <canvas class="sphere-scene" data-sphere-scene="inside" aria-hidden="true"></canvas>
+                <div class="immersive-copy article-copy sphere-copy" data-sphere-copy>
+                  <div class="sphere-copy-content" aria-live="polite">
+                    <p class="section-kicker"><span>Articles</span><span data-sphere-meta>2026.06.17</span></p>
+                    <h2 data-sphere-title>博客上线记录</h2>
+                    <p data-sphere-description>先把 GitHub Pages 跑通，再逐步换掉临时结构，把这个地方真的变成个人网站。</p>
                   </div>
-                  <label class="search-field">
-                    <span>⌕</span>
-                    <input data-filter="articles" type="search" placeholder="搜索文章...">
-                  </label>
+                  <div class="sphere-status">
+                    <span class="sphere-index"><strong data-sphere-current>01</strong><span>/</span><span data-sphere-total>04</span></span>
+                    <span class="sphere-progress" aria-hidden="true"><i data-sphere-progress></i></span>
+                    <div class="sphere-dots" data-sphere-dots aria-label="选择文章"></div>
+                  </div>
                 </div>
-              </section>
-              <section class="window-section card-list" data-list="articles">
-                <article class="list-card" data-keywords="博客 github pages 建站">
-                  <time>2026.06.17</time>
-                  <h3>博客上线记录</h3>
-                  <p>先把 GitHub Pages 跑通，再逐步换掉临时结构，把这个地方真的变成个人网站。</p>
-                </article>
-                <article class="list-card" data-keywords="项目 复盘 产品">
-                  <time>2026.06.20</time>
-                  <h3>第一个项目复盘草稿</h3>
-                  <p>把需求、实现、反复修改和最后结果都写清楚，给下次少留一点黑盒。</p>
-                </article>
-                <article class="list-card" data-keywords="ai 编程 工具">
-                  <time>2026.06.25</time>
-                  <h3>AI 编程小记</h3>
-                  <p>把重复劳动交给工具之后，人应该把更多精力拿去做判断和取舍。</p>
-                </article>
-                <article class="list-card" data-keywords="内容 表达 创作">
-                  <time>2026.06.28</time>
-                  <h3>待写：我的表达系统</h3>
-                  <p>从想法、草稿、发布到复盘，尝试把创作也做成一个能迭代的流程。</p>
-                </article>
+                <section class="article-rail" aria-label="文章列表" data-list="articles" data-sphere-gallery="inside">
+                  <article class="article-panel" data-keywords="博客 github pages 建站">
+                    <div class="article-visual visual-system">
+                      <span class="visual-orbit"></span>
+                      <span class="visual-line"></span>
+                    </div>
+                    <div class="article-text">
+                      <time>2026.06.17</time>
+                      <h3>博客上线记录</h3>
+                      <p>先把 GitHub Pages 跑通，再逐步换掉临时结构，把这个地方真的变成个人网站。</p>
+                    </div>
+                  </article>
+                  <article class="article-panel" data-keywords="项目 复盘 产品">
+                    <div class="article-visual visual-review">
+                      <span class="visual-orbit"></span>
+                      <span class="visual-line"></span>
+                    </div>
+                    <div class="article-text">
+                      <time>2026.06.20</time>
+                      <h3>第一个项目复盘草稿</h3>
+                      <p>把需求、实现、反复修改和最后结果都写清楚，给下次少留一点黑盒。</p>
+                    </div>
+                  </article>
+                  <article class="article-panel" data-keywords="ai 编程 工具">
+                    <div class="article-visual visual-ai">
+                      <span class="visual-orbit"></span>
+                      <span class="visual-line"></span>
+                    </div>
+                    <div class="article-text">
+                      <time>2026.06.25</time>
+                      <h3>AI 编程小记</h3>
+                      <p>把重复劳动交给工具之后，人应该把更多精力拿去做判断和取舍。</p>
+                    </div>
+                  </article>
+                  <article class="article-panel" data-keywords="内容 表达 创作">
+                    <div class="article-visual visual-content">
+                      <span class="visual-orbit"></span>
+                      <span class="visual-line"></span>
+                    </div>
+                    <div class="article-text">
+                      <time>2026.06.28</time>
+                      <h3>待写：我的表达系统</h3>
+                      <p>从想法、草稿、发布到复盘，尝试把创作也做成一个能迭代的流程。</p>
+                    </div>
+                  </article>
+                </section>
               </section>
             </div>
           </article>
 
-          <article class="app-window" data-window="works" id="window-works" aria-hidden="true">
+          <article class="app-window immersive-window works-experience" data-window="works" id="window-works" aria-hidden="true">
             <div class="window-titlebar" data-drag-handle>
               <div class="traffic-lights">
                 <span class="window-dot close"></span>
@@ -336,40 +364,44 @@
                 <button class="window-close-button" data-close="works" type="button" aria-label="关闭作品窗口">关闭 ×</button>
               </div>
             </div>
-            <div class="window-scroll">
-              <section class="window-section">
-                <div class="window-heading">
-                  <div>
-                    <p class="section-kicker">Works</p>
-                    <h2>一些正在发育中的项目原型。</h2>
+            <div class="window-scroll immersive-scroll" data-particle-zone tabindex="0" aria-label="作品球形轮播">
+              <section class="works-stage">
+                <div class="immersive-backdrop works-backdrop" aria-hidden="true"></div>
+                <canvas class="sphere-scene" data-sphere-scene="outside" aria-hidden="true"></canvas>
+                <header class="works-hero sphere-copy" data-sphere-copy>
+                  <div class="sphere-copy-content" aria-live="polite">
+                    <p class="section-kicker"><span>Works</span><span data-sphere-meta>#001</span></p>
+                    <h2 data-sphere-title>等会儿吃啥?</h2>
+                    <p data-sphere-description>基于位置随机抽附近餐厅，解决“吃什么”这个每天都要出现一次的世纪问题。</p>
                   </div>
-                  <label class="search-field">
-                    <span>⌕</span>
-                    <input data-filter="works" type="search" placeholder="搜索作品...">
-                  </label>
-                </div>
-              </section>
-              <section class="window-section works-grid" data-list="works">
-                <article class="work-card" data-keywords="吃饭 随机 餐厅 地图">
-                  <span class="project-tag">#001</span>
-                  <h3>等会儿吃啥?</h3>
-                  <p>基于位置随机抽附近餐厅，解决“吃什么”这个每天都要出现一次的世纪问题。</p>
-                </article>
-                <article class="work-card" data-keywords="个人网站 github pages 桌面">
-                  <span class="project-tag blue">#002</span>
-                  <h3>个人网站桌面版</h3>
-                  <p>把主页做成一个能打开、能切换、能滚动的桌面，而不是静态名片。</p>
-                </article>
-                <article class="work-card" data-keywords="ai 自动化 编程 助手">
-                  <span class="project-tag green">#003</span>
-                  <h3>AI 小助手实验</h3>
-                  <p>尝试把一些重复任务交给 AI 和脚本，让整个流程更顺手也更稳定。</p>
-                </article>
-                <article class="work-card" data-keywords="创作 工作流 内容 系统">
-                  <span class="project-tag pink">#004</span>
-                  <h3>内容工作流草图</h3>
-                  <p>把选题、打分、预测、复盘拆成清晰步骤，做成能长期用下去的节奏。</p>
-                </article>
+                  <div class="sphere-status">
+                    <span class="sphere-index"><strong data-sphere-current>01</strong><span>/</span><span data-sphere-total>04</span></span>
+                    <span class="sphere-progress" aria-hidden="true"><i data-sphere-progress></i></span>
+                    <div class="sphere-dots" data-sphere-dots aria-label="选择作品"></div>
+                  </div>
+                </header>
+                <section class="works-carousel" aria-label="作品列表" data-list="works" data-sphere-gallery="outside">
+                  <article class="work-slide slide-food" data-keywords="吃饭 随机 餐厅 地图">
+                    <span class="project-tag">#001</span>
+                    <h3>等会儿吃啥?</h3>
+                    <p>基于位置随机抽附近餐厅，解决“吃什么”这个每天都要出现一次的世纪问题。</p>
+                  </article>
+                  <article class="work-slide slide-site" data-keywords="个人网站 github pages 桌面">
+                    <span class="project-tag blue">#002</span>
+                    <h3>个人网站桌面版</h3>
+                    <p>把主页做成一个能打开、能切换、能滚动的桌面，而不是静态名片。</p>
+                  </article>
+                  <article class="work-slide slide-ai" data-keywords="ai 自动化 编程 助手">
+                    <span class="project-tag green">#003</span>
+                    <h3>AI 小助手实验</h3>
+                    <p>尝试把一些重复任务交给 AI 和脚本，让整个流程更顺手也更稳定。</p>
+                  </article>
+                  <article class="work-slide slide-flow" data-keywords="创作 工作流 内容 系统">
+                    <span class="project-tag pink">#004</span>
+                    <h3>内容工作流草图</h3>
+                    <p>把选题、打分、预测、复盘拆成清晰步骤，做成能长期用下去的节奏。</p>
+                  </article>
+                </section>
               </section>
             </div>
           </article>
@@ -385,7 +417,8 @@
       </nav>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260711-sphere26"></script>
+    <script src="sphere3d.js?v=20260711-sphere26"></script>
     <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
   </body>
 </html>
