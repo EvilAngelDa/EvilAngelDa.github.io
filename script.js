@@ -60,6 +60,10 @@ let lastTrailAt = 0;
 let lastCollapseAt = 0;
 let pendingOpenTimer = 0;
 let homeGlitchTimer = 0;
+let gamePortalTimers = [];
+let gameVhsFrame = 0;
+let gameVhsLastPaint = 0;
+let isGamePortalTransitioning = false;
 let aboutTransitionTimers = [];
 let aboutTimelineIndex = 0;
 let aboutTimelineQuarter = 0;
@@ -73,6 +77,9 @@ let aboutTimelinePendingIndex = null;
 let aboutTimelinePointerStart = null;
 let lastAboutCubePrimary = -1;
 const homeGlitchReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const GAME_PORTAL_TRAVEL_DURATION = 480;
+const GAME_PORTAL_TOTAL_DURATION = 2280;
+const GAME_CLOSE_COLLAPSE_DURATION = 760;
 const ABOUT_LASER_DURATION = 600;
 const ABOUT_OPEN_DURATION = 760;
 const ABOUT_CLOSE_DURATION = 640;
@@ -96,7 +103,14 @@ function getWindowByKey(key) {
 
 function syncLauncherState() {
   openButtons.forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.open === activeWindowKey);
+    const panel = getWindowByKey(button.dataset.open || "");
+    const isPanelOpen = Boolean(panel?.classList.contains("is-open"));
+
+    button.classList.toggle("is-active", isPanelOpen);
+    button.setAttribute("aria-disabled", String(isPanelOpen));
+    if ("disabled" in button) {
+      button.disabled = isPanelOpen;
+    }
   });
 }
 
@@ -128,9 +142,9 @@ function centerWindow(panel, options = {}) {
 
   if (window.innerWidth <= 920) {
     panel.style.left = "";
-    panel.style.top = "";
+    panel.style.top = `${Math.max(12, Math.round((window.innerHeight - panel.offsetHeight) / 2))}px`;
     panel.style.right = "";
-    panel.style.bottom = "";
+    panel.style.bottom = "auto";
 
     if (state) {
       state.dragged = false;
@@ -141,11 +155,13 @@ function centerWindow(panel, options = {}) {
     return;
   }
 
-  const rect = panel.getBoundingClientRect();
-  const panelWidth = rect.width || panel.offsetWidth;
-  const panelHeight = rect.height || panel.offsetHeight;
-  const nextLeft = Math.max(12, Math.round((window.innerWidth - panelWidth) / 2));
-  const nextTop = Math.max(76, Math.round((window.innerHeight - panelHeight) / 2));
+  const desktopScale = Number.parseFloat(
+    window.getComputedStyle(root).getPropertyValue("--desktop-scale"),
+  ) || 1;
+  const panelWidth = (panel.offsetWidth || panel.getBoundingClientRect().width) * desktopScale;
+  const panelHeight = (panel.offsetHeight || panel.getBoundingClientRect().height) * desktopScale;
+  const nextLeft = Math.max(12 / desktopScale, Math.round((window.innerWidth - panelWidth) / 2 / desktopScale));
+  const nextTop = Math.max(76 / desktopScale, Math.round((window.innerHeight - panelHeight) / 2 / desktopScale));
 
   panel.style.left = `${nextLeft}px`;
   panel.style.top = `${nextTop}px`;
@@ -164,6 +180,11 @@ function applyWindowPlacement(panel) {
   const state = windowState.get(key);
 
   if (!panel) {
+    return;
+  }
+
+  if (key !== "articles" && key !== "works") {
+    centerWindow(panel);
     return;
   }
 
@@ -920,9 +941,356 @@ function playHomeGlitchTransition(panel) {
   }, 980);
 }
 
-function openWindow(key) {
+function queueGamePortalTransition(callback, delay) {
+  const timer = window.setTimeout(callback, delay);
+  gamePortalTimers.push(timer);
+  return timer;
+}
+
+function clearGamePortalTransition() {
+  gamePortalTimers.forEach((timer) => window.clearTimeout(timer));
+  gamePortalTimers = [];
+
+  if (gameVhsFrame) {
+    window.cancelAnimationFrame(gameVhsFrame);
+    gameVhsFrame = 0;
+  }
+
+  gameVhsLastPaint = 0;
+  document.querySelector(".game-gravity-layer")?.remove();
+  document.querySelector(".game-vhs-overlay")?.remove();
+  document.querySelector(".game-close-singularity")?.remove();
+
+  windows.forEach((panel) => {
+    panel.classList.remove(
+      "is-game-gravity-consumed",
+      "is-game-portal-revealing",
+      "is-game-portal-reveal-active",
+      "is-game-portal-measuring",
+      "is-game-closing",
+      "is-game-close-finalizing",
+    );
+    panel.style.removeProperty("--game-gravity-shift-x");
+    panel.style.removeProperty("--game-gravity-shift-y");
+  });
+
+  root.classList.remove("is-game-portal-locked");
+  pageBody.classList.remove("is-game-portal-locked");
+  isGamePortalTransitioning = false;
+}
+
+function getGamePortalOrigin(event) {
+  if (
+    Number.isFinite(event?.clientX)
+    && Number.isFinite(event?.clientY)
+    && (event.clientX !== 0 || event.clientY !== 0 || event.detail > 0)
+  ) {
+    return { x: event.clientX, y: event.clientY };
+  }
+
+  const triggerRect = event?.currentTarget?.getBoundingClientRect?.();
+  if (triggerRect?.width) {
+    return {
+      x: triggerRect.left + triggerRect.width / 2,
+      y: triggerRect.top + triggerRect.height / 2,
+    };
+  }
+
+  return {
+    x: Math.max(34, window.innerWidth * 0.12),
+    y: Math.max(90, window.innerHeight * 0.28),
+  };
+}
+
+function getGamePortalTargetRect(panel) {
+  const desktopScale = window.innerWidth <= 920
+    ? 1
+    : Number.parseFloat(window.getComputedStyle(root).getPropertyValue("--desktop-scale")) || 1;
+  const panelWidth = Math.min((panel.offsetWidth || 820) * desktopScale, window.innerWidth - 32);
+  const panelHeight = Math.min((panel.offsetHeight || 560) * desktopScale, window.innerHeight - 96);
+
+  return {
+    left: (window.innerWidth - panelWidth) / 2,
+    top: Math.max(48, (window.innerHeight - panelHeight) / 2),
+    width: panelWidth,
+    height: panelHeight,
+    centerX: window.innerWidth / 2,
+    centerY: Math.max(48, (window.innerHeight - panelHeight) / 2) + panelHeight / 2,
+  };
+}
+
+function createGameGravityLayer(origin, targetRect) {
+  const layer = document.createElement("div");
+  const aperture = document.createElement("span");
+  const well = document.createElement("span");
+  const orb = document.createElement("span");
+
+  layer.className = "game-gravity-layer";
+  layer.setAttribute("aria-hidden", "true");
+  layer.style.setProperty("--gravity-origin-x", `${origin.x}px`);
+  layer.style.setProperty("--gravity-origin-y", `${origin.y}px`);
+  layer.style.setProperty("--gravity-target-x", `${targetRect.centerX}px`);
+  layer.style.setProperty("--gravity-target-y", `${targetRect.centerY}px`);
+  layer.style.setProperty("--gravity-mid-x", `${(origin.x + targetRect.centerX) / 2}px`);
+  layer.style.setProperty(
+    "--gravity-mid-y",
+    `${Math.min(origin.y, targetRect.centerY) - Math.max(84, Math.abs(targetRect.centerX - origin.x) * 0.15)}px`,
+  );
+
+  aperture.className = "game-gravity-aperture";
+  aperture.style.left = `${targetRect.left}px`;
+  aperture.style.top = `${targetRect.top}px`;
+  aperture.style.width = `${targetRect.width}px`;
+  aperture.style.height = `${targetRect.height}px`;
+
+  well.className = "game-gravity-well";
+  orb.className = "game-gravity-orb";
+  orb.appendChild(document.createElement("i"));
+  well.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
+  layer.append(aperture, well, orb);
+  pageBody.appendChild(layer);
+
+  requestAnimationFrame(() => layer.classList.add("is-traveling"));
+  return layer;
+}
+
+function paintGameVhsNoise(canvas) {
+  const context = canvas.getContext("2d", { alpha: false });
+  if (!context) {
+    return;
+  }
+
+  const width = Math.min(480, Math.max(220, Math.ceil(window.innerWidth / 4)));
+  const height = Math.min(300, Math.max(140, Math.ceil(window.innerHeight / 4)));
+  canvas.width = width;
+  canvas.height = height;
+  context.imageSmoothingEnabled = false;
+
+  const paint = (time) => {
+    if (!canvas.isConnected || !isGamePortalTransitioning) {
+      return;
+    }
+
+    if (time - gameVhsLastPaint >= 38) {
+      gameVhsLastPaint = time;
+      const frame = context.createImageData(width, height);
+      const pixels = frame.data;
+
+      for (let y = 0; y < height; y += 1) {
+        const rowPulse = Math.random() < 0.055 ? (Math.random() > 0.5 ? 84 : -72) : 0;
+        for (let x = 0; x < width; x += 1) {
+          const offset = (y * width + x) * 4;
+          const spark = Math.random();
+          const base = spark > 0.985 ? 255 : spark < 0.018 ? 0 : Math.floor(Math.random() * 190 + 28);
+          const value = Math.max(0, Math.min(255, base + rowPulse));
+
+          pixels[offset] = value;
+          pixels[offset + 1] = value;
+          pixels[offset + 2] = value;
+          pixels[offset + 3] = 255;
+        }
+      }
+
+      context.putImageData(frame, 0, 0);
+    }
+
+    gameVhsFrame = window.requestAnimationFrame(paint);
+  };
+
+  gameVhsFrame = window.requestAnimationFrame(paint);
+}
+
+function createGameVhsOverlay() {
+  const overlay = document.createElement("div");
+  const canvas = document.createElement("canvas");
+  const scanlines = document.createElement("span");
+
+  overlay.className = "game-vhs-overlay";
+  overlay.setAttribute("aria-hidden", "true");
+  canvas.className = "game-vhs-noise";
+  scanlines.className = "game-vhs-scanlines";
+  overlay.append(canvas, scanlines);
+
+  for (let index = 0; index < 18; index += 1) {
+    const band = document.createElement("span");
+    const shift = Math.round(-80 + Math.random() * 160);
+
+    band.className = "game-vhs-band";
+    band.style.setProperty("--vhs-y", `${Math.round(Math.random() * 98)}%`);
+    band.style.setProperty("--vhs-height", `${Math.round(2 + Math.random() * 14)}px`);
+    band.style.setProperty("--vhs-shift", `${shift}px`);
+    band.style.setProperty("--vhs-shift-back", `${Math.round(shift * -0.5)}px`);
+    band.style.setProperty("--vhs-shift-soft", `${Math.round(shift * 0.32)}px`);
+    band.style.setProperty("--vhs-delay", `${Math.round(Math.random() * -520)}ms`);
+    band.style.setProperty("--vhs-speed", `${Math.round(170 + Math.random() * 360)}ms`);
+    overlay.appendChild(band);
+  }
+
+  pageBody.appendChild(overlay);
+  paintGameVhsNoise(canvas);
+  requestAnimationFrame(() => overlay.classList.add("is-active"));
+  return overlay;
+}
+
+function prepareGamePortalSource(panel, targetRect) {
+  if (!panel) {
+    return;
+  }
+
+  const rect = panel.getBoundingClientRect();
+  const scale = getPanelScale(panel);
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  panel.style.setProperty("--game-gravity-shift-x", `${(targetRect.centerX - centerX) / scale}px`);
+  panel.style.setProperty("--game-gravity-shift-y", `${(targetRect.centerY - centerY) / scale}px`);
+}
+
+function revealGamePortalPanel(panel, gravityLayer) {
+  panel.classList.add("is-game-portal-revealing");
+  activateWindowPanel(panel);
+  panel.getBoundingClientRect();
+  gravityLayer?.classList.add("is-releasing");
+
+  requestAnimationFrame(() => {
+    panel.classList.add("is-game-portal-reveal-active");
+  });
+}
+
+function createGameCloseSingularity(panel) {
+  document.querySelector(".game-close-singularity")?.remove();
+
+  const rect = panel.getBoundingClientRect();
+  const singularity = document.createElement("span");
+
+  singularity.className = "game-close-singularity";
+  singularity.setAttribute("aria-hidden", "true");
+  singularity.style.left = `${rect.left + rect.width / 2}px`;
+  singularity.style.top = `${rect.top + rect.height / 2}px`;
+  pageBody.appendChild(singularity);
+  requestAnimationFrame(() => singularity.classList.add("is-active"));
+}
+
+function startGameCollapseClose(panel, key) {
+  if (homeGlitchReducedMotion) {
+    finalizeWindowClose(panel, key);
+    return 0;
+  }
+
+  clearGamePortalTransition();
+  isGamePortalTransitioning = true;
+  root.classList.add("is-game-portal-locked");
+  pageBody.classList.add("is-game-portal-locked");
+  createGameCloseSingularity(panel);
+
+  panel.classList.remove("is-game-close-finalizing");
+  panel.getBoundingClientRect();
+  panel.classList.add("is-game-closing");
+
+  queueGamePortalTransition(() => {
+    panel.classList.add("is-game-close-finalizing");
+  }, GAME_CLOSE_COLLAPSE_DURATION - 70);
+
+  queueGamePortalTransition(() => {
+    finalizeWindowClose(panel, key);
+    clearGamePortalTransition();
+  }, GAME_CLOSE_COLLAPSE_DURATION);
+
+  return GAME_CLOSE_COLLAPSE_DURATION;
+}
+
+function startGamePortalTransition(panel, event) {
+  window.clearTimeout(pendingOpenTimer);
+  clearGamePortalTransition();
+
+  const currentOpenPanel = windows.find((item) => item.classList.contains("is-open") && item !== panel) || null;
+
+  if (homeGlitchReducedMotion) {
+    if (currentOpenPanel) {
+      finalizeWindowClose(currentOpenPanel, currentOpenPanel.dataset.window || "");
+    }
+    showWindow(panel, "games");
+    return;
+  }
+
+  if (currentOpenPanel?.dataset.window === "home") {
+    clearHomeGlitchTransition(currentOpenPanel);
+  }
+  if (currentOpenPanel?.dataset.window === "about") {
+    clearAboutTransitionTimers();
+    clearAboutTimelineAuto();
+    currentOpenPanel.classList.remove(
+      "is-about-cutting",
+      "is-about-opening",
+      "is-about-closing",
+      "is-about-finalizing",
+    );
+  }
+
+  isGamePortalTransitioning = true;
+  root.classList.add("is-game-portal-locked");
+  pageBody.classList.add("is-game-portal-locked");
+
+  applyWindowPlacement(panel);
+  const targetRect = getGamePortalTargetRect(panel);
+  const gravityLayer = createGameGravityLayer(getGamePortalOrigin(event), targetRect);
+  prepareGamePortalSource(currentOpenPanel, targetRect);
+
+  queueGamePortalTransition(() => {
+    gravityLayer.classList.add("is-absorbing");
+    currentOpenPanel?.classList.add("is-game-gravity-consumed");
+  }, GAME_PORTAL_TRAVEL_DURATION);
+
+  let vhsOverlay = null;
+  queueGamePortalTransition(() => {
+    vhsOverlay = createGameVhsOverlay();
+  }, 790);
+
+  queueGamePortalTransition(() => {
+    if (currentOpenPanel) {
+      const sourceKey = currentOpenPanel.dataset.window || "";
+      finalizeWindowClose(currentOpenPanel, sourceKey);
+      currentOpenPanel.classList.remove("is-game-gravity-consumed");
+      currentOpenPanel.style.removeProperty("--game-gravity-shift-x");
+      currentOpenPanel.style.removeProperty("--game-gravity-shift-y");
+    }
+  }, 1080);
+
+  queueGamePortalTransition(() => {
+    revealGamePortalPanel(panel, gravityLayer);
+  }, 1140);
+
+  queueGamePortalTransition(() => {
+    vhsOverlay?.classList.add("is-clearing");
+  }, 1470);
+
+  queueGamePortalTransition(() => {
+    gravityLayer.classList.add("is-finished");
+  }, 1860);
+
+  queueGamePortalTransition(() => {
+    clearGamePortalTransition();
+  }, GAME_PORTAL_TOTAL_DURATION);
+}
+
+function openWindow(key, triggerEvent) {
+  if (isGamePortalTransitioning) {
+    return;
+  }
+
   const panel = getWindowByKey(key);
   if (!panel) {
+    return;
+  }
+
+  if (key === "games") {
+    if (panel.classList.contains("is-open")) {
+      focusWindow(panel);
+      syncWindowEnvironment();
+      return;
+    }
+
+    startGamePortalTransition(panel, triggerEvent);
     return;
   }
 
@@ -959,6 +1327,10 @@ function openWindow(key) {
 }
 
 function closeWindow(key) {
+  if (isGamePortalTransitioning) {
+    return GAME_PORTAL_TOTAL_DURATION;
+  }
+
   const panel = getWindowByKey(key);
   if (!panel) {
     return 0;
@@ -966,6 +1338,10 @@ function closeWindow(key) {
 
   if (!panel.classList.contains("is-open")) {
     return 0;
+  }
+
+  if (key === "games") {
+    return startGameCollapseClose(panel, key);
   }
 
   if (key === "about") {
@@ -982,8 +1358,8 @@ function closeWindow(key) {
 setupAboutTimeline();
 
 openButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    openWindow(button.dataset.open);
+  button.addEventListener("click", (event) => {
+    openWindow(button.dataset.open, event);
   });
 });
 
@@ -1664,10 +2040,16 @@ function createCollapseParticles(clientX, clientY) {
 
 if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   window.addEventListener("pointermove", (event) => {
+    if (isGamePortalTransitioning) {
+      return;
+    }
     createTrail(event.clientX, event.clientY);
   });
 
   window.addEventListener("pointerdown", (event) => {
+    if (isGamePortalTransitioning || event.target?.closest?.('[data-open="games"]')) {
+      return;
+    }
     popSparkles(event.clientX, event.clientY);
     root.classList.add("is-clicking");
     window.setTimeout(() => root.classList.remove("is-clicking"), 180);
