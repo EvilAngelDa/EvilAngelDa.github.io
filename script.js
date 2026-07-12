@@ -7,7 +7,18 @@ const windows = [...document.querySelectorAll(".app-window")];
 const filterInputs = [...document.querySelectorAll("[data-filter]")];
 const clock = document.querySelector("#system-clock");
 const windowLayer = document.querySelector(".window-layer");
+const desktopShell = document.querySelector(".desktop-shell");
 const sphereGalleries = [...document.querySelectorAll("[data-sphere-gallery]")];
+const aboutTimeline = document.querySelector("[data-about-timeline]");
+const aboutTimelineCube = document.querySelector("[data-about-timeline-cube]");
+const aboutTimelineFaces = [...document.querySelectorAll("[data-about-timeline-face]")];
+const aboutTimelineList = document.querySelector("[data-about-timeline-list]");
+const aboutTimelineItems = [...document.querySelectorAll("[data-about-timeline-item]")]
+  .sort((left, right) => (right.dataset.date || "").localeCompare(left.dataset.date || ""));
+const aboutTimelineCurrent = document.querySelector("[data-about-timeline-current]");
+const aboutTimelineAngle = document.querySelector("[data-about-timeline-angle]");
+const aboutTimelineTotals = [...document.querySelectorAll("[data-about-timeline-total]")];
+const aboutNetworkField = document.querySelector("[data-about-network]");
 const sphereNavigationState = new WeakMap();
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
@@ -16,6 +27,32 @@ const sparkleGlyphs = {
   flower: "✿",
   moon: "☾",
 };
+const aboutCubeColors = [
+  ["#ff3b5c", "255 59 92"],
+  ["#ff6b57", "255 107 87"],
+  ["#ff8a2a", "255 138 42"],
+  ["#ffb020", "255 176 32"],
+  ["#ffe04b", "255 224 75"],
+  ["#b8ff3d", "184 255 61"],
+  ["#39e66b", "57 230 107"],
+  ["#20d99a", "32 217 154"],
+  ["#55f2c4", "85 242 196"],
+  ["#22d3c5", "34 211 197"],
+  ["#35e7ff", "53 231 255"],
+  ["#45bfff", "69 191 255"],
+  ["#3f7cff", "63 124 255"],
+  ["#3155ff", "49 85 255"],
+  ["#5b50ff", "91 80 255"],
+  ["#8f5cff", "143 92 255"],
+  ["#ba55ff", "186 85 255"],
+  ["#ec46ff", "236 70 255"],
+  ["#ff3fc5", "255 63 197"],
+  ["#ff5f9e", "255 95 158"],
+  ["#ff4f74", "255 79 116"],
+  ["#ffd166", "255 209 102"],
+  ["#4fffe1", "79 255 225"],
+  ["#d7ff4f", "215 255 79"],
+];
 
 let activeWindowKey = "";
 let topZIndex = 20;
@@ -23,7 +60,25 @@ let lastTrailAt = 0;
 let lastCollapseAt = 0;
 let pendingOpenTimer = 0;
 let homeGlitchTimer = 0;
+let aboutTransitionTimers = [];
+let aboutTimelineIndex = 0;
+let aboutTimelineQuarter = 0;
+let aboutTimelineWheelDelta = 0;
+let aboutTimelineWheelConsumed = false;
+let aboutTimelineWheelIdleTimer = 0;
+let aboutTimelineAnimationTimer = 0;
+let aboutTimelineAutoTimer = 0;
+let aboutTimelineAutoPaused = false;
+let aboutTimelinePendingIndex = null;
+let aboutTimelinePointerStart = null;
+let lastAboutCubePrimary = -1;
 const homeGlitchReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const ABOUT_LASER_DURATION = 600;
+const ABOUT_OPEN_DURATION = 760;
+const ABOUT_CLOSE_DURATION = 640;
+const ABOUT_TIMELINE_DURATION = 720;
+const ABOUT_TIMELINE_WHEEL_THRESHOLD = 44;
+const ABOUT_TIMELINE_AUTO_DELAY = 5600;
 const windowState = new Map(
   windows.map((panel) => [
     panel.dataset.window || "",
@@ -155,21 +210,533 @@ function focusWindow(panel) {
   syncLauncherState();
 }
 
+function clearAboutTransitionTimers() {
+  aboutTransitionTimers.forEach((timer) => window.clearTimeout(timer));
+  aboutTransitionTimers = [];
+}
+
+function queueAboutTransition(callback, delay) {
+  const timer = window.setTimeout(callback, delay);
+  aboutTransitionTimers.push(timer);
+  return timer;
+}
+
+function syncAboutCubeGeometry(panel = getWindowByKey("about")) {
+  if (panel) {
+    const panelWidth = panel.offsetWidth || panel.getBoundingClientRect().width;
+
+    if (panelWidth) {
+      panel.style.setProperty("--about-window-depth", `${Math.round(panelWidth / 2)}px`);
+    }
+  }
+
+  if (aboutTimeline && aboutTimelineCube) {
+    const cubeHeight = aboutTimelineCube.clientHeight || Math.max(180, aboutTimeline.clientHeight - 28);
+
+    aboutTimeline.style.setProperty("--about-timeline-depth", `${Math.round(cubeHeight / 2)}px`);
+  }
+}
+
+function applyRandomAboutCubePalette() {
+  if (!aboutTimeline || aboutCubeColors.length < 3) {
+    return;
+  }
+
+  const candidates = aboutCubeColors.map((_, index) => index).filter((index) => index !== lastAboutCubePrimary);
+  const primaryIndex = candidates[Math.floor(Math.random() * candidates.length)];
+  const secondaryCandidates = candidates.filter((index) => index !== primaryIndex);
+  const secondaryIndex = secondaryCandidates[Math.floor(Math.random() * secondaryCandidates.length)];
+  const tertiaryCandidates = secondaryCandidates.filter((index) => index !== secondaryIndex);
+  const tertiaryIndex = tertiaryCandidates[Math.floor(Math.random() * tertiaryCandidates.length)];
+  const [primaryHex, primaryRgb] = aboutCubeColors[primaryIndex];
+  const [secondaryHex, secondaryRgb] = aboutCubeColors[secondaryIndex];
+  const [tertiaryHex, tertiaryRgb] = aboutCubeColors[tertiaryIndex];
+
+  lastAboutCubePrimary = primaryIndex;
+  aboutTimeline.style.setProperty("--about-cube-primary", primaryHex);
+  aboutTimeline.style.setProperty("--about-cube-primary-rgb", primaryRgb);
+  aboutTimeline.style.setProperty("--about-cube-secondary", secondaryHex);
+  aboutTimeline.style.setProperty("--about-cube-secondary-rgb", secondaryRgb);
+  aboutTimeline.style.setProperty("--about-cube-tertiary", tertiaryHex);
+  aboutTimeline.style.setProperty("--about-cube-tertiary-rgb", tertiaryRgb);
+}
+
+function setupAboutNetworkField() {
+  if (!aboutNetworkField || aboutNetworkField.childElementCount) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  for (let index = 0; index < 42; index += 1) {
+    const link = document.createElement("span");
+    const pulse = document.createElement("i");
+
+    link.className = "about-network-link";
+    link.style.setProperty("--network-x", `${Math.round(-8 + Math.random() * 100)}%`);
+    link.style.setProperty("--network-y", `${Math.round(4 + Math.random() * 92)}%`);
+    link.style.setProperty("--network-length", `${Math.round(70 + Math.random() * 190)}px`);
+    link.style.setProperty("--network-angle", `${Math.round(-72 + Math.random() * 144)}deg`);
+    link.style.setProperty("--network-delay", `${Math.round(-9000 + Math.random() * 9000)}ms`);
+    link.style.setProperty("--network-duration", `${Math.round(2100 + Math.random() * 4300)}ms`);
+    link.style.setProperty("--network-opacity", (0.12 + Math.random() * 0.22).toFixed(2));
+    link.appendChild(pulse);
+    fragment.appendChild(link);
+  }
+
+  for (let index = 0; index < 24; index += 1) {
+    const node = document.createElement("span");
+
+    node.className = "about-network-node";
+    node.style.left = `${Math.round(3 + Math.random() * 94)}%`;
+    node.style.top = `${Math.round(4 + Math.random() * 92)}%`;
+    node.style.setProperty("--node-delay", `${Math.round(-5000 + Math.random() * 5000)}ms`);
+    fragment.appendChild(node);
+  }
+
+  aboutNetworkField.replaceChildren(fragment);
+}
+
+function wrapAboutTimelineIndex(index) {
+  const count = aboutTimelineItems.length;
+
+  if (!count) {
+    return 0;
+  }
+
+  return ((index % count) + count) % count;
+}
+
+function getAboutTimelineEntry(index) {
+  const item = aboutTimelineItems[wrapAboutTimelineIndex(index)];
+
+  if (!item) {
+    return null;
+  }
+
+  return {
+    code: item.dataset.code || "TIMELINE / SIGNAL",
+    date: item.dataset.date || "----.--.--",
+    description: item.dataset.description || "",
+    index: wrapAboutTimelineIndex(index),
+    title: item.dataset.title || item.textContent.trim(),
+  };
+}
+
+function populateAboutTimelineFace(face, entryIndex) {
+  const entry = getAboutTimelineEntry(entryIndex);
+
+  if (!face || !entry) {
+    return;
+  }
+
+  face.dataset.entryIndex = String(entry.index);
+  const number = face.querySelector("[data-about-detail-number]");
+  const code = face.querySelector("[data-about-detail-code]");
+  const date = face.querySelector("[data-about-detail-date]");
+  const title = face.querySelector("[data-about-detail-title]");
+  const description = face.querySelector("[data-about-detail-description]");
+
+  if (number) number.textContent = String(entry.index + 1).padStart(2, "0");
+  if (code) code.textContent = entry.code;
+  if (date) date.textContent = entry.date;
+  if (title) title.textContent = entry.title;
+  if (description) description.textContent = entry.description;
+}
+
+function syncAboutTimelineSelection(options = {}) {
+  aboutTimelineItems.forEach((item, index) => {
+    const isActive = index === aboutTimelineIndex;
+    item.classList.toggle("is-active", isActive);
+    item.setAttribute("aria-current", isActive ? "step" : "false");
+  });
+
+  if (aboutTimelineCurrent) {
+    aboutTimelineCurrent.textContent = String(aboutTimelineIndex + 1).padStart(2, "0");
+  }
+
+  aboutTimelineTotals.forEach((total) => {
+    total.textContent = String(aboutTimelineItems.length).padStart(2, "0");
+  });
+
+  const activeItem = aboutTimelineItems[aboutTimelineIndex];
+  if (!aboutTimelineList || !activeItem || options.scroll === false) {
+    return;
+  }
+
+  const nextTop = Math.max(0, activeItem.offsetTop - (aboutTimelineList.clientHeight - activeItem.offsetHeight) / 2);
+  if (options.immediate) {
+    aboutTimelineList.scrollTop = nextTop;
+  } else {
+    aboutTimelineList.scrollTo({ top: nextTop, behavior: "smooth" });
+  }
+}
+
+function updateAboutTimelineFaceState() {
+  const activeSlot = ((aboutTimelineQuarter % aboutTimelineFaces.length) + aboutTimelineFaces.length) % aboutTimelineFaces.length;
+
+  aboutTimelineFaces.forEach((face, index) => {
+    const isActive = index === activeSlot;
+    face.classList.toggle("is-active", isActive);
+    face.setAttribute("aria-hidden", String(!isActive));
+  });
+
+  if (aboutTimelineAngle) {
+    aboutTimelineAngle.textContent = `${String(activeSlot * 90).padStart(3, "0")}°`;
+  }
+}
+
+function clearAboutTimelineAuto() {
+  window.clearTimeout(aboutTimelineAutoTimer);
+  aboutTimelineAutoTimer = 0;
+  aboutTimeline?.classList.remove("is-auto-counting");
+}
+
+function scheduleAboutTimelineAuto() {
+  clearAboutTimelineAuto();
+  const panel = getWindowByKey("about");
+
+  if (aboutTimelineAutoPaused || !panel?.classList.contains("is-open") || panel.classList.contains("is-about-closing")) {
+    return;
+  }
+
+  aboutTimeline?.getBoundingClientRect();
+  aboutTimeline?.classList.add("is-auto-counting");
+  aboutTimelineAutoTimer = window.setTimeout(() => {
+    navigateAboutTimeline(1, { source: "auto" });
+  }, ABOUT_TIMELINE_AUTO_DELAY);
+}
+
+function setAboutTimelineAutoPaused(isPaused) {
+  aboutTimelineAutoPaused = isPaused;
+
+  if (isPaused) {
+    clearAboutTimelineAuto();
+  } else {
+    scheduleAboutTimelineAuto();
+  }
+}
+
+function renderAboutTimeline(nextIndex, options = {}) {
+  if (!aboutTimeline || !aboutTimelineCube || !aboutTimelineFaces.length || !aboutTimelineItems.length) {
+    return false;
+  }
+
+  const targetIndex = wrapAboutTimelineIndex(nextIndex);
+
+  if (options.immediate) {
+    aboutTimelineQuarter = 0;
+    aboutTimelineIndex = targetIndex;
+    aboutTimelinePendingIndex = null;
+    applyRandomAboutCubePalette();
+    aboutTimelineFaces.forEach((face, slot) => {
+      const entryIndex = slot === aboutTimelineFaces.length - 1
+        ? targetIndex - 1
+        : targetIndex + slot;
+      populateAboutTimelineFace(face, entryIndex);
+    });
+    aboutTimelineCube.classList.add("is-immediate");
+    aboutTimelineCube.style.setProperty("--about-timeline-angle", "0deg");
+    updateAboutTimelineFaceState();
+    syncAboutTimelineSelection({ immediate: true });
+    aboutTimelineCube.getBoundingClientRect();
+    aboutTimelineCube.classList.remove("is-immediate", "is-rotating");
+    return true;
+  }
+
+  if (aboutTimelineCube.classList.contains("is-rotating")) {
+    aboutTimelinePendingIndex = targetIndex;
+    return false;
+  }
+
+  if (targetIndex === aboutTimelineIndex) {
+    syncAboutTimelineSelection();
+    scheduleAboutTimelineAuto();
+    return false;
+  }
+
+  const forwardDistance = wrapAboutTimelineIndex(targetIndex - aboutTimelineIndex);
+  const backwardDistance = wrapAboutTimelineIndex(aboutTimelineIndex - targetIndex);
+  const direction = options.direction || (forwardDistance <= backwardDistance ? 1 : -1);
+  const nextQuarter = aboutTimelineQuarter + direction;
+  const incomingSlot = ((nextQuarter % aboutTimelineFaces.length) + aboutTimelineFaces.length) % aboutTimelineFaces.length;
+
+  applyRandomAboutCubePalette();
+  populateAboutTimelineFace(aboutTimelineFaces[incomingSlot], targetIndex);
+  aboutTimelineIndex = targetIndex;
+  aboutTimelineQuarter = nextQuarter;
+  syncAboutTimelineSelection();
+  updateAboutTimelineFaceState();
+
+  window.clearTimeout(aboutTimelineAnimationTimer);
+  aboutTimelineCube.classList.remove("is-rotating");
+  aboutTimelineCube.getBoundingClientRect();
+  aboutTimelineCube.classList.add("is-rotating");
+  aboutTimelineCube.style.setProperty("--about-timeline-angle", `${aboutTimelineQuarter * -90}deg`);
+  clearAboutTimelineAuto();
+
+  aboutTimelineAnimationTimer = window.setTimeout(() => {
+    aboutTimelineCube.classList.remove("is-rotating");
+    if (aboutTimelinePendingIndex !== null && aboutTimelinePendingIndex !== aboutTimelineIndex) {
+      const pendingIndex = aboutTimelinePendingIndex;
+      aboutTimelinePendingIndex = null;
+      renderAboutTimeline(pendingIndex);
+    } else {
+      aboutTimelinePendingIndex = null;
+      scheduleAboutTimelineAuto();
+    }
+  }, ABOUT_TIMELINE_DURATION);
+  return true;
+}
+
+function navigateAboutTimeline(direction, options = {}) {
+  return renderAboutTimeline(aboutTimelineIndex + direction, {
+    ...options,
+    direction,
+  });
+}
+
+function resetAboutTimeline() {
+  window.clearTimeout(aboutTimelineWheelIdleTimer);
+  window.clearTimeout(aboutTimelineAnimationTimer);
+  clearAboutTimelineAuto();
+  aboutTimelineWheelDelta = 0;
+  aboutTimelineWheelConsumed = false;
+  aboutTimelinePendingIndex = null;
+  aboutTimelinePointerStart = null;
+  syncAboutCubeGeometry();
+  renderAboutTimeline(0, { immediate: true });
+}
+
+function setupAboutTimeline() {
+  if (!aboutTimeline || !aboutTimelineCube || !aboutTimelineFaces.length || !aboutTimelineItems.length) {
+    return;
+  }
+
+  aboutTimelineList?.replaceChildren(...aboutTimelineItems);
+  setupAboutNetworkField();
+
+  aboutTimelineItems.forEach((item, index) => {
+    item.addEventListener("click", (event) => {
+      event.stopPropagation();
+      renderAboutTimeline(index);
+    });
+  });
+
+  aboutTimelineList?.addEventListener("wheel", (event) => {
+    event.stopPropagation();
+  });
+
+  aboutTimeline.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    window.clearTimeout(aboutTimelineWheelIdleTimer);
+    aboutTimelineWheelIdleTimer = window.setTimeout(() => {
+      aboutTimelineWheelDelta = 0;
+      aboutTimelineWheelConsumed = false;
+    }, 150);
+
+    if (aboutTimelineWheelConsumed) {
+      return;
+    }
+
+    const deltaScale = event.deltaMode === 1 ? 24 : event.deltaMode === 2 ? aboutTimeline.clientHeight : 1;
+    const dominantDelta = event.deltaY || event.deltaX;
+    aboutTimelineWheelDelta += dominantDelta * deltaScale;
+
+    if (Math.abs(aboutTimelineWheelDelta) < ABOUT_TIMELINE_WHEEL_THRESHOLD) {
+      return;
+    }
+
+    navigateAboutTimeline(aboutTimelineWheelDelta > 0 ? 1 : -1, { source: "wheel" });
+    aboutTimelineWheelDelta = 0;
+    aboutTimelineWheelConsumed = true;
+  }, { passive: false });
+
+  aboutTimeline.addEventListener("keydown", (event) => {
+    const direction = ["ArrowDown", "ArrowRight", "PageDown"].includes(event.key)
+      ? 1
+      : ["ArrowUp", "ArrowLeft", "PageUp"].includes(event.key)
+        ? -1
+        : 0;
+
+    if (!direction) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    navigateAboutTimeline(direction, { source: "keyboard" });
+  });
+
+  aboutTimeline.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary || event.button !== 0) {
+      return;
+    }
+
+    aboutTimelinePointerStart = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+    };
+    aboutTimeline.setPointerCapture?.(event.pointerId);
+  });
+
+  aboutTimeline.addEventListener("pointerup", (event) => {
+    if (!aboutTimelinePointerStart || aboutTimelinePointerStart.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const deltaX = event.clientX - aboutTimelinePointerStart.x;
+    const deltaY = event.clientY - aboutTimelinePointerStart.y;
+    aboutTimelinePointerStart = null;
+
+    if (Math.abs(deltaY) < 42 || Math.abs(deltaY) < Math.abs(deltaX)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    navigateAboutTimeline(deltaY < 0 ? 1 : -1, { source: "swipe" });
+  });
+
+  aboutTimeline.addEventListener("pointercancel", () => {
+    aboutTimelinePointerStart = null;
+  });
+
+  [aboutTimeline, aboutTimelineList].filter(Boolean).forEach((region) => {
+    region.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse") {
+        setAboutTimelineAutoPaused(true);
+      }
+    });
+    region.addEventListener("pointerleave", (event) => {
+      if (event.pointerType === "mouse") {
+        setAboutTimelineAutoPaused(false);
+      }
+    });
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearAboutTimelineAuto();
+    } else {
+      scheduleAboutTimelineAuto();
+    }
+  });
+
+  resetAboutTimeline();
+}
+
+function activateWindowPanel(panel) {
+  applyWindowPlacement(panel);
+  panel.classList.add("is-open");
+  panel.setAttribute("aria-hidden", "false");
+  syncWindowEnvironment();
+  resetImmersiveScroll(panel);
+  focusWindow(panel);
+  requestAnimationFrame(updateSphereGalleries);
+}
+
+function finalizeWindowClose(panel, key) {
+  panel.classList.remove(
+    "is-open",
+    "is-focused",
+    "is-dragging",
+    "is-about-cutting",
+    "is-about-opening",
+    "is-about-closing",
+  );
+  panel.setAttribute("aria-hidden", "true");
+
+  if (key === "home") {
+    clearHomeGlitchTransition(panel);
+  }
+
+  if (key === "about") {
+    clearAboutTransitionTimers();
+    clearAboutTimelineAuto();
+  }
+
+  if (activeWindowKey === key) {
+    activeWindowKey = "";
+  }
+
+  syncLauncherState();
+  syncWindowEnvironment();
+}
+
+function startAboutOpen(panel) {
+  clearAboutTransitionTimers();
+  aboutTimelineAutoPaused = false;
+  panel.classList.remove("is-about-cutting", "is-about-opening", "is-about-closing", "is-about-finalizing");
+  activateWindowPanel(panel);
+  resetAboutTimeline();
+  syncAboutCubeGeometry(panel);
+  panel.getBoundingClientRect();
+  panel.classList.add("is-about-cutting");
+
+  queueAboutTransition(() => {
+    if (!panel.classList.contains("is-open")) {
+      return;
+    }
+    panel.classList.remove("is-about-cutting");
+    panel.classList.add("is-about-opening");
+  }, ABOUT_LASER_DURATION);
+
+  queueAboutTransition(() => {
+    panel.classList.remove("is-about-opening");
+    scheduleAboutTimelineAuto();
+  }, ABOUT_LASER_DURATION + ABOUT_OPEN_DURATION);
+}
+
+function startAboutClose(panel, key) {
+  clearAboutTransitionTimers();
+  clearAboutTimelineAuto();
+  panel.classList.remove("is-about-cutting", "is-about-opening");
+  panel.classList.add("is-about-closing");
+
+  if (activeWindowKey === key) {
+    activeWindowKey = "";
+  }
+  syncLauncherState();
+
+  queueAboutTransition(() => {
+    panel.classList.add("is-about-finalizing");
+    finalizeWindowClose(panel, key);
+  }, ABOUT_CLOSE_DURATION);
+
+  return ABOUT_CLOSE_DURATION;
+}
+
+function showWindow(panel, key) {
+  if (key === "about") {
+    startAboutOpen(panel);
+    return;
+  }
+
+  activateWindowPanel(panel);
+  if (key === "home") {
+    playHomeGlitchTransition(panel);
+  }
+}
+
 function clearHomeGlitchTransition(panel) {
   window.clearTimeout(homeGlitchTimer);
   homeGlitchTimer = 0;
   panel?.classList.remove("is-home-glitch-entering");
   document.querySelector(".home-glitch-overlay")?.remove();
+  document.querySelector(".home-page-glitch-overlay")?.remove();
+  root.classList.remove("is-home-transition-locked");
+  pageBody.classList.remove("is-home-transition-locked");
 }
 
-function createHomeGlitchClone(panel, className) {
-  const clone = panel.cloneNode(true);
-
+function sanitizeHomeGlitchClone(clone) {
   clone.removeAttribute("id");
   clone.removeAttribute("data-window");
   clone.setAttribute("aria-hidden", "true");
   clone.setAttribute("inert", "");
-  clone.className = `app-window is-open ${className}`;
   clone.querySelectorAll("[id], [data-open], [data-close], [data-center], [data-filter]").forEach((item) => {
     item.removeAttribute("id");
     item.removeAttribute("data-open");
@@ -182,18 +749,82 @@ function createHomeGlitchClone(panel, className) {
   return clone;
 }
 
+function createHomeGlitchClone(panel, className) {
+  const clone = sanitizeHomeGlitchClone(panel.cloneNode(true));
+
+  clone.className = `app-window is-open ${className}`;
+
+  return clone;
+}
+
+function createHomePageGlitchOverlay() {
+  if (!desktopShell || homeGlitchReducedMotion) {
+    return null;
+  }
+
+  const overlay = document.createElement("div");
+  const channels = ["red", "green", "blue"];
+
+  overlay.className = "home-page-glitch-overlay";
+  overlay.setAttribute("aria-hidden", "true");
+
+  channels.forEach((channel) => {
+    const clone = sanitizeHomeGlitchClone(desktopShell.cloneNode(true));
+
+    clone.className = `desktop-shell home-page-glitch-channel is-${channel}`;
+    clone.style.zoom = window.getComputedStyle(desktopShell).zoom;
+    clone.querySelectorAll(".app-window:not(.is-open)").forEach((windowPanel) => windowPanel.remove());
+    clone.querySelectorAll("canvas").forEach((canvas) => canvas.remove());
+    overlay.appendChild(clone);
+  });
+
+  for (let index = 0; index < 24; index += 1) {
+    const tear = document.createElement("span");
+
+    tear.className = "home-page-glitch-tear";
+    tear.style.top = `${Math.round(2 + Math.random() * 95)}%`;
+    tear.style.height = `${Math.round(2 + Math.random() * 14)}px`;
+    tear.style.setProperty("--tear-shift", `${Math.round(-110 + Math.random() * 220)}px`);
+    tear.style.setProperty("--tear-delay", `${Math.round(Math.random() * 360)}ms`);
+    overlay.appendChild(tear);
+  }
+
+  pageBody.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("is-active"));
+  return overlay;
+}
+
+function beginHomeGlitchTransition(panel) {
+  clearHomeGlitchTransition(panel);
+  root.classList.add("is-home-transition-locked");
+  pageBody.classList.add("is-home-transition-locked");
+  createHomePageGlitchOverlay();
+
+  homeGlitchTimer = window.setTimeout(() => {
+    clearHomeGlitchTransition(panel);
+  }, homeGlitchReducedMotion ? 240 : 1250);
+}
+
 function playHomeGlitchTransition(panel) {
-  if (!panel || homeGlitchReducedMotion) {
+  if (!panel) {
     return;
   }
 
-  clearHomeGlitchTransition(panel);
+  window.clearTimeout(homeGlitchTimer);
+  document.querySelector(".home-glitch-overlay")?.remove();
+
+  if (homeGlitchReducedMotion) {
+    homeGlitchTimer = window.setTimeout(() => clearHomeGlitchTransition(panel), 240);
+    return;
+  }
+
+  panel.classList.remove("is-home-glitch-entering");
   panel.getBoundingClientRect();
   panel.classList.add("is-home-glitch-entering");
 
   const rect = panel.getBoundingClientRect();
   if (rect.width < 2 || rect.height < 2) {
-    panel.classList.remove("is-home-glitch-entering");
+    clearHomeGlitchTransition(panel);
     return;
   }
 
@@ -285,9 +916,7 @@ function playHomeGlitchTransition(panel) {
   requestAnimationFrame(() => overlay.classList.add("is-active"));
 
   homeGlitchTimer = window.setTimeout(() => {
-    panel.classList.remove("is-home-glitch-entering");
-    overlay.remove();
-    homeGlitchTimer = 0;
+    clearHomeGlitchTransition(panel);
   }, 980);
 }
 
@@ -297,9 +926,17 @@ function openWindow(key) {
     return;
   }
 
+  if (key === "home") {
+    beginHomeGlitchTransition(panel);
+  }
+
   window.clearTimeout(pendingOpenTimer);
 
   if (panel.classList.contains("is-open")) {
+    if (key === "about") {
+      startAboutOpen(panel);
+      return;
+    }
     focusWindow(panel);
     syncWindowEnvironment();
     if (key === "home") {
@@ -311,54 +948,38 @@ function openWindow(key) {
   const currentOpenPanel = windows.find((item) => item.classList.contains("is-open"));
 
   if (currentOpenPanel && currentOpenPanel !== panel) {
-    closeWindow(currentOpenPanel.dataset.window || "");
+    const closeDelay = closeWindow(currentOpenPanel.dataset.window || "");
     pendingOpenTimer = window.setTimeout(() => {
-      applyWindowPlacement(panel);
-      panel.classList.add("is-open");
-      panel.setAttribute("aria-hidden", "false");
-      syncWindowEnvironment();
-      resetImmersiveScroll(panel);
-      focusWindow(panel);
-      if (key === "home") {
-        playHomeGlitchTransition(panel);
-      }
-      requestAnimationFrame(updateSphereGalleries);
-    }, 150);
+      showWindow(panel, key);
+    }, Math.max(150, closeDelay));
     return;
   }
 
-  applyWindowPlacement(panel);
-  panel.classList.add("is-open");
-  panel.setAttribute("aria-hidden", "false");
-  syncWindowEnvironment();
-  resetImmersiveScroll(panel);
-  focusWindow(panel);
-  if (key === "home") {
-    playHomeGlitchTransition(panel);
-  }
-  requestAnimationFrame(updateSphereGalleries);
+  showWindow(panel, key);
 }
 
 function closeWindow(key) {
   const panel = getWindowByKey(key);
   if (!panel) {
-    return;
+    return 0;
   }
 
-  panel.classList.remove("is-open", "is-focused", "is-dragging");
-  panel.setAttribute("aria-hidden", "true");
-
-  if (key === "home") {
-    clearHomeGlitchTransition(panel);
+  if (!panel.classList.contains("is-open")) {
+    return 0;
   }
 
-  if (activeWindowKey === key) {
-    activeWindowKey = "";
+  if (key === "about") {
+    if (panel.classList.contains("is-about-closing")) {
+      return ABOUT_CLOSE_DURATION;
+    }
+    return startAboutClose(panel, key);
   }
 
-  syncLauncherState();
-  syncWindowEnvironment();
+  finalizeWindowClose(panel, key);
+  return 0;
 }
+
+setupAboutTimeline();
 
 openButtons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -398,6 +1019,7 @@ document.addEventListener("keydown", (event) => {
 
 window.addEventListener("resize", () => {
   document.querySelectorAll(".immersive-scroll").forEach(reflowSphereGallery);
+  syncAboutCubeGeometry();
 
   windows.forEach((panel) => {
     const state = windowState.get(panel.dataset.window || "");

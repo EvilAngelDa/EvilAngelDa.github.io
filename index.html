@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>yangyangnao OS</title>
     <meta name="description" content="yangyangnao 的个人桌面网站。">
-    <link rel="stylesheet" href="style.css?v=20260711-sphere26">
+    <link rel="stylesheet" href="style.css?v=20260712-sphere35">
   </head>
   <body>
     <div class="desktop-shell">
@@ -204,69 +204,136 @@
           </article>
 
           <article class="app-window" data-window="about" id="window-about" aria-hidden="true">
-            <div class="window-titlebar" data-drag-handle>
-              <div class="traffic-lights">
-                <span class="window-dot close"></span>
-                <span class="window-dot mid"></span>
-                <span class="window-dot end"></span>
-              </div>
-              <strong>关于我</strong>
-              <div class="window-toolbar">
-                <span class="window-meta">desktop://about-me</span>
-                <button class="window-center-button" data-center="about" type="button" aria-label="将关于我窗口居中">居中</button>
-                <button class="window-close-button" data-close="about" type="button" aria-label="关闭关于我窗口">关闭 ×</button>
-              </div>
+            <div class="about-laser-frame" aria-hidden="true">
+              <span class="about-laser-line is-top"></span>
+              <span class="about-laser-line is-right"></span>
+              <span class="about-laser-line is-bottom"></span>
+              <span class="about-laser-line is-left"></span>
             </div>
-            <div class="window-scroll">
-              <section class="window-section profile-hero">
-                <div>
-                  <p class="section-kicker">About me</p>
-                  <h2>一个喜欢把想法做成可操作界面的人。</h2>
-                  <p>
-                    我对产品表达、AI 编程、个人知识系统和内容创作都很有兴趣。比起只停在脑子里，我更喜欢先做出一个可以点击、可以修改、可以反复迭代的版本。
-                  </p>
+            <div class="about-book-page">
+              <div class="about-cube-face about-cube-side" aria-hidden="true">
+                <span class="about-side-code">ABOUT / NODE 03</span>
+                <strong>PROFILE<br>PROTOCOL</strong>
+                <span class="about-side-axis"><i></i><i></i><i></i></span>
+              </div>
+              <div class="about-cube-face about-cube-front">
+                <div class="window-titlebar" data-drag-handle>
+                  <div class="traffic-lights">
+                    <span class="window-dot close"></span>
+                    <span class="window-dot mid"></span>
+                    <span class="window-dot end"></span>
+                  </div>
+                  <strong>关于我</strong>
+                  <div class="window-toolbar">
+                    <span class="window-meta">desktop://about-me</span>
+                    <button class="window-center-button" data-center="about" type="button" aria-label="将关于我窗口居中">居中</button>
+                    <button class="window-close-button" data-close="about" type="button" aria-label="关闭关于我窗口">关闭 ×</button>
+                  </div>
                 </div>
-                <div class="profile-badge">
-                  <strong>羊羊脑</strong>
-                  <span>builder / explorer</span>
+                <div class="about-layout">
+                  <aside class="about-profile-fixed">
+                    <span class="about-profile-ring" aria-hidden="true"></span>
+                    <div class="about-profile-copy">
+                      <small>PROFILE / NODE 00</small>
+                      <p class="section-kicker">About me</p>
+                      <h2>一个喜欢把想法做成可操作界面的人。</h2>
+                      <p>我对产品表达、AI 编程、个人知识系统和内容创作都很有兴趣。比起只停在脑子里，我更喜欢先做出一个可以点击、可以修改、可以反复迭代的版本。</p>
+                    </div>
+                    <div class="about-profile-name">
+                      <strong>羊羊脑</strong>
+                      <span>builder / explorer</span>
+                    </div>
+                    <div class="about-signal-tags" aria-label="关注方向">
+                      <span>界面</span>
+                      <span>信息流</span>
+                      <span>工作流</span>
+                      <span>AI 工具</span>
+                    </div>
+                  </aside>
+
+                  <nav class="about-timeline-nav" aria-label="关于我时间线">
+                    <header class="about-timeline-nav-head">
+                      <span>Timeline</span>
+                      <strong data-about-timeline-total>04</strong>
+                    </header>
+                    <div class="about-timeline-list" data-about-timeline-list>
+                      <button class="about-timeline-item" type="button" data-about-timeline-item data-code="DESKTOP / GENESIS" data-date="2026.06.17" data-title="个人网站桌面化" data-description="把主页做成一个能打开、能切换、能滚动的桌面。内容不再一次性摊开，而是像应用一样逐层出现，让每次访问都更有参与感。">
+                        <time datetime="2026-06-17">06.17</time>
+                        <strong>网站桌面化</strong>
+                      </button>
+                      <button class="about-timeline-item" type="button" data-about-timeline-item data-code="ARCHIVE / SIGNAL" data-date="2026.06.20" data-title="整理作品与文章" data-description="把真正值得看的实践和思考慢慢沉淀下来。作品展示做过什么，文章记录为什么这样做，以及下一次还能怎样改进。">
+                        <time datetime="2026-06-20">06.20</time>
+                        <strong>整理内容</strong>
+                      </button>
+                      <button class="about-timeline-item" type="button" data-about-timeline-item data-code="AI / WORKFLOW" data-date="2026.06.25" data-title="AI 工作流实验" data-description="尝试把重复劳动交给 AI、脚本和网页工具，让信息整理、内容制作与日常开发形成一套可以反复使用的个人流程。">
+                        <time datetime="2026-06-25">06.25</time>
+                        <strong>AI 工作流</strong>
+                      </button>
+                      <button class="about-timeline-item" type="button" data-about-timeline-item data-code="INTERFACE / EVOLVE" data-date="2026.07.12" data-title="持续打磨交互体验" data-description="继续调整窗口、球形作品视图和各种转场，把有趣的视觉尝试变成真正顺手、稳定并且能够长期扩展的体验。">
+                        <time datetime="2026-07-12">07.12</time>
+                        <strong>交互迭代</strong>
+                      </button>
+                    </div>
+                  </nav>
+
+                  <section class="about-detail-panel">
+                    <div class="about-timeline-viewport about-window-cube-stage" data-about-timeline tabindex="0" aria-label="时间线详情轮播">
+                      <div class="about-network-field" data-about-network aria-hidden="true"></div>
+                      <div class="about-window-cube-hud">
+                        <span>DETAIL / SIGNAL</span>
+                        <div class="about-timeline-readout" aria-live="polite">
+                          <span><strong data-about-timeline-current>01</strong> / <span data-about-timeline-total>04</span></span>
+                          <span data-about-timeline-angle>000°</span>
+                        </div>
+                      </div>
+                      <div class="about-timeline-cube about-window-cube" data-about-timeline-cube>
+                        <article class="about-timeline-face about-detail-face" data-about-timeline-face>
+                          <span class="about-timeline-number" data-about-detail-number>01</span>
+                          <div>
+                            <small data-about-detail-code></small>
+                            <time data-about-detail-date></time>
+                            <strong data-about-detail-title></strong>
+                            <p data-about-detail-description></p>
+                            <div class="about-signal-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                          </div>
+                        </article>
+                        <article class="about-timeline-face about-detail-face" data-about-timeline-face>
+                          <span class="about-timeline-number" data-about-detail-number>02</span>
+                          <div>
+                            <small data-about-detail-code></small>
+                            <time data-about-detail-date></time>
+                            <strong data-about-detail-title></strong>
+                            <p data-about-detail-description></p>
+                            <div class="about-signal-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                          </div>
+                        </article>
+                        <article class="about-timeline-face about-detail-face" data-about-timeline-face>
+                          <span class="about-timeline-number" data-about-detail-number>03</span>
+                          <div>
+                            <small data-about-detail-code></small>
+                            <time data-about-detail-date></time>
+                            <strong data-about-detail-title></strong>
+                            <p data-about-detail-description></p>
+                            <div class="about-signal-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                          </div>
+                        </article>
+                        <article class="about-timeline-face about-detail-face" data-about-timeline-face>
+                          <span class="about-timeline-number" data-about-detail-number>04</span>
+                          <div>
+                            <small data-about-detail-code></small>
+                            <time data-about-detail-date></time>
+                            <strong data-about-detail-title></strong>
+                            <p data-about-detail-description></p>
+                            <div class="about-signal-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                          </div>
+                        </article>
+                      </div>
+                      <span class="about-timeline-crosshair" aria-hidden="true"></span>
+                      <span class="about-auto-status" aria-hidden="true"><i></i></span>
+                    </div>
+                  </section>
                 </div>
-              </section>
-              <section class="window-section info-columns">
-                <article class="soft-panel">
-                  <h3>我在做什么</h3>
-                  <p>搭自己的线上空间，整理作品，记录思路，也尝试把日常工具和内容流程慢慢系统化。</p>
-                </article>
-                <article class="soft-panel">
-                  <h3>我关心什么</h3>
-                  <p>好用的界面、准确的信息流、能复用的流程、以及能让“想法变得更轻”的工具。</p>
-                </article>
-              </section>
-              <section class="window-section timeline">
-                <h3>当前时间线</h3>
-                <div class="timeline-list">
-                  <article>
-                    <span>01</span>
-                    <div>
-                      <strong>把个人网站做成桌面</strong>
-                      <p>让内容不是一股脑摊开，而是像打开应用一样逐层展开。</p>
-                    </div>
-                  </article>
-                  <article>
-                    <span>02</span>
-                    <div>
-                      <strong>整理作品和文章</strong>
-                      <p>把真正值得看的东西慢慢沉淀进去，而不是只有空壳。</p>
-                    </div>
-                  </article>
-                  <article>
-                    <span>03</span>
-                    <div>
-                      <strong>继续打磨自己的工作流</strong>
-                      <p>让 AI、脚本、网页和内容工具都变成自己的长期能力。</p>
-                    </div>
-                  </article>
-                </div>
-              </section>
+              </div>
             </div>
           </article>
 
@@ -417,8 +484,8 @@
       </nav>
     </div>
 
-    <script src="script.js?v=20260711-sphere26"></script>
-    <script src="sphere3d.js?v=20260711-sphere26"></script>
+    <script src="script.js?v=20260712-sphere35"></script>
+    <script src="sphere3d.js?v=20260712-sphere35"></script>
     <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
   </body>
 </html>
