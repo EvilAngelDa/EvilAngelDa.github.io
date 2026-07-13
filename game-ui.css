@@ -8,8 +8,8 @@
 #window-games {
   --game-titlebar-height: clamp(62px, 7.6cqw, 88px);
   container-type: inline-size;
-  width: min(88vw, 1380px);
-  height: min(78vh, 760px);
+  width: min(44vw, 690px);
+  height: min(39vh, 380px);
   max-width: calc(100vw - 64px);
   max-height: calc(100vh - 112px);
   right: auto !important;
