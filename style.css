@@ -1465,6 +1465,19 @@ body.is-game-portal-locked #waifu-toggle {
   user-select: none !important;
 }
 
+html.is-window-switching,
+body.is-window-switching {
+  overflow: hidden !important;
+}
+
+body.is-window-switching .desktop-shell,
+body.is-window-switching .window-layer,
+body.is-window-switching #waifu,
+body.is-window-switching #waifu-toggle {
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
 .game-gravity-layer {
   position: fixed;
   inset: 0;

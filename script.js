@@ -68,6 +68,7 @@ let gameVhsLastPaint = 0;
 let gameLibraryObserver = null;
 let gameScrollIdleTimer = 0;
 let isGamePortalTransitioning = false;
+let isWindowSwitching = false;
 let aboutTransitionTimers = [];
 let aboutTimelineIndex = 0;
 let aboutTimelineQuarter = 0;
@@ -84,6 +85,8 @@ const homeGlitchReducedMotion = window.matchMedia("(prefers-reduced-motion: redu
 const GAME_PORTAL_TRAVEL_DURATION = 420;
 const GAME_PORTAL_TOTAL_DURATION = 1780;
 const GAME_CLOSE_COLLAPSE_DURATION = 620;
+const DEFAULT_WINDOW_CLOSE_DURATION = 180;
+const WINDOW_SWITCH_GAP = 34;
 const ABOUT_LASER_DURATION = 600;
 const ABOUT_OPEN_DURATION = 760;
 const ABOUT_CLOSE_DURATION = 640;
@@ -165,13 +168,22 @@ function syncLauncherState() {
   openButtons.forEach((button) => {
     const panel = getWindowByKey(button.dataset.open || "");
     const isPanelOpen = Boolean(panel?.classList.contains("is-open"));
+    const isDisabled = isWindowSwitching || isPanelOpen;
 
     button.classList.toggle("is-active", isPanelOpen);
-    button.setAttribute("aria-disabled", String(isPanelOpen));
+    button.setAttribute("aria-disabled", String(isDisabled));
     if ("disabled" in button) {
-      button.disabled = isPanelOpen;
+      button.disabled = isDisabled;
     }
   });
+}
+
+function setWindowSwitching(isSwitching) {
+  isWindowSwitching = isSwitching;
+  root.classList.toggle("is-window-switching", isSwitching);
+  pageBody.classList.toggle("is-window-switching", isSwitching);
+  windowLayer?.setAttribute("aria-busy", String(isSwitching));
+  syncLauncherState();
 }
 
 function syncWindowEnvironment() {
@@ -1234,7 +1246,7 @@ function createGameCloseSingularity(panel) {
 function startGameCollapseClose(panel, key) {
   if (homeGlitchReducedMotion) {
     finalizeWindowClose(panel, key);
-    return 0;
+    return DEFAULT_WINDOW_CLOSE_DURATION;
   }
 
   clearGamePortalTransition();
@@ -1333,23 +1345,8 @@ function startGamePortalTransition(panel, event) {
   }, GAME_PORTAL_TOTAL_DURATION);
 }
 
-function openWindow(key, triggerEvent) {
-  if (isGamePortalTransitioning) {
-    return;
-  }
-
-  const panel = getWindowByKey(key);
-  if (!panel) {
-    return;
-  }
-
+function startRequestedWindow(panel, key, triggerEvent) {
   if (key === "games") {
-    if (panel.classList.contains("is-open")) {
-      focusWindow(panel);
-      syncWindowEnvironment();
-      return;
-    }
-
     startGamePortalTransition(panel, triggerEvent);
     return;
   }
@@ -1358,32 +1355,48 @@ function openWindow(key, triggerEvent) {
     beginHomeGlitchTransition(panel);
   }
 
+  showWindow(panel, key);
+}
+
+function openWindow(key, triggerEvent) {
+  if (isGamePortalTransitioning || isWindowSwitching) {
+    return;
+  }
+
+  const panel = getWindowByKey(key);
+  if (!panel) {
+    return;
+  }
+
   window.clearTimeout(pendingOpenTimer);
+  pendingOpenTimer = 0;
 
   if (panel.classList.contains("is-open")) {
-    if (key === "about") {
-      startAboutOpen(panel);
-      return;
-    }
     focusWindow(panel);
     syncWindowEnvironment();
-    if (key === "home") {
-      playHomeGlitchTransition(panel);
-    }
     return;
   }
 
   const currentOpenPanel = windows.find((item) => item.classList.contains("is-open"));
 
   if (currentOpenPanel && currentOpenPanel !== panel) {
+    const triggerOrigin = getGamePortalOrigin(triggerEvent);
+    setWindowSwitching(true);
     const closeDelay = closeWindow(currentOpenPanel.dataset.window || "");
+
     pendingOpenTimer = window.setTimeout(() => {
-      showWindow(panel, key);
-    }, Math.max(150, closeDelay));
+      pendingOpenTimer = 0;
+      setWindowSwitching(false);
+      startRequestedWindow(panel, key, {
+        clientX: triggerOrigin.x,
+        clientY: triggerOrigin.y,
+        detail: 1,
+      });
+    }, Math.max(WINDOW_SWITCH_GAP, closeDelay + WINDOW_SWITCH_GAP));
     return;
   }
 
-  showWindow(panel, key);
+  startRequestedWindow(panel, key, triggerEvent);
 }
 
 function closeWindow(key) {
@@ -1412,7 +1425,7 @@ function closeWindow(key) {
   }
 
   finalizeWindowClose(panel, key);
-  return 0;
+  return DEFAULT_WINDOW_CLOSE_DURATION;
 }
 
 setupAboutTimeline();
