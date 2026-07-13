@@ -20,7 +20,12 @@ const aboutTimelineAngle = document.querySelector("[data-about-timeline-angle]")
 const aboutTimelineTotals = [...document.querySelectorAll("[data-about-timeline-total]")];
 const aboutNetworkField = document.querySelector("[data-about-network]");
 const gameLibraryScroll = document.querySelector("#window-games .game-ui-scroll");
+const gameCarousel = document.querySelector("[data-game-carousel]");
 const gameEntries = [...document.querySelectorAll("#window-games [data-game-entry]")];
+const gamePrevButton = document.querySelector("[data-game-prev]");
+const gameNextButton = document.querySelector("[data-game-next]");
+const gameCounter = document.querySelector("[data-game-counter]");
+const gameDots = [...document.querySelectorAll("[data-game-dot]")];
 const sphereNavigationState = new WeakMap();
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
@@ -65,8 +70,15 @@ let homeGlitchTimer = 0;
 let gamePortalTimers = [];
 let gameVhsFrame = 0;
 let gameVhsLastPaint = 0;
-let gameLibraryObserver = null;
-let gameScrollIdleTimer = 0;
+let gameCarouselIndex = 0;
+let gameCarouselWheelDelta = 0;
+let gameCarouselWheelIdleTimer = 0;
+let gameCarouselTransitionTimer = 0;
+let gameCarouselLastWheelAt = 0;
+let gameCarouselLocked = false;
+let gameCarouselPointerStart = null;
+let gameCarouselSuppressClick = false;
+let gameCarouselClickResetTimer = 0;
 let isGamePortalTransitioning = false;
 let isWindowSwitching = false;
 let aboutTransitionTimers = [];
@@ -85,6 +97,9 @@ const homeGlitchReducedMotion = window.matchMedia("(prefers-reduced-motion: redu
 const GAME_PORTAL_TRAVEL_DURATION = 420;
 const GAME_PORTAL_TOTAL_DURATION = 1780;
 const GAME_CLOSE_COLLAPSE_DURATION = 620;
+const GAME_CAROUSEL_DURATION = 680;
+const GAME_CAROUSEL_WHEEL_THRESHOLD = 140;
+const GAME_CAROUSEL_WHEEL_QUIET = 150;
 const DEFAULT_WINDOW_CLOSE_DURATION = 180;
 const WINDOW_SWITCH_GAP = 34;
 const ABOUT_LASER_DURATION = 600;
@@ -121,8 +136,88 @@ function setGameEntryVisible(entry, isVisible) {
   });
 }
 
+function wrapGameCarouselIndex(index) {
+  return (index + gameEntries.length) % gameEntries.length;
+}
+
+function syncGameCarousel() {
+  if (!gameEntries.length) {
+    return;
+  }
+
+  gameEntries.forEach((entry, index) => {
+    let offset = wrapGameCarouselIndex(index - gameCarouselIndex);
+
+    if (offset > gameEntries.length / 2) {
+      offset -= gameEntries.length;
+    }
+
+    const position = offset === 0 ? "current" : offset === -1 ? "prev" : offset === 1 ? "next" : "far";
+    const isCurrent = position === "current";
+
+    entry.dataset.carouselPosition = position;
+    entry.setAttribute("aria-hidden", String(!isCurrent));
+    entry.toggleAttribute("inert", !isCurrent);
+    if (isCurrent) {
+      entry.setAttribute("aria-current", "true");
+    } else {
+      entry.removeAttribute("aria-current");
+    }
+    setGameEntryVisible(entry, isCurrent);
+  });
+
+  gameDots.forEach((dot, index) => {
+    const isCurrent = index === gameCarouselIndex;
+    dot.classList.toggle("is-active", isCurrent);
+    if (isCurrent) {
+      dot.setAttribute("aria-current", "true");
+    } else {
+      dot.removeAttribute("aria-current");
+    }
+  });
+
+  if (gameCounter) {
+    gameCounter.textContent = `${String(gameCarouselIndex + 1).padStart(2, "0")} / ${String(gameEntries.length).padStart(2, "0")}`;
+  }
+}
+
+function unlockGameCarouselWhenSettled() {
+  const wheelQuietFor = performance.now() - gameCarouselLastWheelAt;
+
+  if (gameCarouselLastWheelAt && wheelQuietFor < GAME_CAROUSEL_WHEEL_QUIET) {
+    gameCarouselTransitionTimer = window.setTimeout(
+      unlockGameCarouselWhenSettled,
+      GAME_CAROUSEL_WHEEL_QUIET - wheelQuietFor,
+    );
+    return;
+  }
+
+  gameCarouselLocked = false;
+  gameCarousel?.classList.remove("is-game-card-rotating");
+}
+
+function goToGameCarousel(index) {
+  const nextIndex = wrapGameCarouselIndex(index);
+
+  if (gameCarouselLocked || nextIndex === gameCarouselIndex) {
+    return;
+  }
+
+  gameCarouselLocked = true;
+  gameCarouselIndex = nextIndex;
+  gameCarousel?.classList.add("is-game-card-rotating");
+  syncGameCarousel();
+
+  window.clearTimeout(gameCarouselTransitionTimer);
+  gameCarouselTransitionTimer = window.setTimeout(unlockGameCarouselWhenSettled, GAME_CAROUSEL_DURATION);
+}
+
+function moveGameCarousel(step) {
+  goToGameCarousel(gameCarouselIndex + step);
+}
+
 function setupGameLibrary() {
-  if (!gameLibraryScroll || !gameEntries.length) {
+  if (!gameLibraryScroll || !gameCarousel || !gameEntries.length) {
     return;
   }
 
@@ -134,34 +229,102 @@ function setupGameLibrary() {
     });
   });
 
-  if ("IntersectionObserver" in window) {
-    gameLibraryObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setGameEntryVisible(entry.target, entry.isIntersecting && entry.intersectionRatio >= 0.12);
-        });
-      },
-      {
-        root: gameLibraryScroll,
-        rootMargin: "32% 0px",
-        threshold: [0, 0.12, 0.55],
-      },
-    );
+  syncGameCarousel();
 
-    gameEntries.forEach((entry) => gameLibraryObserver.observe(entry));
-  } else {
-    gameEntries.forEach((entry) => setGameEntryVisible(entry, true));
-  }
+  gameCarousel.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    gameCarouselLastWheelAt = performance.now();
 
-  gameLibraryScroll.addEventListener("scroll", () => {
-    const panel = getWindowByKey("games");
+    if (gameCarouselLocked) {
+      return;
+    }
 
-    panel?.classList.add("is-game-scrolling");
-    window.clearTimeout(gameScrollIdleTimer);
-    gameScrollIdleTimer = window.setTimeout(() => {
-      panel?.classList.remove("is-game-scrolling");
-    }, 140);
-  }, { passive: true });
+    const pageScale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? gameCarousel.clientHeight : 1;
+    const normalizedDelta = Math.max(-90, Math.min(90, event.deltaY * pageScale));
+
+    gameCarouselWheelDelta += normalizedDelta;
+    window.clearTimeout(gameCarouselWheelIdleTimer);
+    gameCarouselWheelIdleTimer = window.setTimeout(() => {
+      gameCarouselWheelDelta = 0;
+    }, 180);
+
+    if (Math.abs(gameCarouselWheelDelta) < GAME_CAROUSEL_WHEEL_THRESHOLD) {
+      return;
+    }
+
+    const direction = Math.sign(gameCarouselWheelDelta);
+    gameCarouselWheelDelta = 0;
+    moveGameCarousel(direction);
+  }, { passive: false });
+
+  gameCarousel.addEventListener("pointerdown", (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+
+    if (event.button !== 0 || target?.closest("button")) {
+      return;
+    }
+
+    gameCarouselPointerStart = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+    };
+  });
+
+  gameCarousel.addEventListener("pointerup", (event) => {
+    if (!gameCarouselPointerStart || gameCarouselPointerStart.id !== event.pointerId) {
+      return;
+    }
+
+    const deltaX = event.clientX - gameCarouselPointerStart.x;
+    const deltaY = event.clientY - gameCarouselPointerStart.y;
+    gameCarouselPointerStart = null;
+
+    if (Math.abs(deltaY) >= 54 && Math.abs(deltaY) > Math.abs(deltaX) * 1.15) {
+      event.preventDefault();
+      gameCarouselSuppressClick = true;
+      window.clearTimeout(gameCarouselClickResetTimer);
+      gameCarouselClickResetTimer = window.setTimeout(() => {
+        gameCarouselSuppressClick = false;
+      }, 120);
+      moveGameCarousel(deltaY > 0 ? -1 : 1);
+    }
+  });
+
+  gameCarousel.addEventListener("pointercancel", () => {
+    gameCarouselPointerStart = null;
+  });
+
+  gameCarousel.addEventListener("click", (event) => {
+    if (!gameCarouselSuppressClick) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+
+  gameLibraryScroll.addEventListener("keydown", (event) => {
+    if (["ArrowDown", "PageDown"].includes(event.key)) {
+      event.preventDefault();
+      moveGameCarousel(1);
+    } else if (["ArrowUp", "PageUp"].includes(event.key)) {
+      event.preventDefault();
+      moveGameCarousel(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      goToGameCarousel(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      goToGameCarousel(gameEntries.length - 1);
+    }
+  });
+
+  gamePrevButton?.addEventListener("click", () => moveGameCarousel(-1));
+  gameNextButton?.addEventListener("click", () => moveGameCarousel(1));
+  gameDots.forEach((dot, index) => {
+    dot.addEventListener("click", () => goToGameCarousel(index));
+  });
 }
 
 function syncLauncherState() {

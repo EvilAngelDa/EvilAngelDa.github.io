@@ -6,7 +6,7 @@
     <title>yangyangnao OS</title>
     <meta name="description" content="yangyangnao 的个人桌面网站。">
     <link rel="stylesheet" href="style.css?v=20260713-switch42">
-    <link rel="stylesheet" href="game-ui.css?v=20260713-cyber53">
+    <link rel="stylesheet" href="game-ui.css?v=20260713-cyber54">
   </head>
   <body>
     <div class="desktop-shell">
@@ -210,18 +210,21 @@
                 <button class="window-close-button" data-close="games" type="button" aria-label="关闭游戏窗口">关闭 ×</button>
               </div>
             </div>
-            <div class="window-scroll game-ui-scroll" tabindex="0" aria-label="游戏列表，可上下滚动查看">
+            <div class="window-scroll game-ui-scroll" tabindex="0" aria-label="游戏卡片轮播，可上下滑动切换">
               <section class="game-ui-stage">
                 <header class="game-ui-heading">
                   <div>
                     <p class="section-kicker">Games</p>
-                    <span class="game-heading-code" aria-hidden="true">BUFFERED / SURVIVAL / LINK 001</span>
+                    <span class="game-heading-code" aria-hidden="true">ROTATION ARRAY / 03 NODES / LINK READY</span>
                   </div>
                   <span class="game-online-state"><i></i> SYSTEM ONLINE</span>
                 </header>
 
-                <div class="game-ui-list" role="list">
-                  <article class="game-ui-panel is-game-visible" data-game-entry role="listitem">
+                <div class="game-carousel-shell" data-game-carousel>
+                  <div class="game-carousel-axis" aria-hidden="true"><i></i><i></i><i></i></div>
+
+                  <div class="game-ui-list" role="list" aria-live="polite">
+                  <article class="game-ui-panel is-game-visible" data-game-entry data-carousel-position="current" role="listitem" aria-current="true">
                     <section class="game-cover-shell">
                       <span class="game-cover-label">WEB ARCADE PROTOTYPE</span>
                       <a class="game-cover-link" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer" aria-label="启动 Zombie Mower">
@@ -266,6 +269,107 @@
                       </div>
                     </section>
                   </article>
+
+                  <article class="game-ui-panel is-signal-runner" data-game-entry data-carousel-position="next" role="listitem" aria-hidden="true" inert>
+                    <section class="game-cover-shell">
+                      <span class="game-cover-label">NEON ROUTE PROTOTYPE</span>
+                      <div class="game-cover-link game-test-cover" role="img" aria-label="Signal Runner 测试游戏封面">
+                        <div class="game-test-visual is-signal-runner" aria-hidden="true">
+                          <span class="game-test-horizon"></span>
+                          <span class="game-test-orbit is-wide"></span>
+                          <span class="game-test-orbit is-tight"></span>
+                          <i></i><i></i><i></i><i></i>
+                          <strong>SR</strong>
+                        </div>
+                      </div>
+                      <div class="game-cover-data" aria-hidden="true">
+                        <span>NODE / 002</span>
+                        <span>TEST / ROUTE</span>
+                        <span>BUFFERED</span>
+                      </div>
+                    </section>
+
+                    <section class="game-info-shell">
+                      <div class="game-header">
+                        <span class="project-tag green">#GAME-002</span>
+                        <span class="game-platform">HTML / WEBGL</span>
+                      </div>
+                      <div class="game-title-shell">
+                        <div class="game-title-copy">
+                          <span>ROUTE SYNCHRONIZATION / TEST NODE</span>
+                          <h2 data-title="Signal Runner">Signal Runner</h2>
+                        </div>
+                        <div class="game-mini-monitor" aria-hidden="true"><i></i><i></i><i></i><span></span></div>
+                      </div>
+                      <div class="game-info-glass">
+                        <p>穿过持续重组的霓虹航道，收集网络信号并避开失真区。此卡片保留为后续游戏接入测试位。</p>
+                        <div class="game-data-tags" aria-label="游戏特性">
+                          <span>NEON ROUTE</span><span>SIGNAL BOOST</span><span>TEST NODE</span>
+                        </div>
+                      </div>
+                      <div class="game-actions">
+                        <button class="game-action primary-game-action" type="button" disabled>开发中</button>
+                        <button class="game-action" type="button" disabled>测试节点</button>
+                      </div>
+                    </section>
+                  </article>
+
+                  <article class="game-ui-panel is-neon-bastion" data-game-entry data-carousel-position="prev" role="listitem" aria-hidden="true" inert>
+                    <section class="game-cover-shell">
+                      <span class="game-cover-label">DEFENSE GRID PROTOTYPE</span>
+                      <div class="game-cover-link game-test-cover" role="img" aria-label="Neon Bastion 测试游戏封面">
+                        <div class="game-test-visual is-neon-bastion" aria-hidden="true">
+                          <span class="game-test-horizon"></span>
+                          <span class="game-test-orbit is-wide"></span>
+                          <span class="game-test-orbit is-tight"></span>
+                          <i></i><i></i><i></i><i></i>
+                          <strong>NB</strong>
+                        </div>
+                      </div>
+                      <div class="game-cover-data" aria-hidden="true">
+                        <span>NODE / 003</span>
+                        <span>TEST / GRID</span>
+                        <span>STANDBY</span>
+                      </div>
+                    </section>
+
+                    <section class="game-info-shell">
+                      <div class="game-header">
+                        <span class="project-tag green">#GAME-003</span>
+                        <span class="game-platform">JS / CANVAS</span>
+                      </div>
+                      <div class="game-title-shell">
+                        <div class="game-title-copy">
+                          <span>DEFENSE PROTOCOL / TEST NODE</span>
+                          <h2 data-title="Neon Bastion">Neon Bastion</h2>
+                        </div>
+                        <div class="game-mini-monitor" aria-hidden="true"><i></i><i></i><i></i><span></span></div>
+                      </div>
+                      <div class="game-info-glass">
+                        <p>部署能量节点守住数据核心，让防线在不同波次之间自行进化。此卡片保留为第二个长期测试位。</p>
+                        <div class="game-data-tags" aria-label="游戏特性">
+                          <span>GRID DEFENSE</span><span>ENERGY LINK</span><span>TEST NODE</span>
+                        </div>
+                      </div>
+                      <div class="game-actions">
+                        <button class="game-action primary-game-action" type="button" disabled>开发中</button>
+                        <button class="game-action" type="button" disabled>测试节点</button>
+                      </div>
+                    </section>
+                  </article>
+                  </div>
+
+                  <div class="game-carousel-controls" aria-label="游戏卡片切换">
+                    <button type="button" data-game-prev aria-label="上一个游戏" title="上一个游戏">↑</button>
+                    <span data-game-counter aria-live="polite">01 / 03</span>
+                    <button type="button" data-game-next aria-label="下一个游戏" title="下一个游戏">↓</button>
+                  </div>
+
+                  <div class="game-carousel-dots" aria-label="选择游戏">
+                    <button class="is-active" type="button" data-game-dot="0" aria-label="显示第一个游戏" aria-current="true"></button>
+                    <button type="button" data-game-dot="1" aria-label="显示第二个游戏"></button>
+                    <button type="button" data-game-dot="2" aria-label="显示第三个游戏"></button>
+                  </div>
                 </div>
               </section>
             </div>
@@ -552,7 +656,7 @@
       </nav>
     </div>
 
-    <script src="script.js?v=20260713-switch42"></script>
+    <script src="script.js?v=20260713-gamecards43"></script>
     <script src="sphere3d.js?v=20260712-sphere35"></script>
     <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
   </body>
