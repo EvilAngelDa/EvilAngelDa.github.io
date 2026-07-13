@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>yangyangnao OS</title>
     <meta name="description" content="yangyangnao 的个人桌面网站。">
-    <link rel="stylesheet" href="style.css?v=20260713-gamefluid39">
-    <link rel="stylesheet" href="game-ui.css?v=20260713-cyber50">
+    <link rel="stylesheet" href="style.css?v=20260713-gameperf41">
+    <link rel="stylesheet" href="game-ui.css?v=20260713-cyber52">
   </head>
   <body>
     <div class="desktop-shell">
@@ -210,7 +210,7 @@
                 <button class="window-close-button" data-close="games" type="button" aria-label="关闭游戏窗口">关闭 ×</button>
               </div>
             </div>
-            <div class="window-scroll game-ui-scroll">
+            <div class="window-scroll game-ui-scroll" tabindex="0" aria-label="游戏列表，可上下滚动查看">
               <section class="game-ui-stage">
                 <header class="game-ui-heading">
                   <div>
@@ -220,51 +220,53 @@
                   <span class="game-online-state"><i></i> SYSTEM ONLINE</span>
                 </header>
 
-                <article class="game-ui-panel">
-                  <section class="game-cover-shell">
-                    <span class="game-cover-label">WEB ARCADE PROTOTYPE</span>
-                    <a class="game-cover-link" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer" aria-label="启动 Zombie Mower">
-                      <img class="game-cover" src="./games/zombie-mower/cover.svg" alt="Zombie Mower 游戏封面">
-                    </a>
-                    <div class="game-cover-data" aria-hidden="true">
-                      <span>NODE / 001</span>
-                      <span>BUILD / 2026.07</span>
-                      <span>READY</span>
-                    </div>
-                  </section>
-
-                  <section class="game-info-shell">
-                    <div class="game-header">
-                      <span class="project-tag green">#GAME-001</span>
-                      <span class="game-platform">HTML / CANVAS</span>
-                    </div>
-
-                    <div class="game-title-shell">
-                      <div class="game-title-copy">
-                        <span>LAUNCH SEQUENCE / ARCADE NODE</span>
-                        <h2 data-title="Zombie Mower">Zombie Mower</h2>
+                <div class="game-ui-list" role="list">
+                  <article class="game-ui-panel is-game-visible" data-game-entry role="listitem">
+                    <section class="game-cover-shell">
+                      <span class="game-cover-label">WEB ARCADE PROTOTYPE</span>
+                      <a class="game-cover-link" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer" aria-label="启动 Zombie Mower">
+                        <img class="game-cover" src="./games/zombie-mower/cover.svg" alt="Zombie Mower 游戏封面" width="800" height="520" loading="lazy" decoding="async" fetchpriority="low">
+                      </a>
+                      <div class="game-cover-data" aria-hidden="true">
+                        <span>NODE / 001</span>
+                        <span>BUILD / 2026.07</span>
+                        <span>READY</span>
                       </div>
-                      <div class="game-mini-monitor" aria-hidden="true">
-                        <i></i><i></i><i></i>
-                        <span></span>
-                      </div>
-                    </div>
+                    </section>
 
-                    <div class="game-info-glass">
-                      <p>俯视角割草打草怪：自动攻击、刷怪围攻、经验升级，在不断扩张的数据战场中完成生存循环。</p>
-                      <div class="game-data-tags" aria-label="游戏特性">
-                        <span>AUTO FIRE</span>
-                        <span>WAVE SURVIVAL</span>
-                        <span>LEVEL UP</span>
+                    <section class="game-info-shell">
+                      <div class="game-header">
+                        <span class="project-tag green">#GAME-001</span>
+                        <span class="game-platform">HTML / CANVAS</span>
                       </div>
-                    </div>
 
-                    <div class="game-actions">
-                      <a class="game-action primary-game-action" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer">启动游戏</a>
-                      <a class="game-action" href="./games/zombie-mower/README.md" target="_blank" rel="noreferrer">系统说明</a>
-                    </div>
-                  </section>
-                </article>
+                      <div class="game-title-shell">
+                        <div class="game-title-copy">
+                          <span>LAUNCH SEQUENCE / ARCADE NODE</span>
+                          <h2 data-title="Zombie Mower">Zombie Mower</h2>
+                        </div>
+                        <div class="game-mini-monitor" aria-hidden="true">
+                          <i></i><i></i><i></i>
+                          <span></span>
+                        </div>
+                      </div>
+
+                      <div class="game-info-glass">
+                        <p>俯视角割草打草怪：自动攻击、刷怪围攻、经验升级，在不断扩张的数据战场中完成生存循环。</p>
+                        <div class="game-data-tags" aria-label="游戏特性">
+                          <span>AUTO FIRE</span>
+                          <span>WAVE SURVIVAL</span>
+                          <span>LEVEL UP</span>
+                        </div>
+                      </div>
+
+                      <div class="game-actions">
+                        <a class="game-action primary-game-action" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer">启动游戏</a>
+                        <a class="game-action" href="./games/zombie-mower/README.md" target="_blank" rel="noreferrer">系统说明</a>
+                      </div>
+                    </section>
+                  </article>
+                </div>
               </section>
             </div>
           </article>
@@ -550,7 +552,7 @@
       </nav>
     </div>
 
-    <script src="script.js?v=20260713-gamefluid39"></script>
+    <script src="script.js?v=20260713-gameperf41"></script>
     <script src="sphere3d.js?v=20260712-sphere35"></script>
     <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
   </body>

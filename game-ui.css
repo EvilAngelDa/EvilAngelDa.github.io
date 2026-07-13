@@ -5,19 +5,13 @@
   --game-pink: #ff55dc;
 }
 
-@property --panel-energy-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
 #window-games {
+  --game-titlebar-height: clamp(62px, 7.6cqw, 88px);
   container-type: inline-size;
-  width: min(104vw, 184vh);
-  height: auto;
-  aspect-ratio: 2048 / 1092;
-  max-width: none;
-  max-height: none;
+  width: min(88vw, 1380px);
+  height: min(78vh, 760px);
+  max-width: calc(100vw - 64px);
+  max-height: calc(100vh - 112px);
   right: auto !important;
   bottom: auto !important;
   isolation: isolate;
@@ -45,6 +39,26 @@
 
 .game-cyber-bg {
   contain: layout paint style;
+}
+
+#window-games:not(.is-open) .game-cyber-bg *,
+#window-games:not(.is-open) .game-cyber-bg::before,
+#window-games:not(.is-open) .game-cyber-bg::after,
+#window-games:not(.is-open) .game-ui-panel::before,
+#window-games:not(.is-open) .game-ui-panel::after,
+.game-ui-panel:not(.is-game-visible) *,
+.game-ui-panel:not(.is-game-visible)::before,
+.game-ui-panel:not(.is-game-visible)::after {
+  animation-play-state: paused !important;
+}
+
+#window-games.is-game-scrolling .game-cyber-bg *,
+#window-games.is-game-scrolling .game-cyber-bg::before,
+#window-games.is-game-scrolling .game-cyber-bg::after,
+#window-games.is-game-scrolling .game-ui-panel *,
+#window-games.is-game-scrolling .game-ui-panel::before,
+#window-games.is-game-scrolling .game-ui-panel::after {
+  animation-play-state: paused !important;
 }
 
 #window-games:is(.is-game-portal-revealing, .is-game-closing) .game-cyber-bg *,
@@ -120,17 +134,18 @@
     repeating-conic-gradient(from 8deg, transparent 0 2.6deg, rgba(67, 239, 255, 0.42) 3.1deg 3.7deg, transparent 4.5deg 8.4deg, rgba(178, 69, 255, 0.34) 8.9deg 9.6deg, transparent 10.4deg 15deg),
     conic-gradient(from 46deg, transparent 0 5%, rgba(44, 230, 255, 0.38) 9%, transparent 17%, rgba(79, 100, 255, 0.34) 27%, transparent 38%, rgba(194, 56, 255, 0.42) 49%, transparent 60%, rgba(255, 54, 211, 0.3) 72%, transparent 84%, rgba(65, 231, 255, 0.32));
   mask-image: radial-gradient(circle, transparent 0 8%, #000 13% 48%, rgba(0, 0, 0, 0.72) 59%, transparent 75%);
-  filter: blur(0.08cqw) saturate(1.5) contrast(1.14) drop-shadow(0 0 2.2cqw rgba(76, 221, 255, 0.28));
+  filter: none;
   opacity: 0.92;
   mix-blend-mode: screen;
   transform: translate(-50%, -50%);
+  will-change: transform;
   animation: game-bg-spin 18s linear infinite;
 }
 
 .game-cyber-bg::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -4%;
   background:
     radial-gradient(ellipse at 50% 34%, transparent 0 36%, rgba(0, 5, 18, 0.22) 62%, rgba(0, 2, 9, 0.82) 100%),
     radial-gradient(circle, rgba(183, 248, 255, 0.9) 0 0.08cqw, transparent 0.14cqw) 0 0 / 4.7cqw 4.1cqw,
@@ -141,6 +156,7 @@
     repeating-linear-gradient(90deg, transparent 0 5.4cqw, rgba(70, 205, 255, 0.045) 5.45cqw),
     repeating-linear-gradient(0deg, transparent 0 3.4cqw, rgba(144, 76, 255, 0.035) 3.46cqw);
   mix-blend-mode: screen;
+  will-change: transform, opacity;
   animation: game-star-drift 12s linear infinite;
 }
 
@@ -152,9 +168,10 @@
     radial-gradient(circle, rgba(255, 255, 255, 0.96) 0 0.055cqw, transparent 0.12cqw) 0.4cqw 0.8cqw / 3.2cqw 3.7cqw,
     radial-gradient(circle, rgba(91, 231, 255, 0.92) 0 0.075cqw, transparent 0.16cqw) 1.7cqw 2.4cqw / 5.9cqw 5.1cqw,
     radial-gradient(circle, rgba(218, 87, 255, 0.82) 0 0.06cqw, transparent 0.14cqw) 3.1cqw 1.2cqw / 7.4cqw 6.3cqw;
-  filter: drop-shadow(0 0 0.32cqw rgba(102, 224, 255, 0.68));
+  filter: none;
   opacity: 0.72;
   transform: rotate(-3deg) scale(1.04);
+  will-change: transform, opacity;
   animation: game-star-parallax 22s linear infinite;
 }
 
@@ -172,7 +189,7 @@
     radial-gradient(ellipse at 74% 21%, rgba(75, 233, 255, 0.52), transparent 0.65%),
     radial-gradient(ellipse at 83% 67%, rgba(146, 81, 255, 0.46), transparent 0.55%),
     radial-gradient(ellipse at 31% 27%, rgba(255, 255, 255, 0.42), transparent 0.48%);
-  filter: blur(0.12cqw);
+  filter: none;
   animation: game-stars-twinkle 3.8s ease-in-out infinite alternate;
 }
 
@@ -196,7 +213,7 @@
   transform: perspective(36cqw) rotateX(62deg);
   transform-origin: top center;
   opacity: 0.36;
-  animation: game-grid-flow 8s linear infinite;
+  animation: none;
 }
 
 .game-hud-wireframe {
@@ -255,10 +272,11 @@
     repeating-conic-gradient(from 18deg, transparent 0 3.4deg, rgba(55, 230, 255, 0.38) 4.2deg, transparent 5.2deg 11deg, rgba(202, 65, 255, 0.34) 12deg, transparent 13deg 19deg),
     conic-gradient(from 20deg, transparent, rgba(50, 232, 255, 0.72), transparent 13%, rgba(78, 105, 255, 0.58), transparent 31%, rgba(184, 62, 255, 0.72), transparent 53%, rgba(255, 65, 217, 0.48), transparent 73%, rgba(52, 235, 255, 0.66), transparent);
   mask-image: radial-gradient(circle, transparent 0 5%, #000 9% 60%, rgba(0, 0, 0, 0.62) 69%, transparent 80%);
-  filter: blur(0.04cqw) saturate(1.4) drop-shadow(0 0 2.4cqw rgba(50, 228, 255, 0.5)) drop-shadow(0 0 4.2cqw rgba(161, 55, 255, 0.28));
+  filter: none;
   opacity: 0.98;
   mix-blend-mode: screen;
   transform: translate(-50%, -50%);
+  will-change: transform;
   animation: game-vortex-turn 12s linear infinite;
 }
 
@@ -277,7 +295,7 @@
     repeating-conic-gradient(from 46deg, transparent 0 6deg, rgba(82, 244, 255, 0.55) 6.8deg, transparent 8deg 15deg, rgba(184, 72, 255, 0.52) 16deg, transparent 18deg 27deg),
     conic-gradient(from 110deg, transparent, rgba(57, 229, 255, 0.62), transparent 22%, rgba(202, 73, 255, 0.58), transparent 48%, rgba(68, 116, 255, 0.62), transparent 72%);
   mask-image: radial-gradient(circle, transparent 0 21%, #000 25% 49%, transparent 57%);
-  filter: blur(0.12cqw) drop-shadow(0 0 1.6cqw rgba(88, 234, 255, 0.48));
+  filter: none;
   animation: game-vortex-ring 8s linear infinite;
 }
 
@@ -286,7 +304,7 @@
   background:
     repeating-conic-gradient(from 22deg, transparent 0 5deg, rgba(221, 90, 255, 0.66) 6deg, transparent 7deg 13deg, rgba(72, 239, 255, 0.7) 14deg, transparent 15deg 23deg);
   mask-image: radial-gradient(circle, transparent 0 20%, #000 25% 47%, transparent 55%);
-  filter: blur(0.1cqw) drop-shadow(0 0 1.4cqw rgba(201, 70, 255, 0.56));
+  filter: none;
   animation: game-vortex-ring-reverse 5.5s linear infinite;
 }
 
@@ -294,7 +312,7 @@
   inset: 28%;
   background: conic-gradient(from 12deg, transparent, #61f4ff 9%, transparent 19%, #8b63ff 34%, transparent 45%, #ed62ff 61%, transparent 73%, #4deaff 89%, transparent);
   mask-image: radial-gradient(circle, transparent 0 31%, #000 36% 46%, transparent 52%);
-  filter: blur(0.08cqw) drop-shadow(0 0 1.1cqw #58eaff);
+  filter: none;
   animation: game-vortex-ring 3.8s linear infinite;
 }
 
@@ -303,7 +321,7 @@
   background:
     radial-gradient(circle, rgba(255, 255, 255, 0.92), rgba(89, 239, 255, 0.64) 14%, rgba(92, 97, 255, 0.38) 31%, rgba(182, 53, 255, 0.24) 48%, transparent 68%),
     repeating-conic-gradient(from 0deg, transparent 0 7deg, rgba(255, 255, 255, 0.72) 8deg, transparent 9deg 18deg);
-  filter: blur(0.16cqw);
+  filter: none;
   animation: game-core-pulse 2.4s ease-in-out infinite;
 }
 
@@ -331,6 +349,7 @@
   clip-path: polygon(0 0, 100% 36%, 100% 64%, 0 100%);
   transform: rotate(var(--ray-angle));
   transform-origin: left center;
+  will-change: transform, opacity;
   animation: game-ray-breathe 2.5s ease-in-out infinite alternate;
 }
 
@@ -399,7 +418,8 @@
   height: 0.62cqw;
   background: linear-gradient(90deg, transparent, #65f4ff 18%, #fff 48%, #c65cff 72%, transparent);
   clip-path: polygon(0 50%, 10% 8%, 18% 76%, 29% 24%, 39% 70%, 51% 5%, 62% 75%, 74% 25%, 85% 66%, 100% 50%);
-  filter: drop-shadow(0 0 0.4cqw #46eaff) drop-shadow(0 0 0.7cqw #984dff);
+  filter: none;
+  box-shadow: 0 0 0.45cqw rgba(70, 234, 255, 0.7), 0 0 0.8cqw rgba(152, 77, 255, 0.42);
   opacity: 0.88;
   animation: game-lightning-flash 1.7s steps(2, end) infinite;
 }
@@ -440,15 +460,16 @@
   inset: 0 0 auto;
   z-index: 8;
   grid-template-columns: 1fr auto;
-  min-height: 14%;
-  padding: 2.2% 2.6%;
+  height: var(--game-titlebar-height);
+  min-height: var(--game-titlebar-height);
+  padding: 1.2cqw 2.2cqw;
   border-bottom: 1px solid rgba(84, 214, 255, 0.26);
   background:
     linear-gradient(90deg, rgba(5, 4, 22, 0.48), rgba(2, 15, 29, 0.2) 58%, rgba(1, 9, 20, 0.42)),
     rgba(1, 6, 18, 0.16);
   color: #fff;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  backdrop-filter: blur(10px) saturate(1.24);
+  backdrop-filter: none;
 }
 
 #window-games .traffic-lights,
@@ -527,19 +548,37 @@
 
 #window-games > .game-ui-scroll {
   position: absolute;
-  inset: 14% 0 0;
+  inset: var(--game-titlebar-height) 0 0;
   z-index: 5;
   max-height: none;
-  padding: 0 3.5% 3%;
-  overflow: hidden;
+  padding: 0 3.5% 3.5%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scrollbar-gutter: stable;
   background: transparent;
   color: #e3f8ff;
 }
 
+#window-games > .game-ui-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+#window-games > .game-ui-scroll::-webkit-scrollbar-track {
+  background: rgba(3, 9, 25, 0.26);
+}
+
+#window-games > .game-ui-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(#47eaff, #a754ff);
+  box-shadow: 0 0 8px rgba(72, 230, 255, 0.34);
+}
+
 .game-ui-stage {
-  display: grid;
-  grid-template-rows: 23% 77%;
-  height: 100%;
+  display: block;
+  height: auto;
   min-height: 0;
 }
 
@@ -548,6 +587,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 2cqw;
+  min-height: clamp(74px, 9cqw, 112px);
+}
+
+.game-ui-list {
+  display: grid;
+  gap: clamp(20px, 2.2cqw, 34px);
+  padding-bottom: clamp(8px, 1.2cqw, 18px);
 }
 
 #window-games .game-ui-heading .section-kicker {
@@ -603,7 +649,7 @@
   display: grid;
   grid-template-columns: minmax(0, 0.48fr) minmax(0, 0.52fr);
   gap: 2.8cqw;
-  min-height: 0;
+  min-height: clamp(390px, 37cqw, 540px);
   padding: 1.8cqw;
   border: 2px solid rgba(101, 229, 255, 0.78);
   border-radius: 0.75cqw;
@@ -616,7 +662,12 @@
     0 1.2cqw 3.5cqw rgba(0, 0, 0, 0.52),
     0 0 2cqw rgba(50, 230, 255, 0.32),
     0 0 3.5cqw rgba(164, 59, 255, 0.2);
-  backdrop-filter: blur(11px) saturate(1.32);
+  backdrop-filter: none;
+  content-visibility: auto;
+  contain: layout paint style;
+  contain-intrinsic-size: auto 520px;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
 }
 
 .game-ui-panel::before,
@@ -631,11 +682,10 @@
   inset: -2px;
   border: 2px solid transparent;
   border-radius: inherit;
-  background: conic-gradient(from var(--panel-energy-angle, 0deg), transparent 0 18%, #41edff 23%, transparent 29% 55%, #d14fff 61%, transparent 68%) border-box;
+  background: conic-gradient(from 22deg, transparent 0 18%, #41edff 23%, transparent 29% 55%, #d14fff 61%, transparent 68%) border-box;
   mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
-  filter: drop-shadow(0 0 0.65cqw rgba(61, 232, 255, 0.8));
-  animation: game-panel-charge 4.6s linear infinite;
+  filter: none;
 }
 
 .game-ui-panel::after {
@@ -647,6 +697,7 @@
   filter: blur(0.25cqw);
   transform: skewX(-14deg);
   mix-blend-mode: screen;
+  will-change: transform, opacity;
   animation: game-panel-sweep 3.8s cubic-bezier(0.3, 0, 0.7, 1) infinite;
 }
 
@@ -986,7 +1037,7 @@
     inset 0 0 2.3cqw rgba(55, 221, 255, 0.13),
     0 0 1cqw rgba(62, 216, 255, 0.18),
     0 0.75cqw 1.9cqw rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(13px);
+  backdrop-filter: none;
 }
 
 #window-games .game-info-glass p,
@@ -1129,20 +1180,20 @@
 }
 
 @keyframes game-star-drift {
-  from { background-position: center, 0 0, 1.1cqw 0.8cqw, 2.4cqw 1.7cqw, center, center, 0 0, 0 0; }
+  from { opacity: 0.58; transform: translate3d(-1%, -0.5%, 0) scale(1.02); }
   50% { opacity: 0.82; }
-  to { background-position: center, 4.7cqw 4.1cqw, -5.1cqw 6.4cqw, 6.2cqw -5.1cqw, center, center, 5.4cqw 0, 0 3.4cqw; }
+  to { opacity: 0.58; transform: translate3d(1%, 0.5%, 0) scale(1.035); }
 }
 
 @keyframes game-star-parallax {
-  from { background-position: 0.4cqw 0.8cqw, 1.7cqw 2.4cqw, 3.1cqw 1.2cqw; transform: rotate(-3deg) scale(1.04); }
+  from { transform: rotate(-3deg) scale(1.04); }
   50% { opacity: 0.9; }
-  to { background-position: 6.8cqw 4.9cqw, -4.2cqw 7.5cqw, 10.5cqw -5.1cqw; transform: rotate(2deg) scale(1.1); }
+  to { transform: rotate(2deg) scale(1.1); }
 }
 
 @keyframes game-stars-twinkle {
-  from { opacity: 0.32; filter: blur(0.16cqw) brightness(0.74); }
-  to { opacity: 0.92; filter: blur(0.06cqw) brightness(1.58); }
+  from { opacity: 0.32; transform: scale(0.99); }
+  to { opacity: 0.92; transform: scale(1.01); }
 }
 
 @keyframes game-star-current {
@@ -1151,14 +1202,9 @@
   to { transform: rotate(360deg) scale(1.08); opacity: 0.42; }
 }
 
-@keyframes game-grid-flow {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 0 5.4cqw, 5.4cqw 0; }
-}
-
 @keyframes game-hud-breathe {
-  0%, 100% { opacity: 0.28; filter: brightness(0.82); }
-  50% { opacity: 0.54; filter: brightness(1.28); }
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.54; }
 }
 
 @keyframes game-hud-orbit {
@@ -1180,25 +1226,25 @@
 
 @keyframes game-vortex-ring {
   from { transform: rotate(0deg) scaleX(1) scaleY(0.72); }
-  50% { filter: blur(0.08cqw) brightness(1.42) saturate(1.28); }
+  50% { opacity: 0.86; }
   to { transform: rotate(360deg) scaleX(1) scaleY(0.72); }
 }
 
 @keyframes game-vortex-ring-reverse {
   from { transform: rotate(360deg) scaleX(1) scaleY(0.64); }
-  50% { filter: blur(0.07cqw) brightness(1.52) saturate(1.36); }
+  50% { opacity: 0.9; }
   to { transform: rotate(0deg) scaleX(1) scaleY(0.64); }
 }
 
 @keyframes game-core-pulse {
-  0%, 100% { opacity: 0.68; transform: scale(0.78); filter: blur(0.16cqw) brightness(0.9); }
-  48% { opacity: 1; transform: scale(1.2); filter: blur(0.08cqw) brightness(1.68); }
+  0%, 100% { opacity: 0.68; transform: scale(0.78); }
+  48% { opacity: 1; transform: scale(1.2); }
   62% { opacity: 0.86; transform: scale(0.98); }
 }
 
 @keyframes game-ray-breathe {
-  from { opacity: 0.15; transform: rotate(var(--ray-angle)) scaleX(0.46); filter: brightness(0.8); }
-  to { opacity: 0.88; transform: rotate(var(--ray-angle)) scaleX(1.08); filter: brightness(1.65); }
+  from { opacity: 0.15; transform: rotate(var(--ray-angle)) scaleX(0.46); }
+  to { opacity: 0.76; transform: rotate(var(--ray-angle)) scaleX(1.08); }
 }
 
 @keyframes game-streak-flight {
@@ -1227,10 +1273,10 @@
 }
 
 @keyframes game-cover-signal {
-  0%, 70%, 100% { opacity: 0.5; transform: translateX(0); filter: hue-rotate(0deg); }
-  72% { opacity: 1; transform: translateX(-10px); filter: hue-rotate(42deg); }
+  0%, 70%, 100% { opacity: 0.5; transform: translateX(0); }
+  72% { opacity: 1; transform: translateX(-10px); }
   75% { opacity: 0.26; transform: translateX(13px); }
-  78% { opacity: 0.88; transform: translateX(-5px); filter: hue-rotate(-36deg); }
+  78% { opacity: 0.88; transform: translateX(-5px); }
   82% { opacity: 0.55; transform: translateX(2px); }
 }
 
@@ -1242,17 +1288,11 @@
   80% { opacity: 0.4; transform: translateX(-0.16cqw); }
 }
 
-@keyframes game-panel-charge {
-  from { --panel-energy-angle: 0deg; opacity: 0.7; }
-  50% { opacity: 1; }
-  to { --panel-energy-angle: 360deg; opacity: 0.7; }
-}
-
 @keyframes game-panel-sweep {
-  0%, 12% { left: -20%; opacity: 0; }
+  0%, 12% { opacity: 0; transform: translate3d(0, 0, 0) skewX(-14deg); }
   24% { opacity: 0.8; }
   58% { opacity: 0.35; }
-  70%, 100% { left: 112%; opacity: 0; }
+  70%, 100% { opacity: 0; transform: translate3d(930%, 0, 0) skewX(-14deg); }
 }
 
 @keyframes game-title-slice {
@@ -1264,13 +1304,57 @@
 }
 
 @keyframes game-button-reactor {
-  0%, 100% { opacity: 0.42; filter: brightness(0.86); }
-  50% { opacity: 0.9; filter: brightness(1.45); }
+  0%, 100% { opacity: 0.42; transform: scale(0.98); }
+  50% { opacity: 0.9; transform: scale(1.02); }
 }
 
 @media (max-width: 920px) {
   #window-games {
-    width: min(96vw, 170vh);
+    --game-titlebar-height: 60px;
+    width: calc(100vw - 28px);
+    height: min(76vh, 660px);
+    max-width: calc(100vw - 28px);
+    max-height: calc(100vh - 124px);
+  }
+
+  #window-games > .game-ui-scroll {
+    padding: 0 14px 18px;
+  }
+
+  .game-ui-heading {
+    min-height: 68px;
+  }
+}
+
+@container (max-width: 720px) {
+  .game-ui-heading {
+    gap: 10px;
+  }
+
+  .game-heading-code {
+    display: none;
+  }
+
+  .game-ui-panel {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    min-height: auto;
+    padding: 16px;
+    border-radius: 7px;
+    contain-intrinsic-size: auto 760px;
+  }
+
+  .game-cover-shell {
+    min-height: 300px;
+    padding: 12px;
+  }
+
+  .game-info-shell {
+    gap: 12px;
+  }
+
+  #window-games .game-actions {
+    flex-wrap: wrap;
   }
 }
 

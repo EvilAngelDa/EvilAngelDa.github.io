@@ -19,6 +19,8 @@ const aboutTimelineCurrent = document.querySelector("[data-about-timeline-curren
 const aboutTimelineAngle = document.querySelector("[data-about-timeline-angle]");
 const aboutTimelineTotals = [...document.querySelectorAll("[data-about-timeline-total]")];
 const aboutNetworkField = document.querySelector("[data-about-network]");
+const gameLibraryScroll = document.querySelector("#window-games .game-ui-scroll");
+const gameEntries = [...document.querySelectorAll("#window-games [data-game-entry]")];
 const sphereNavigationState = new WeakMap();
 const sparkleShapes = ["heart", "star", "flower", "moon"];
 const sparkleGlyphs = {
@@ -63,6 +65,8 @@ let homeGlitchTimer = 0;
 let gamePortalTimers = [];
 let gameVhsFrame = 0;
 let gameVhsLastPaint = 0;
+let gameLibraryObserver = null;
+let gameScrollIdleTimer = 0;
 let isGamePortalTransitioning = false;
 let aboutTransitionTimers = [];
 let aboutTimelineIndex = 0;
@@ -99,6 +103,62 @@ const windowState = new Map(
 
 function getWindowByKey(key) {
   return document.querySelector(`.app-window[data-window="${key}"]`);
+}
+
+function setGameEntryVisible(entry, isVisible) {
+  entry.classList.toggle("is-game-visible", isVisible);
+
+  if (!isVisible) {
+    return;
+  }
+
+  entry.querySelectorAll("img[data-src]").forEach((image) => {
+    image.src = image.dataset.src || "";
+    image.removeAttribute("data-src");
+  });
+}
+
+function setupGameLibrary() {
+  if (!gameLibraryScroll || !gameEntries.length) {
+    return;
+  }
+
+  gameEntries.forEach((entry) => {
+    entry.querySelectorAll("img").forEach((image) => {
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.fetchPriority = "low";
+    });
+  });
+
+  if ("IntersectionObserver" in window) {
+    gameLibraryObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setGameEntryVisible(entry.target, entry.isIntersecting && entry.intersectionRatio >= 0.12);
+        });
+      },
+      {
+        root: gameLibraryScroll,
+        rootMargin: "32% 0px",
+        threshold: [0, 0.12, 0.55],
+      },
+    );
+
+    gameEntries.forEach((entry) => gameLibraryObserver.observe(entry));
+  } else {
+    gameEntries.forEach((entry) => setGameEntryVisible(entry, true));
+  }
+
+  gameLibraryScroll.addEventListener("scroll", () => {
+    const panel = getWindowByKey("games");
+
+    panel?.classList.add("is-game-scrolling");
+    window.clearTimeout(gameScrollIdleTimer);
+    gameScrollIdleTimer = window.setTimeout(() => {
+      panel?.classList.remove("is-game-scrolling");
+    }, 140);
+  }, { passive: true });
 }
 
 function syncLauncherState() {
@@ -1004,11 +1064,10 @@ function getGamePortalOrigin(event) {
 }
 
 function getGamePortalTargetRect(panel) {
-  const desktopScale = window.innerWidth <= 920
-    ? 1
-    : Number.parseFloat(window.getComputedStyle(root).getPropertyValue("--desktop-scale")) || 1;
-  const panelWidth = Math.min((panel.offsetWidth || 820) * desktopScale, window.innerWidth - 32);
-  const panelHeight = Math.min((panel.offsetHeight || 560) * desktopScale, window.innerHeight - 96);
+  const panelRect = panel.getBoundingClientRect();
+  const panelScale = getPanelScale(panel);
+  const panelWidth = Math.min(panelRect.width || (panel.offsetWidth || 820) * panelScale, window.innerWidth - 32);
+  const panelHeight = Math.min(panelRect.height || (panel.offsetHeight || 560) * panelScale, window.innerHeight - 96);
 
   return {
     left: (window.innerWidth - panelWidth) / 2,
@@ -1357,6 +1416,7 @@ function closeWindow(key) {
 }
 
 setupAboutTimeline();
+setupGameLibrary();
 
 openButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
