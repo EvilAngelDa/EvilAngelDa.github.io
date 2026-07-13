@@ -77,9 +77,9 @@ let aboutTimelinePendingIndex = null;
 let aboutTimelinePointerStart = null;
 let lastAboutCubePrimary = -1;
 const homeGlitchReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const GAME_PORTAL_TRAVEL_DURATION = 480;
-const GAME_PORTAL_TOTAL_DURATION = 2280;
-const GAME_CLOSE_COLLAPSE_DURATION = 760;
+const GAME_PORTAL_TRAVEL_DURATION = 420;
+const GAME_PORTAL_TOTAL_DURATION = 1780;
+const GAME_CLOSE_COLLAPSE_DURATION = 620;
 const ABOUT_LASER_DURATION = 600;
 const ABOUT_OPEN_DURATION = 760;
 const ABOUT_CLOSE_DURATION = 640;
@@ -957,6 +957,7 @@ function clearGamePortalTransition() {
   }
 
   gameVhsLastPaint = 0;
+
   document.querySelector(".game-gravity-layer")?.remove();
   document.querySelector(".game-vhs-overlay")?.remove();
   document.querySelector(".game-close-singularity")?.remove();
@@ -1060,21 +1061,21 @@ function paintGameVhsNoise(canvas) {
     return;
   }
 
-  const width = Math.min(480, Math.max(220, Math.ceil(window.innerWidth / 4)));
-  const height = Math.min(300, Math.max(140, Math.ceil(window.innerHeight / 4)));
+  const width = Math.min(320, Math.max(160, Math.ceil(window.innerWidth / 6)));
+  const height = Math.min(180, Math.max(96, Math.ceil(window.innerHeight / 6)));
   canvas.width = width;
   canvas.height = height;
   context.imageSmoothingEnabled = false;
+  const frame = context.createImageData(width, height);
+  const pixels = frame.data;
 
   const paint = (time) => {
     if (!canvas.isConnected || !isGamePortalTransitioning) {
       return;
     }
 
-    if (time - gameVhsLastPaint >= 38) {
+    if (time - gameVhsLastPaint >= 50) {
       gameVhsLastPaint = time;
-      const frame = context.createImageData(width, height);
-      const pixels = frame.data;
 
       for (let y = 0; y < height; y += 1) {
         const rowPulse = Math.random() < 0.055 ? (Math.random() > 0.5 ? 84 : -72) : 0;
@@ -1189,7 +1190,7 @@ function startGameCollapseClose(panel, key) {
 
   queueGamePortalTransition(() => {
     panel.classList.add("is-game-close-finalizing");
-  }, GAME_CLOSE_COLLAPSE_DURATION - 70);
+  }, GAME_CLOSE_COLLAPSE_DURATION - 24);
 
   queueGamePortalTransition(() => {
     finalizeWindowClose(panel, key);
@@ -1244,7 +1245,7 @@ function startGamePortalTransition(panel, event) {
   let vhsOverlay = null;
   queueGamePortalTransition(() => {
     vhsOverlay = createGameVhsOverlay();
-  }, 790);
+  }, 640);
 
   queueGamePortalTransition(() => {
     if (currentOpenPanel) {
@@ -1254,19 +1255,19 @@ function startGamePortalTransition(panel, event) {
       currentOpenPanel.style.removeProperty("--game-gravity-shift-x");
       currentOpenPanel.style.removeProperty("--game-gravity-shift-y");
     }
-  }, 1080);
+  }, 900);
 
   queueGamePortalTransition(() => {
     revealGamePortalPanel(panel, gravityLayer);
-  }, 1140);
+  }, 920);
 
   queueGamePortalTransition(() => {
     vhsOverlay?.classList.add("is-clearing");
-  }, 1470);
+  }, 1100);
 
   queueGamePortalTransition(() => {
     gravityLayer.classList.add("is-finished");
-  }, 1860);
+  }, 1460);
 
   queueGamePortalTransition(() => {
     clearGamePortalTransition();

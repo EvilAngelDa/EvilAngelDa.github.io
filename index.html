@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>yangyangnao OS</title>
     <meta name="description" content="yangyangnao 的个人桌面网站。">
-    <link rel="stylesheet" href="style.css?v=20260712-gamevoid38">
+    <link rel="stylesheet" href="style.css?v=20260713-gamefluid39">
+    <link rel="stylesheet" href="game-ui.css?v=20260713-cyber50">
   </head>
   <body>
     <div class="desktop-shell">
@@ -160,6 +161,42 @@
           </article>
 
           <article class="app-window" data-window="games" id="window-games" aria-hidden="true">
+            <div class="game-cyber-bg" aria-hidden="true">
+              <span class="game-star-field"></span>
+              <span class="game-tech-grid"></span>
+              <span class="game-hud-wireframe"></span>
+              <span class="game-vortex-core"><i></i><i></i><i></i></span>
+              <span class="game-light-ray" style="--ray-angle: -142deg; --ray-color: #46efff"></span>
+              <span class="game-light-ray" style="--ray-angle: -116deg; --ray-color: #43dfff"></span>
+              <span class="game-light-ray" style="--ray-angle: -84deg; --ray-color: #4feaff"></span>
+              <span class="game-light-ray" style="--ray-angle: -58deg; --ray-color: #c451ff"></span>
+              <span class="game-light-ray" style="--ray-angle: -28deg; --ray-color: #ff55db"></span>
+              <span class="game-light-ray" style="--ray-angle: 12deg; --ray-color: #4feaff"></span>
+              <span class="game-light-ray" style="--ray-angle: 42deg; --ray-color: #9c58ff"></span>
+              <span class="game-light-ray" style="--ray-angle: 74deg; --ray-color: #45eaff"></span>
+              <span class="game-light-ray" style="--ray-angle: 108deg; --ray-color: #bf50ff"></span>
+              <span class="game-light-ray" style="--ray-angle: 148deg; --ray-color: #48e9ff"></span>
+              <span class="game-shooting-streak" style="--x: 8%; --y: 27%; --angle: -18deg; --length: 24cqw; --delay: -1.2s; --speed: 5.6s; --streak: #55efff"></span>
+              <span class="game-shooting-streak" style="--x: 68%; --y: 17%; --angle: 142deg; --length: 19cqw; --delay: -3.8s; --speed: 7.2s; --streak: #e35cff"></span>
+              <span class="game-shooting-streak" style="--x: 17%; --y: 72%; --angle: -34deg; --length: 17cqw; --delay: -5.1s; --speed: 6.4s; --streak: #ff55d3"></span>
+              <span class="game-shooting-streak" style="--x: 77%; --y: 61%; --angle: 164deg; --length: 21cqw; --delay: -2.6s; --speed: 8.1s; --streak: #4adfff"></span>
+              <span class="game-shooting-streak" style="--x: 35%; --y: 9%; --angle: 54deg; --length: 14cqw; --delay: -6.3s; --speed: 7.8s; --streak: #8d6bff"></span>
+              <span class="game-debris-field">
+                <i style="--x: 12%; --y: 38%; --size: 0.7cqw; --turn: 132deg; --delay: -2s; --speed: 11s"></i>
+                <i style="--x: 21%; --y: 66%; --size: 0.42cqw; --turn: -84deg; --delay: -7s; --speed: 14s"></i>
+                <i style="--x: 31%; --y: 19%; --size: 0.52cqw; --turn: 217deg; --delay: -5s; --speed: 12s"></i>
+                <i style="--x: 39%; --y: 77%; --size: 0.36cqw; --turn: 68deg; --delay: -9s; --speed: 16s"></i>
+                <i style="--x: 59%; --y: 13%; --size: 0.48cqw; --turn: -146deg; --delay: -3s; --speed: 13s"></i>
+                <i style="--x: 66%; --y: 72%; --size: 0.64cqw; --turn: 194deg; --delay: -8s; --speed: 15s"></i>
+                <i style="--x: 75%; --y: 31%; --size: 0.4cqw; --turn: -52deg; --delay: -4s; --speed: 10s"></i>
+                <i style="--x: 87%; --y: 55%; --size: 0.58cqw; --turn: 104deg; --delay: -6s; --speed: 17s"></i>
+                <i style="--x: 91%; --y: 21%; --size: 0.32cqw; --turn: 245deg; --delay: -10s; --speed: 12s"></i>
+              </span>
+              <span class="game-lightning is-left"></span>
+              <span class="game-lightning is-right"></span>
+              <span class="game-lightning is-lower-left"></span>
+              <span class="game-lightning is-lower-right"></span>
+            </div>
             <div class="window-titlebar" data-drag-handle>
               <div class="traffic-lights">
                 <span class="window-dot close"></span>
@@ -173,31 +210,60 @@
                 <button class="window-close-button" data-close="games" type="button" aria-label="关闭游戏窗口">关闭 ×</button>
               </div>
             </div>
-            <div class="window-scroll">
-              <section class="window-section">
-                <div class="window-heading">
+            <div class="window-scroll game-ui-scroll">
+              <section class="game-ui-stage">
+                <header class="game-ui-heading">
                   <div>
                     <p class="section-kicker">Games</p>
+                    <span class="game-heading-code" aria-hidden="true">BUFFERED / SURVIVAL / LINK 001</span>
                   </div>
-                </div>
-              </section>
-              <section class="window-section games-grid">
-                <article class="game-card">
-                  <a class="game-cover-link" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer" aria-label="开始 Zombie Mower">
-                    <img class="game-cover" src="./games/zombie-mower/cover.svg" alt="Zombie Mower 游戏封面">
-                  </a>
-                  <div class="game-copy">
+                  <span class="game-online-state"><i></i> SYSTEM ONLINE</span>
+                </header>
+
+                <article class="game-ui-panel">
+                  <section class="game-cover-shell">
+                    <span class="game-cover-label">WEB ARCADE PROTOTYPE</span>
+                    <a class="game-cover-link" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer" aria-label="启动 Zombie Mower">
+                      <img class="game-cover" src="./games/zombie-mower/cover.svg" alt="Zombie Mower 游戏封面">
+                    </a>
+                    <div class="game-cover-data" aria-hidden="true">
+                      <span>NODE / 001</span>
+                      <span>BUILD / 2026.07</span>
+                      <span>READY</span>
+                    </div>
+                  </section>
+
+                  <section class="game-info-shell">
                     <div class="game-header">
                       <span class="project-tag green">#GAME-001</span>
-                      <span class="game-platform">HTML / Canvas</span>
+                      <span class="game-platform">HTML / CANVAS</span>
                     </div>
-                    <h3>Zombie Mower</h3>
-                    <p>俯视角割草打草怪：自动攻击、刷怪围攻、经验升级，适合后续继续加音效和关卡。</p>
+
+                    <div class="game-title-shell">
+                      <div class="game-title-copy">
+                        <span>LAUNCH SEQUENCE / ARCADE NODE</span>
+                        <h2 data-title="Zombie Mower">Zombie Mower</h2>
+                      </div>
+                      <div class="game-mini-monitor" aria-hidden="true">
+                        <i></i><i></i><i></i>
+                        <span></span>
+                      </div>
+                    </div>
+
+                    <div class="game-info-glass">
+                      <p>俯视角割草打草怪：自动攻击、刷怪围攻、经验升级，在不断扩张的数据战场中完成生存循环。</p>
+                      <div class="game-data-tags" aria-label="游戏特性">
+                        <span>AUTO FIRE</span>
+                        <span>WAVE SURVIVAL</span>
+                        <span>LEVEL UP</span>
+                      </div>
+                    </div>
+
                     <div class="game-actions">
-                      <a class="game-action primary-game-action" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer">开始游戏</a>
-                      <a class="game-action" href="./games/zombie-mower/README.md" target="_blank" rel="noreferrer">查看说明</a>
+                      <a class="game-action primary-game-action" href="./games/zombie-mower/index.html" target="_blank" rel="noreferrer">启动游戏</a>
+                      <a class="game-action" href="./games/zombie-mower/README.md" target="_blank" rel="noreferrer">系统说明</a>
                     </div>
-                  </div>
+                  </section>
                 </article>
               </section>
             </div>
@@ -484,7 +550,7 @@
       </nav>
     </div>
 
-    <script src="script.js?v=20260712-gamevoid38"></script>
+    <script src="script.js?v=20260713-gamefluid39"></script>
     <script src="sphere3d.js?v=20260712-sphere35"></script>
     <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
   </body>
