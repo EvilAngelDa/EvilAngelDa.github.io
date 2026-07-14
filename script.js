@@ -1812,7 +1812,7 @@ function getSphereElements(scrollArea) {
 
 function setupSphereNavigation(scrollArea) {
   const state = getSphereNavigationState(scrollArea);
-  const { cards, copy } = getSphereElements(scrollArea);
+  const { cards, copy, panel } = getSphereElements(scrollArea);
   const dots = copy?.querySelector("[data-sphere-dots]");
 
   syncSphereGalleryBounds(scrollArea);
@@ -1836,6 +1836,35 @@ function setupSphereNavigation(scrollArea) {
 
     dots.replaceChildren(fragment);
   }
+
+  cards.forEach((card, index) => {
+    const articleUrl = card.dataset.articleUrl?.trim();
+    if (!articleUrl) return;
+
+    const title = card.querySelector("h3")?.textContent?.trim() || `第 ${index + 1} 篇文章`;
+    card.setAttribute("role", "link");
+    card.setAttribute("aria-label", `阅读全文：${title}`);
+    if (!card.hasAttribute("tabindex")) card.tabIndex = 0;
+
+    const activateCard = () => {
+      if (state.isAnimating || state.wheelActive) return;
+      if (state.activeIndex !== index) {
+        navigateSphereToIndex(scrollArea, index);
+        return;
+      }
+      window.location.assign(articleUrl);
+    };
+
+    card.addEventListener("click", () => {
+      if (!panel?.classList.contains("sphere-ready")) activateCard();
+    });
+
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      activateCard();
+    });
+  });
 
   navigateSphereToIndex(scrollArea, 0, { immediate: true });
 
@@ -2065,7 +2094,9 @@ function renderSphereCopy(scrollArea, index) {
   }
 
   cards.forEach((item, itemIndex) => {
-    item.classList.toggle("is-active", itemIndex === index);
+    const isActive = itemIndex === index;
+    item.classList.toggle("is-active", isActive);
+    item.setAttribute("aria-current", isActive ? "true" : "false");
   });
 }
 

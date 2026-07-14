@@ -17,7 +17,7 @@ const palettes = {
   ],
 };
 
-function makeLabelTexture(title, meta, colors) {
+function makeLabelTexture(title, meta, colors, actionLabel = "") {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 640;
@@ -57,6 +57,20 @@ function makeLabelTexture(title, meta, colors) {
   ctx.fillStyle = "rgba(255,255,255,0.92)";
   ctx.font = "700 42px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
   ctx.fillText(meta, 64, 92);
+
+  if (actionLabel) {
+    ctx.fillStyle = "rgba(4,12,24,0.66)";
+    ctx.fillRect(734, 48, 226, 72);
+    ctx.strokeStyle = "rgba(130,240,255,0.92)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(734, 48, 226, 72);
+    ctx.fillStyle = "rgba(235,253,255,0.98)";
+    ctx.font = "700 27px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(actionLabel, 847, 84);
+    ctx.textAlign = "start";
+  }
 
   ctx.font = "900 86px Avenir Next, PingFang SC, Microsoft YaHei, sans-serif";
   ctx.textBaseline = "bottom";
@@ -214,6 +228,9 @@ class SphereExperience {
     this.angularVelocity = 0;
     this.pointer = new THREE.Vector2(0, 0);
     this.pointerTarget = new THREE.Vector2(0, 0);
+    this.raycaster = new THREE.Raycaster();
+    this.hoveredIndex = -1;
+    this.pointerDown = null;
     this.baseCameraZ = this.mode === "inside" ? 0.55 : 8.2;
 
     this.renderer = new THREE.WebGLRenderer({
@@ -586,8 +603,9 @@ class SphereExperience {
     this.cards.forEach((card, index) => {
       const title = card.querySelector("h3")?.textContent?.trim() || `Item ${index + 1}`;
       const meta = card.querySelector("time, .project-tag")?.textContent?.trim() || `#00${index + 1}`;
+      const articleUrl = card.dataset.articleUrl?.trim() || "";
       const material = new THREE.MeshStandardMaterial({
-        map: makeLabelTexture(title, meta, colors[index % colors.length]),
+        map: makeLabelTexture(title, meta, colors[index % colors.length], articleUrl ? "阅读全文  ↗" : ""),
         emissive: new THREE.Color(colors[index % colors.length][1]),
         emissiveIntensity: 0.05,
         roughness: 0.42,
@@ -604,9 +622,43 @@ class SphereExperience {
       mesh.userData.baseAngle = angle;
       mesh.userData.radius = radius;
       mesh.userData.baseY = 0;
+      mesh.userData.index = index;
+      mesh.userData.articleUrl = articleUrl;
       this.meshes.push(mesh);
       this.rig.add(mesh);
     });
+  }
+
+  pickActiveArticleMesh(event) {
+    if (this.mode !== "inside" || !this.canvas || !this.camera) {
+      return null;
+    }
+
+    const rect = this.canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+
+    const pointer = new THREE.Vector2(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1,
+    );
+
+    this.scene.updateMatrixWorld(true);
+    this.raycaster.setFromCamera(pointer, this.camera);
+    const intersections = this.raycaster.intersectObjects(this.meshes, false);
+
+    return intersections.find(({ object }) => (
+      object.userData.index === this.activeIndex && object.userData.articleUrl
+    ))?.object || null;
+  }
+
+  setArticleHover(mesh) {
+    const nextIndex = mesh?.userData.index ?? -1;
+    if (nextIndex === this.hoveredIndex) return;
+
+    this.hoveredIndex = nextIndex;
+    if (this.scrollArea) {
+      this.scrollArea.dataset.sphereCardHover = nextIndex >= 0 ? "true" : "false";
+    }
   }
 
   bind() {
@@ -618,8 +670,41 @@ class SphereExperience {
       const rect = this.scrollArea.getBoundingClientRect();
       this.pointerTarget.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
       this.pointerTarget.y = 0;
+      const isMoving = this.windowEl?.classList.contains("is-sphere-moving");
+      this.setArticleHover(isMoving ? null : this.pickActiveArticleMesh(event));
     });
-    this.scrollArea?.addEventListener("pointerleave", () => this.pointerTarget.set(0, 0));
+    this.scrollArea?.addEventListener("pointerdown", (event) => {
+      if (event.target instanceof Element && event.target.closest("a, button")) return;
+      const mesh = this.pickActiveArticleMesh(event);
+      this.pointerDown = mesh ? {
+        x: event.clientX,
+        y: event.clientY,
+        index: mesh.userData.index,
+      } : null;
+    });
+    this.scrollArea?.addEventListener("pointerup", (event) => {
+      if (!this.pointerDown) return;
+      const pointerDown = this.pointerDown;
+      this.pointerDown = null;
+
+      if (event.target instanceof Element && event.target.closest("a, button")) return;
+      if (this.windowEl?.classList.contains("is-sphere-moving")) return;
+
+      const distance = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
+      const mesh = distance <= 8 ? this.pickActiveArticleMesh(event) : null;
+      if (!mesh || mesh.userData.index !== pointerDown.index) return;
+
+      window.location.assign(mesh.userData.articleUrl);
+    });
+    this.scrollArea?.addEventListener("pointercancel", () => {
+      this.pointerDown = null;
+      this.setArticleHover(null);
+    });
+    this.scrollArea?.addEventListener("pointerleave", () => {
+      this.pointerTarget.set(0, 0);
+      this.pointerDown = null;
+      this.setArticleHover(null);
+    });
     window.addEventListener("resize", () => this.resize());
   }
 
@@ -834,10 +919,11 @@ class SphereExperience {
         : mesh.userData.baseAngle + displayRotation;
       const normalizedDistance = Math.abs(worldAngle) / this.angleStep;
       const focus = Math.pow(Math.max(0, 1 - normalizedDistance), 3.3);
-      const scale = 0.46 + focus * 0.64;
+      const hover = index === this.hoveredIndex ? 1 : 0;
+      const scale = (0.46 + focus * 0.64) * (1 + hover * 0.025);
       mesh.scale.setScalar(scale);
       mesh.material.opacity = 0.07 + focus * 0.93;
-      mesh.material.emissiveIntensity = 0.035 + focus * 0.16;
+      mesh.material.emissiveIntensity = 0.035 + focus * 0.16 + hover * 0.08;
       mesh.position.y = mesh.userData.baseY
         + (prefersReducedMotion ? 0 : Math.sin(elapsed * 0.55 + index * 0.9) * 0.025 * focus);
       mesh.rotation.z = Math.sin(worldAngle) * -0.045;

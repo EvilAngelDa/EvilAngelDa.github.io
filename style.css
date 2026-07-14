@@ -2669,17 +2669,21 @@ body.is-window-switching #waifu-toggle {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-top: 16px;
-  padding: 0 0 7px;
-  border-bottom: 1px solid rgba(110, 232, 255, 0.72);
+  margin-top: 18px;
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid rgba(110, 232, 255, 0.58);
+  border-radius: 4px;
   color: #dffcff;
+  background: rgba(6, 18, 30, 0.76);
+  box-shadow: inset 0 0 18px rgba(76, 228, 255, 0.06), 0 0 20px rgba(76, 228, 255, 0.08);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 760;
   letter-spacing: 0;
   pointer-events: auto;
   text-shadow: 0 0 16px rgba(76, 228, 255, 0.58);
-  transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+  transition: border-color 180ms ease, color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .sphere-copy-action::after {
@@ -2690,6 +2694,8 @@ body.is-window-switching #waifu-toggle {
 .sphere-copy-action:hover {
   border-color: #e070ff;
   color: #fff;
+  background: rgba(27, 13, 42, 0.82);
+  box-shadow: inset 0 0 20px rgba(224, 112, 255, 0.08), 0 0 24px rgba(105, 233, 255, 0.18);
   transform: translateX(4px);
 }
 
@@ -2814,6 +2820,7 @@ body.is-window-switching #waifu-toggle {
 }
 
 .article-panel {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(260px, 0.9fr) minmax(240px, 0.74fr);
   gap: clamp(20px, 3vw, 42px);
@@ -2833,6 +2840,34 @@ body.is-window-switching #waifu-toggle {
     transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 320ms ease,
     filter 320ms ease;
+}
+
+.article-panel[data-article-url] {
+  cursor: pointer;
+}
+
+.article-panel[data-article-url]::after {
+  content: "点击卡片阅读全文  ↗";
+  position: absolute;
+  right: 0;
+  bottom: -42px;
+  padding: 8px 11px;
+  border: 1px solid rgba(108, 231, 255, 0.46);
+  border-radius: 4px;
+  color: rgba(226, 251, 255, 0.88);
+  background: rgba(5, 14, 24, 0.82);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.article-panel[data-article-url]:focus-visible {
+  outline: 2px solid rgba(105, 233, 255, 0.9);
+  outline-offset: 8px;
+}
+
+.immersive-scroll[data-sphere-card-hover="true"] {
+  cursor: pointer;
 }
 
 .article-panel.is-active {
