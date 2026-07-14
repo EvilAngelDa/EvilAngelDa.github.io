@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Module transition language</title>
+  <desc id="description">Home uses RGB glitch, About uses a neon cube timeline, and Games uses a gravity singularity with VHS noise.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#020307"/>
+      <stop offset="0.55" stop-color="#081224"/>
+      <stop offset="1" stop-color="#10051b"/>
+    </linearGradient>
+    <linearGradient id="spectrum" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#ff3e55"/>
+      <stop offset="0.25" stop-color="#ffae37"/>
+      <stop offset="0.5" stop-color="#4df2a0"/>
+      <stop offset="0.72" stop-color="#43e8ff"/>
+      <stop offset="1" stop-color="#cf55ff"/>
+    </linearGradient>
+    <pattern id="scan" width="10" height="10" patternUnits="userSpaceOnUse">
+      <path d="M0 9H10" stroke="#ffffff" stroke-opacity="0.05"/>
+    </pattern>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#background)"/>
+  <rect width="1600" height="900" fill="url(#scan)"/>
+  <text x="80" y="82" fill="#edfaff" font-family="ui-monospace, monospace" font-size="25" font-weight="700" letter-spacing="0">MODULE TRANSITIONS / VISUAL SEMANTICS</text>
+  <text x="80" y="116" fill="#8199ad" font-family="ui-monospace, monospace" font-size="13" letter-spacing="0">ONE WINDOW ENGINE · THREE DISTINCT PORTALS</text>
+
+  <g transform="translate(80 172)">
+    <rect width="440" height="620" rx="10" fill="#080b13" fill-opacity="0.82" stroke="#536b7d" stroke-opacity="0.46"/>
+    <text x="30" y="50" fill="#ffffff" font-family="ui-monospace, monospace" font-size="20" font-weight="700" letter-spacing="0">HOME / RGB GLITCH</text>
+    <text x="30" y="78" fill="#91a7b7" font-family="ui-monospace, monospace" font-size="12" letter-spacing="0">SYSTEM BOOT · SIGNAL FAILURE</text>
+    <g transform="translate(54 140)">
+      <rect x="-14" y="14" width="322" height="268" fill="none" stroke="#ff3e55" stroke-width="4" opacity="0.72"/>
+      <rect x="0" y="0" width="322" height="268" fill="#0b1424" stroke="#4df2a0" stroke-width="3" opacity="0.84"/>
+      <rect x="14" y="-12" width="322" height="268" fill="none" stroke="#43dfff" stroke-width="4" opacity="0.7"/>
+      <g fill="url(#spectrum)" opacity="0.84">
+        <rect x="-22" y="52" width="348" height="9"/>
+        <rect x="28" y="118" width="330" height="16"/>
+        <rect x="-10" y="194" width="304" height="7"/>
+      </g>
+      <path d="M34 82H246M34 106H196M34 164H272M34 224H220" stroke="#d8e8ef" stroke-opacity="0.38" stroke-width="7"/>
+    </g>
+    <text x="220" y="482" text-anchor="middle" fill="#c8d9e4" font-family="system-ui, sans-serif" font-size="18" letter-spacing="0">通道错位 · 分段撕裂 · 扫描线</text>
+    <path d="M72 530H368" stroke="url(#spectrum)" stroke-width="3" filter="url(#glow)"/>
+    <text x="220" y="568" text-anchor="middle" fill="#7e94a5" font-family="ui-monospace, monospace" font-size="12" letter-spacing="0">NO FRAGMENTS · INPUT LOCKED</text>
+  </g>
+
+  <g transform="translate(580 172)">
+    <rect width="440" height="620" rx="10" fill="#090a18" fill-opacity="0.82" stroke="#8c61ff" stroke-opacity="0.48"/>
+    <text x="30" y="50" fill="#ffffff" font-family="ui-monospace, monospace" font-size="20" font-weight="700" letter-spacing="0">ABOUT / NEON CUBE</text>
+    <text x="30" y="78" fill="#9b91b2" font-family="ui-monospace, monospace" font-size="12" letter-spacing="0">PROFILE DATA · REVERSIBLE TIMELINE</text>
+    <g transform="translate(82 138)" fill="none" stroke-linejoin="round">
+      <path d="M0 64L142 0 276 72 134 138Z" stroke="#62efff" stroke-width="3"/>
+      <path d="M0 64V230L134 300V138Z" stroke="#706cff" stroke-width="3"/>
+      <path d="M134 138L276 72V234L134 300Z" stroke="#d45cff" stroke-width="3"/>
+      <path d="M12 70L142 14 262 76 134 126Z" fill="#56eaff" fill-opacity="0.09" stroke="#ffffff" stroke-opacity="0.2"/>
+      <circle cx="134" cy="138" r="10" fill="#ffffff" stroke="#62efff" filter="url(#glow)"/>
+      <path d="M134 138L134 300M134 138L276 72M134 138L0 64" stroke="#ffffff" stroke-opacity="0.18"/>
+    </g>
+    <g transform="translate(72 472)">
+      <path d="M0 0H296" stroke="#55738b" stroke-width="2"/>
+      <circle cx="0" r="7" fill="#4df2a0"/><circle cx="74" r="7" fill="#43e8ff"/><circle cx="148" r="10" fill="#ffffff" stroke="#c65cff" stroke-width="4"/><circle cx="222" r="7" fill="#ffae37"/><circle cx="296" r="7" fill="#ff4f8c"/>
+      <path d="M148-26V26" stroke="#c65cff" stroke-width="2" filter="url(#glow)"/>
+    </g>
+    <text x="220" y="548" text-anchor="middle" fill="#cfc5df" font-family="system-ui, sans-serif" font-size="18" letter-spacing="0">固定介绍 · 倒序时间线 · 自动轮播</text>
+    <text x="220" y="582" text-anchor="middle" fill="#8c82a1" font-family="ui-monospace, monospace" font-size="12" letter-spacing="0">20+ COLORS · NETWORK SIGNALS</text>
+  </g>
+
+  <g transform="translate(1080 172)">
+    <rect width="440" height="620" rx="10" fill="#05070e" fill-opacity="0.86" stroke="#4ddff5" stroke-opacity="0.5"/>
+    <text x="30" y="50" fill="#ffffff" font-family="ui-monospace, monospace" font-size="20" font-weight="700" letter-spacing="0">GAMES / GRAVITY PORT</text>
+    <text x="30" y="78" fill="#8da9b8" font-family="ui-monospace, monospace" font-size="12" letter-spacing="0">SINGULARITY · VHS · DATA REBUILD</text>
+    <g transform="translate(220 286)">
+      <circle r="132" fill="#00030a" stroke="#55eaff" stroke-width="3"/>
+      <circle r="98" fill="none" stroke="#c955ff" stroke-opacity="0.44" stroke-width="2"/>
+      <ellipse rx="176" ry="62" fill="none" stroke="#5cefff" stroke-opacity="0.64" stroke-width="3" transform="rotate(-16)"/>
+      <ellipse rx="166" ry="52" fill="none" stroke="#ff51c9" stroke-opacity="0.48" stroke-width="2" transform="rotate(22)"/>
+      <circle r="18" fill="#ffffff" filter="url(#glow)"/>
+      <path d="M-196-98L-86-42M196 106L88 48M-188 128L-84 56M184-126L78-52" stroke="url(#spectrum)" stroke-width="4" opacity="0.72"/>
+    </g>
+    <g opacity="0.46">
+      <path d="M42 446H396M42 462H318M88 478H410M32 494H344" stroke="#ffffff" stroke-width="5" stroke-dasharray="4 11"/>
+      <path d="M52 518H390M104 534H412" stroke="#b7dce8" stroke-width="2"/>
+    </g>
+    <text x="220" y="568" text-anchor="middle" fill="#bdd4df" font-family="system-ui, sans-serif" font-size="18" letter-spacing="0">引力坍缩 · VHS 雪花 · 光点重建</text>
+    <text x="220" y="598" text-anchor="middle" fill="#7994a4" font-family="ui-monospace, monospace" font-size="12" letter-spacing="0">CLOSE OLD → OPEN NEW</text>
+  </g>
+</svg>

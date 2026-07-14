@@ -2665,6 +2665,38 @@ body.is-window-switching #waifu-toggle {
   text-shadow: 0 12px 34px rgba(0, 0, 0, 0.72);
 }
 
+.sphere-copy-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 0 0 7px;
+  border-bottom: 1px solid rgba(110, 232, 255, 0.72);
+  color: #dffcff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: 0;
+  pointer-events: auto;
+  text-shadow: 0 0 16px rgba(76, 228, 255, 0.58);
+  transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.sphere-copy-action::after {
+  content: "↗";
+  color: #d76dff;
+}
+
+.sphere-copy-action:hover {
+  border-color: #e070ff;
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.sphere-copy-action[hidden] {
+  display: none;
+}
+
 .sphere-status {
   display: flex;
   align-items: center;
@@ -2869,6 +2901,16 @@ body.is-window-switching #waifu-toggle {
 
 .visual-system {
   --article-bg: linear-gradient(135deg, #111827, #3d7cff 44%, #f7e58d);
+}
+
+.visual-design-system {
+  --article-bg: linear-gradient(135deg, #02050c, #0a7ea8 38%, #6046d8 67%, #f05fd3);
+}
+
+.visual-design-system .visual-orbit {
+  box-shadow:
+    0 0 0 34px rgba(69, 231, 255, 0.06),
+    0 0 70px rgba(113, 84, 255, 0.48);
 }
 
 .visual-review {

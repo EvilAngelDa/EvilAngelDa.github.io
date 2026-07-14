@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Personal website interaction system overview</title>
+  <desc id="description">A desktop shell connects five content modules through a single window engine.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#02050b"/>
+      <stop offset="0.52" stop-color="#071329"/>
+      <stop offset="1" stop-color="#12051f"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#46efff"/>
+      <stop offset="0.5" stop-color="#5f8cff"/>
+      <stop offset="1" stop-color="#dc55ff"/>
+    </linearGradient>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M50 0H0V50" fill="none" stroke="#7edfff" stroke-opacity="0.09"/>
+    </pattern>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="9" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <circle cx="800" cy="420" r="360" fill="none" stroke="#55eaff" stroke-opacity="0.08"/>
+  <circle cx="800" cy="420" r="290" fill="none" stroke="#c259ff" stroke-opacity="0.09" stroke-dasharray="9 18"/>
+
+  <text x="86" y="86" fill="#eafcff" font-family="ui-monospace, monospace" font-size="26" font-weight="700" letter-spacing="0">PERSONAL SITE / INTERACTION SYSTEM</text>
+  <text x="86" y="122" fill="#8fa9bd" font-family="ui-monospace, monospace" font-size="14" letter-spacing="0">DESKTOP AS SPACE · WINDOWS AS RULES · TRANSITIONS AS LANGUAGE</text>
+
+  <g transform="translate(300 190)">
+    <rect width="1000" height="480" rx="12" fill="#030814" fill-opacity="0.82" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1" y="1" width="998" height="58" rx="11" fill="#081225" fill-opacity="0.92"/>
+    <circle cx="30" cy="30" r="7" fill="#ff5d58"/>
+    <circle cx="54" cy="30" r="7" fill="#ffd45a"/>
+    <circle cx="78" cy="30" r="7" fill="#50df8d"/>
+    <text x="112" y="37" fill="#dff9ff" font-family="ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="0">DESKTOP SHELL</text>
+
+    <g transform="translate(260 116)">
+      <rect width="480" height="190" rx="8" fill="#07152a" stroke="#56eaff" stroke-opacity="0.72"/>
+      <path d="M0 42H480" stroke="#9d5cff" stroke-opacity="0.4"/>
+      <text x="28" y="29" fill="#aef8ff" font-family="ui-monospace, monospace" font-size="13" letter-spacing="0">SINGLE WINDOW ENGINE</text>
+      <text x="240" y="93" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="30" font-weight="700" letter-spacing="0">ONE ACTIVE SPACE</text>
+      <text x="240" y="128" text-anchor="middle" fill="#8eb6ca" font-family="ui-monospace, monospace" font-size="14" letter-spacing="0">CLOSE → TRANSITION → OPEN</text>
+      <path d="M116 154H364" stroke="url(#edge)" stroke-width="3" filter="url(#glow)"/>
+    </g>
+
+    <g fill="none" stroke="#65dfff" stroke-opacity="0.35">
+      <path d="M125 380C125 330 330 330 420 306"/>
+      <path d="M312 380C312 344 420 330 470 306"/>
+      <path d="M500 380V306"/>
+      <path d="M688 380C688 344 580 330 530 306"/>
+      <path d="M875 380C875 330 670 330 580 306"/>
+    </g>
+
+    <g font-family="ui-monospace, monospace" text-anchor="middle" letter-spacing="0">
+      <g transform="translate(70 370)"><rect width="110" height="70" rx="8" fill="#0a1730" stroke="#55eaff"/><text x="55" y="42" fill="#e8ffff" font-size="16">HOME</text></g>
+      <g transform="translate(257 370)"><rect width="110" height="70" rx="8" fill="#10102e" stroke="#8b70ff"/><text x="55" y="42" fill="#f1eaff" font-size="16">GAMES</text></g>
+      <g transform="translate(445 370)"><rect width="110" height="70" rx="8" fill="#15102b" stroke="#c65cff"/><text x="55" y="42" fill="#ffeaff" font-size="16">ABOUT</text></g>
+      <g transform="translate(633 370)"><rect width="110" height="70" rx="8" fill="#081c2a" stroke="#4bd9d1"/><text x="55" y="42" fill="#e8ffff" font-size="16">ARTICLES</text></g>
+      <g transform="translate(820 370)"><rect width="110" height="70" rx="8" fill="#181028" stroke="#ff5bc8"/><text x="55" y="42" fill="#fff0fb" font-size="16">WORKS</text></g>
+    </g>
+  </g>
+
+  <g font-family="ui-monospace, monospace" font-size="13" letter-spacing="0">
+    <text x="330" y="728" fill="#62efff">LIVE2D / AMBIENT PRESENCE</text>
+    <text x="688" y="728" fill="#a7b9ca">POINTER TRAIL / PARTICLE FEEDBACK</text>
+    <text x="1090" y="728" fill="#e079ff">CHECKPOINT / REVERSIBLE ITERATION</text>
+  </g>
+  <path d="M300 760H1300" stroke="url(#edge)" stroke-opacity="0.5"/>
+</svg>

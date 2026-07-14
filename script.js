@@ -2032,6 +2032,7 @@ function renderSphereCopy(scrollArea, index) {
     const metaNode = copy.querySelector("[data-sphere-meta]");
     const titleNode = copy.querySelector("[data-sphere-title]");
     const descriptionNode = copy.querySelector("[data-sphere-description]");
+    const actionNode = copy.querySelector("[data-sphere-action]");
     const currentNode = copy.querySelector("[data-sphere-current]");
     const totalNode = copy.querySelector("[data-sphere-total]");
     const progress = copy.querySelector("[data-sphere-progress]");
@@ -2040,6 +2041,18 @@ function renderSphereCopy(scrollArea, index) {
     if (metaNode) metaNode.textContent = meta;
     if (titleNode) titleNode.textContent = title;
     if (descriptionNode) descriptionNode.textContent = description;
+    if (actionNode) {
+      const articleUrl = card.dataset.articleUrl?.trim() || "";
+
+      actionNode.hidden = !articleUrl;
+      if (articleUrl) {
+        actionNode.href = articleUrl;
+        actionNode.setAttribute("aria-label", `阅读全文：${title}`);
+      } else {
+        actionNode.removeAttribute("href");
+        actionNode.removeAttribute("aria-label");
+      }
+    }
     if (currentNode) currentNode.textContent = String(index + 1).padStart(2, "0");
     if (totalNode) totalNode.textContent = String(total).padStart(2, "0");
     if (progress) progress.style.transform = `scaleX(${total ? (index + 1) / total : 0})`;

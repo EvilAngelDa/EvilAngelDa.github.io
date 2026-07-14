@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Inside and outside sphere gallery views</title>
+  <desc id="description">Articles are viewed from inside a sphere while works orbit a crystal viewed from outside.</desc>
+  <defs>
+    <radialGradient id="space" cx="50%" cy="44%" r="70%">
+      <stop offset="0" stop-color="#13284f"/>
+      <stop offset="0.56" stop-color="#070d1e"/>
+      <stop offset="1" stop-color="#020408"/>
+    </radialGradient>
+    <linearGradient id="cyanPurple" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#4df4ff"/>
+      <stop offset="0.52" stop-color="#507bff"/>
+      <stop offset="1" stop-color="#d454ff"/>
+    </linearGradient>
+    <pattern id="mesh" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" fill="none" stroke="#8bdfff" stroke-opacity="0.08"/>
+    </pattern>
+    <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#space)"/>
+  <rect width="1600" height="900" fill="url(#mesh)"/>
+  <path d="M800 96V804" stroke="#8fa4c0" stroke-opacity="0.16"/>
+
+  <text x="90" y="86" fill="#ecfdff" font-family="ui-monospace, monospace" font-size="24" font-weight="700" letter-spacing="0">SPHERE GALLERY / DUAL CAMERA</text>
+  <text x="250" y="154" fill="#57edff" font-family="ui-monospace, monospace" font-size="18" letter-spacing="0">ARTICLES · INSIDE VIEW</text>
+  <text x="1070" y="154" fill="#df6dff" font-family="ui-monospace, monospace" font-size="18" letter-spacing="0">WORKS · OUTSIDE VIEW</text>
+
+  <g transform="translate(390 468)">
+    <circle r="282" fill="#07101e" fill-opacity="0.56" stroke="#5aeaff" stroke-opacity="0.38" stroke-width="2"/>
+    <ellipse rx="282" ry="92" fill="none" stroke="#6eeeff" stroke-opacity="0.24"/>
+    <ellipse rx="132" ry="282" fill="none" stroke="#9c6eff" stroke-opacity="0.22"/>
+    <path d="M-245-138Q0-258 245-138M-274 0Q0-126 274 0M-245 138Q0 258 245 138" fill="none" stroke="#6c9fff" stroke-opacity="0.16"/>
+    <circle r="18" fill="#ffffff" fill-opacity="0.9" filter="url(#softGlow)"/>
+    <text y="6" text-anchor="middle" fill="#13213b" font-family="ui-monospace, monospace" font-size="11" letter-spacing="0">VIEWER</text>
+
+    <g font-family="ui-monospace, monospace" letter-spacing="0">
+      <g transform="translate(-244 -76) rotate(-9)"><rect width="180" height="116" rx="6" fill="#0a1930" stroke="#61eaff" stroke-opacity="0.55"/><text x="20" y="34" fill="#8defff" font-size="12">PREVIOUS</text><path d="M20 58H132M20 76H104" stroke="#9cb3c8" stroke-opacity="0.45"/></g>
+      <g transform="translate(-132 -148)"><rect width="264" height="184" rx="8" fill="#102249" stroke="url(#cyanPurple)" stroke-width="3"/><text x="24" y="42" fill="#ffffff" font-size="18" font-weight="700">CURRENT ARTICLE</text><path d="M24 76H222M24 102H188M24 128H210" stroke="#bfefff" stroke-opacity="0.52"/></g>
+      <g transform="translate(82 -54) rotate(9)"><rect width="180" height="116" rx="6" fill="#15132c" stroke="#d16cff" stroke-opacity="0.5"/><text x="20" y="34" fill="#e9a2ff" font-size="12">NEXT</text><path d="M20 58H132M20 76H104" stroke="#b5a7c2" stroke-opacity="0.45"/></g>
+    </g>
+  </g>
+
+  <g transform="translate(1204 468)">
+    <circle r="282" fill="#070a17" fill-opacity="0.46" stroke="#c05cff" stroke-opacity="0.34" stroke-width="2"/>
+    <ellipse rx="282" ry="96" fill="none" stroke="#67e9ff" stroke-opacity="0.3"/>
+    <ellipse rx="150" ry="282" fill="none" stroke="#b55cff" stroke-opacity="0.24" transform="rotate(24)"/>
+    <ellipse rx="150" ry="282" fill="none" stroke="#57cfff" stroke-opacity="0.2" transform="rotate(-24)"/>
+
+    <g filter="url(#softGlow)">
+      <path d="M0-108L88 62H-88Z" fill="#8c78ff" fill-opacity="0.18" stroke="url(#cyanPurple)" stroke-width="5"/>
+      <path d="M0-68L52 36H-52Z" fill="#e7f8ff" fill-opacity="0.12" stroke="#b8eaff" stroke-opacity="0.7"/>
+    </g>
+
+    <g font-family="ui-monospace, monospace" font-size="13" letter-spacing="0">
+      <g transform="translate(-274 -64) rotate(-8)"><rect width="176" height="112" rx="6" fill="#0b1a30" stroke="#55eaff"/><text x="18" y="34" fill="#dffcff">WORK 03</text><path d="M18 58H132M18 78H100" stroke="#83dcec" stroke-opacity="0.44"/></g>
+      <g transform="translate(104 -78) rotate(8)"><rect width="176" height="112" rx="6" fill="#1b1030" stroke="#d45cff"/><text x="18" y="34" fill="#fff0ff">WORK 02</text><path d="M18 58H132M18 78H100" stroke="#d291e5" stroke-opacity="0.42"/></g>
+      <g transform="translate(-92 176)"><rect width="184" height="116" rx="6" fill="#0d1934" stroke="url(#cyanPurple)" stroke-width="2"/><text x="18" y="36" fill="#ffffff">CURRENT WORK</text><path d="M18 62H140M18 82H108" stroke="#b2e9ff" stroke-opacity="0.5"/></g>
+    </g>
+
+    <g fill="#8cf4ff" opacity="0.75">
+      <circle cx="-206" cy="-176" r="3"/><circle cx="196" cy="-148" r="3"/><circle cx="235" cy="92" r="3"/><circle cx="-224" cy="128" r="3"/>
+    </g>
+    <g stroke="#64eaff" stroke-width="2" stroke-linecap="round" opacity="0.42">
+      <path d="M-198-172l22 0 8-9 14 18 10-8h22"/>
+      <path d="M174-144h18l8 10 11-18 9 8h16"/>
+      <path d="M208 94h12l8-10 10 17 10-7"/>
+    </g>
+  </g>
+
+  <text x="390" y="814" text-anchor="middle" fill="#8da9bf" font-family="ui-monospace, monospace" font-size="14" letter-spacing="0">READING FROM WITHIN THE KNOWLEDGE SPACE</text>
+  <text x="1204" y="814" text-anchor="middle" fill="#a797bc" font-family="ui-monospace, monospace" font-size="14" letter-spacing="0">OBSERVING WORKS AROUND ONE CREATIVE CORE</text>
+</svg>
