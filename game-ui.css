@@ -8,10 +8,10 @@
 #window-games {
   --game-titlebar-height: clamp(62px, 7.6cqw, 88px);
   container-type: inline-size;
-  width: min(52.8vw, 828px);
-  height: min(46.8vh, 456px);
-  max-width: calc(100vw - 64px);
-  max-height: calc(100vh - 112px);
+  width: min(70vw, 1120px);
+  height: min(68vh, 680px);
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 92px);
   right: auto !important;
   bottom: auto !important;
   isolation: isolate;
@@ -747,8 +747,8 @@
 .game-ui-panel[data-carousel-position="prev"] {
   z-index: 1;
   visibility: visible;
-  opacity: 0.15;
-  transform: translate3d(-11%, -53%, -230px) rotateX(-58deg) rotateZ(-1.2deg) scale(0.82);
+  opacity: 0.36;
+  transform: translate3d(-14%, -58%, -210px) rotateX(-54deg) rotateZ(-1deg) scale(0.84);
   pointer-events: none;
   transition-delay: 0ms;
 }
@@ -756,8 +756,8 @@
 .game-ui-panel[data-carousel-position="next"] {
   z-index: 1;
   visibility: visible;
-  opacity: 0.18;
-  transform: translate3d(21%, 53%, -230px) rotateX(58deg) rotateZ(1.2deg) scale(0.82);
+  opacity: 0.36;
+  transform: translate3d(14%, 58%, -210px) rotateX(54deg) rotateZ(1deg) scale(0.84);
   pointer-events: none;
   transition-delay: 0ms;
 }
@@ -1608,13 +1608,26 @@
   to { transform: rotate(360deg) scale(0.96); }
 }
 
+@media (min-width: 921px) {
+  /* Keep the cards at their previous stage size while the modal grows around them. */
+  .game-ui-list {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: min(74cqw, 782px);
+    height: min(68%, 326px);
+    container-type: inline-size;
+    transform: translate(-50%, -50%);
+  }
+}
+
 @media (max-width: 920px) {
   #window-games {
     --game-titlebar-height: 60px;
     width: calc(100vw - 28px);
-    height: min(76vh, 660px);
+    height: min(84vh, 720px);
     max-width: calc(100vw - 28px);
-    max-height: calc(100vh - 124px);
+    max-height: calc(100vh - 92px);
   }
 
   #window-games > .game-ui-scroll {
@@ -1623,6 +1636,13 @@
 
   .game-ui-heading {
     min-height: 58px;
+  }
+
+  .game-ui-list {
+    inset: auto 0;
+    top: 50%;
+    height: min(100%, max(260px, calc(76vh - 118px)));
+    transform: translateY(-50%);
   }
 }
 
