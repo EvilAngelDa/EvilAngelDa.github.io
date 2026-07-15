@@ -2343,4 +2343,21 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   });
 }
 
+function restoreRequestedWindow() {
+  const url = new URL(window.location.href);
+  const requestedWindow = url.searchParams.get("open");
+  const allowedWindows = new Set(windows.map((panel) => panel.dataset.window).filter(Boolean));
+
+  if (!requestedWindow || !allowedWindows.has(requestedWindow)) {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    openWindow(requestedWindow);
+    url.searchParams.delete("open");
+    window.history.replaceState(null, "", url.href);
+  });
+}
+
 syncWindowEnvironment();
+restoreRequestedWindow();

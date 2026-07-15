@@ -248,7 +248,7 @@ function pageTemplate(directoryName, attributes, rendered, sourceLength) {
   <body>
     <div class="reading-progress" aria-hidden="true"><i data-reading-progress></i></div>
     <header class="reader-bar">
-      <a class="reader-home" href="../../index.html" aria-label="返回个人网站桌面"><span aria-hidden="true">←</span> 返回桌面</a>
+      <a class="reader-home" href="../../index.html?open=articles" aria-label="返回我的文章"><span aria-hidden="true">←</span> 返回我的文章</a>
       <span class="reader-id">ARTICLE / ${escapeHtml(articleNumber)}</span>
       <a class="reader-source" href="./index.md">查看 MD 源文</a>
     </header>
@@ -275,7 +275,7 @@ function pageTemplate(directoryName, attributes, rendered, sourceLength) {
 
     <footer class="reader-footer">
       <p>写于 ${escapeHtml(date)} · 本文持续记录个人网站的设计与实现。</p>
-      <a href="../../index.html">回到 yangyangnao OS <span aria-hidden="true">→</span></a>
+      <a href="../../index.html?open=articles">返回我的文章 <span aria-hidden="true">→</span></a>
     </footer>
   </body>
 </html>
