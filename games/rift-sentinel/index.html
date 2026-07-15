@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#05070d">
+    <meta name="description" content="Rift Sentinel 是一款左右移动、自动射击、波次生存与武器强化的纵向网页游戏。">
+    <title>Rift Sentinel / 裂隙哨兵</title>
+    <link rel="stylesheet" href="./styles.css?v=20260715-rift1">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js" defer></script>
+    <script src="./game.js?v=20260715-rift1" defer></script>
+  </head>
+  <body>
+    <div class="game-shell">
+      <header class="command-bar">
+        <a class="back-link" href="../../index.html?open=games" aria-label="返回我的游戏">
+          <span aria-hidden="true">←</span>
+          <span>我的游戏</span>
+        </a>
+        <div class="game-brand">
+          <span class="brand-mark" aria-hidden="true"><i></i></span>
+          <div>
+            <strong>RIFT SENTINEL</strong>
+            <small>裂隙哨兵 / DEFENSE NODE 002</small>
+          </div>
+        </div>
+        <div class="command-actions">
+          <span class="engine-status" data-engine-status><i></i> CONNECTING</span>
+          <button class="icon-command" data-audio type="button" aria-label="切换游戏音效" title="音效">♪</button>
+          <button class="icon-command" data-pause type="button" aria-label="暂停游戏" title="暂停">Ⅱ</button>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <aside class="telemetry" aria-label="作战数据">
+          <div class="telemetry-heading">
+            <p>LIVE TELEMETRY</p>
+            <span data-run-state>待命</span>
+          </div>
+
+          <section class="score-block" aria-label="得分">
+            <span>当前积分</span>
+            <strong data-score>000000</strong>
+            <small>最高记录 <b data-high-score>000000</b></small>
+          </section>
+
+          <section class="vital-section" aria-label="角色状态">
+            <div class="meter-label"><span>生命值</span><b data-health-text>100 / 100</b></div>
+            <div class="meter health-meter"><i data-health-bar></i></div>
+            <div class="meter-label"><span>护盾</span><b data-shield-text>0</b></div>
+            <div class="meter shield-meter"><i data-shield-bar></i></div>
+            <div class="meter-label"><span>升级进度</span><b data-xp-text>0 / 8</b></div>
+            <div class="meter xp-meter"><i data-xp-bar></i></div>
+          </section>
+
+          <section class="stat-grid" aria-label="战斗统计">
+            <div><span>波次</span><strong data-wave>00</strong></div>
+            <div><span>等级</span><strong data-level>01</strong></div>
+            <div><span>击杀</span><strong data-kills>000</strong></div>
+            <div><span>连击</span><strong data-combo>x1</strong></div>
+          </section>
+
+          <section class="weapon-readout" aria-label="武器参数">
+            <header><span>武器系统</span><b data-weapon-rank>MK-I</b></header>
+            <dl>
+              <div><dt>伤害</dt><dd data-damage>12</dd></div>
+              <div><dt>射速</dt><dd data-fire-rate>2.8/s</dd></div>
+              <div><dt>弹道</dt><dd data-shot-count>1</dd></div>
+              <div><dt>穿透</dt><dd data-pierce>0</dd></div>
+              <div><dt>暴击</dt><dd data-crit>8%</dd></div>
+              <div><dt>移速</dt><dd data-speed>360</dd></div>
+            </dl>
+          </section>
+
+          <section class="mission-log" aria-label="战斗日志">
+            <header>MISSION LOG</header>
+            <ol data-mission-log>
+              <li><time>SYS</time><span>等待防线启动</span></li>
+            </ol>
+          </section>
+        </aside>
+
+        <section class="arena-column" aria-label="游戏战场">
+          <div class="arena-meta" aria-hidden="true">
+            <span>SECTOR / R-07</span>
+            <span>THREAT FEED / LIVE</span>
+            <span data-fps-label>60 FPS</span>
+          </div>
+
+          <div class="arena-frame">
+            <div id="game-root" aria-label="裂隙哨兵游戏画布"></div>
+
+            <div class="boss-hud" data-boss-hud hidden>
+              <div><span>RIFT OVERLORD</span><b data-boss-health-text>100%</b></div>
+              <i><span data-boss-health-bar></span></i>
+            </div>
+
+            <div class="stage-announcement" data-announcement aria-live="polite"></div>
+
+            <section class="stage-overlay loading-overlay" data-loading>
+              <span class="loading-reticle" aria-hidden="true"></span>
+              <p>正在连接防线引擎</p>
+              <small>LOADING PHASER / ARCADE PHYSICS</small>
+            </section>
+
+            <section class="stage-overlay start-overlay" data-start-overlay hidden>
+              <p class="overlay-kicker">DEFENSE PROTOCOL</p>
+              <h1>裂隙正在打开</h1>
+              <p>使用左右方向键或 A / D 移动。武器会自动锁定最危险的怪物，击杀后升级并选择强化。</p>
+              <div class="control-hints" aria-label="操作说明">
+                <span><kbd>A</kbd><kbd>D</kbd> 移动</span>
+                <span><kbd>←</kbd><kbd>→</kbd> 移动</span>
+                <span><kbd>P</kbd> 暂停</span>
+              </div>
+              <button class="launch-button" data-start type="button">启动防线</button>
+            </section>
+
+            <section class="stage-overlay pause-overlay" data-pause-overlay hidden>
+              <p class="overlay-kicker">SYSTEM HOLD</p>
+              <h2>战场已暂停</h2>
+              <button class="launch-button" data-resume type="button">继续作战</button>
+            </section>
+
+            <section class="stage-overlay upgrade-overlay" data-upgrade-overlay hidden>
+              <p class="overlay-kicker">LEVEL SYNCHRONIZED</p>
+              <h2>选择一项武器强化</h2>
+              <div class="upgrade-options" data-upgrade-options></div>
+            </section>
+
+            <section class="stage-overlay game-over-overlay" data-game-over hidden>
+              <p class="overlay-kicker">DEFENSE NODE LOST</p>
+              <h2>防线失守</h2>
+              <dl class="result-grid">
+                <div><dt>最终积分</dt><dd data-final-score>0</dd></div>
+                <div><dt>抵达波次</dt><dd data-final-wave>0</dd></div>
+                <div><dt>消灭怪物</dt><dd data-final-kills>0</dd></div>
+              </dl>
+              <button class="launch-button" data-restart type="button">重新部署</button>
+            </section>
+
+            <div class="mobile-controls" aria-label="移动控制">
+              <button data-move-left type="button" aria-label="向左移动">←</button>
+              <button data-move-right type="button" aria-label="向右移动">→</button>
+            </div>
+          </div>
+
+          <div class="arena-footer">
+            <span>自动攻击已启用</span>
+            <span>Boss 每 5 波出现</span>
+            <span>移动端可按住左右按钮</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

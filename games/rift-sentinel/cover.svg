@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Rift Sentinel 游戏封面</title>
+  <desc id="desc">纵向赛博战场中，裂隙怪物从上方逼近，底部哨兵自动发射能量弹。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050812"/>
+      <stop offset="0.58" stop-color="#0a1730"/>
+      <stop offset="1" stop-color="#16091e"/>
+    </linearGradient>
+    <linearGradient id="lane" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#50e9ff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#ff5ebc" stop-opacity="0.13"/>
+    </linearGradient>
+    <linearGradient id="player" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#eaffff"/>
+      <stop offset="0.48" stop-color="#50e9ff"/>
+      <stop offset="1" stop-color="#5673ff"/>
+    </linearGradient>
+    <radialGradient id="rift">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="0.14" stop-color="#50e9ff"/>
+      <stop offset="0.48" stop-color="#8b58ff" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#ff5ebc" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#62cbe7" stroke-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="520" rx="8" fill="url(#bg)"/>
+  <rect width="800" height="520" rx="8" fill="url(#grid)"/>
+  <rect x="38" y="32" width="724" height="456" fill="none" stroke="#50e9ff" stroke-opacity="0.38"/>
+  <rect x="58" y="112" width="684" height="342" fill="url(#lane)" stroke="#8adfff" stroke-opacity="0.22"/>
+  <path d="M286 112V454M400 112V454M514 112V454" stroke="#7bdff1" stroke-opacity="0.17" stroke-dasharray="10 13"/>
+  <ellipse cx="400" cy="128" rx="150" ry="82" fill="url(#rift)" opacity="0.7" filter="url(#glow)"/>
+  <g filter="url(#glow)">
+    <path d="M252 169l22-24 31 9 8 29-23 22-32-8z" fill="#ff5f8f" stroke="#ffd0dc"/>
+    <circle cx="383" cy="181" r="28" fill="#9c63ff" stroke="#e3d6ff"/>
+    <path d="M491 145l32 6 15 30-18 27-35-4-13-31z" fill="#ff9f55" stroke="#ffe0c8"/>
+    <circle cx="582" cy="226" r="23" fill="#5fdcb4" stroke="#d9fff2"/>
+    <path d="M316 247l26-17 28 17-4 32-29 12-27-18z" fill="#5f8dff" stroke="#d6e1ff"/>
+  </g>
+  <g stroke="#72f3ff" stroke-width="5" stroke-linecap="round" filter="url(#glow)">
+    <path d="M405 390L388 328"/>
+    <path d="M405 390L448 305" opacity="0.7"/>
+    <path d="M405 390L335 279" opacity="0.6"/>
+  </g>
+  <g transform="translate(405 410)" filter="url(#glow)">
+    <circle cy="-24" r="16" fill="#efffff"/>
+    <path d="M-22-4Q0-18 22-4L17 34H-17z" fill="url(#player)" stroke="#d9ffff" stroke-width="2"/>
+    <path d="M-16 6L-34 22M16 6L34 22M-10 32L-20 53M10 32L20 53" stroke="#71edff" stroke-width="8" stroke-linecap="round"/>
+    <rect x="13" y="-9" width="34" height="10" rx="3" fill="#fff"/>
+  </g>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <text x="72" y="75" fill="#7c9cad" font-size="15" font-weight="700">DEFENSE NODE / 002</text>
+    <text x="72" y="104" fill="#f4fdff" font-size="38" font-weight="900">RIFT SENTINEL</text>
+    <text x="550" y="76" fill="#6cf3a6" font-size="14" font-weight="800">AUTO FIRE / ONLINE</text>
+    <text x="72" y="475" fill="#8ba5b5" font-size="13">左右移动 · 自动攻击 · 波次生存 · 武器强化</text>
+    <text x="650" y="475" fill="#ff72c7" font-size="13" font-weight="800">PHASER 3</text>
+  </g>
+</svg>
