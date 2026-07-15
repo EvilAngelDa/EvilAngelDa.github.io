@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#05070d">
     <meta name="description" content="Rift Sentinel 是一款左右移动、自动射击、波次生存与武器强化的纵向网页游戏。">
     <title>Rift Sentinel / 裂隙哨兵</title>
-    <link rel="stylesheet" href="./styles.css?v=20260715-rift4">
+    <link rel="stylesheet" href="./styles.css?v=20260715-rift5">
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js" defer></script>
-    <script src="./game.js?v=20260715-rift4" defer></script>
+    <script src="./game.js?v=20260715-rift5" defer></script>
   </head>
   <body>
     <div class="game-shell">
@@ -26,7 +26,7 @@
         </div>
         <div class="command-actions">
           <span class="engine-status" data-engine-status><i></i> CONNECTING</span>
-          <button class="icon-command" data-audio type="button" aria-label="切换游戏音效" title="音效">♪</button>
+          <button class="icon-command is-muted" data-audio type="button" aria-label="开启游戏音效" title="开启音效">♪</button>
           <button class="icon-command" data-pause type="button" aria-label="暂停游戏" title="暂停">Ⅱ</button>
         </div>
       </header>
@@ -40,8 +40,8 @@
 
           <section class="score-block" aria-label="得分">
             <span>当前积分</span>
-            <strong data-score>000000</strong>
-            <small>最高记录 <b data-high-score>000000</b></small>
+            <strong data-score>000000000000</strong>
+            <small>最高记录 <b data-high-score>000000000000</b></small>
           </section>
 
           <section class="vital-section" aria-label="角色状态">

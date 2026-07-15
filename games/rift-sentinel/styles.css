@@ -279,8 +279,11 @@ button {
   margin: 3px 0 5px;
   color: #f5fdff;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 28px;
+  font-size: 21px;
   line-height: 1.1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
   text-shadow: 0 0 18px rgba(80, 233, 255, 0.2);
 }
 
@@ -1041,8 +1044,7 @@ kbd {
 }
 
 @media (max-width: 560px) {
-  .back-link span:last-child,
-  .command-actions .icon-command[data-audio] {
+  .back-link span:last-child {
     display: none;
   }
 

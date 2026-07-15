@@ -4,6 +4,7 @@
   const GAME_WIDTH = 720;
   const GAME_HEIGHT = 1080;
   const DEFENSE_LINE = 1018;
+  const SCORE_CAP = 100_000_000_000;
   const ui = {
     loading: document.querySelector("[data-loading]"),
     startOverlay: document.querySelector("[data-start-overlay]"),
@@ -51,7 +52,7 @@
   };
 
   const audioState = {
-    enabled: true,
+    enabled: false,
     context: null,
     lastShotAt: 0,
   };
@@ -63,9 +64,13 @@
     right: false,
   };
 
+  function clampScore(value) {
+    return Math.min(SCORE_CAP, Math.max(0, Math.round(value) || 0));
+  }
+
   function readHighScore() {
     try {
-      return Number.parseInt(localStorage.getItem("rift-sentinel-high-score-v2") || "0", 10) || 0;
+      return clampScore(Number.parseInt(localStorage.getItem("rift-sentinel-high-score-v2") || "0", 10));
     } catch {
       return 0;
     }
@@ -73,14 +78,14 @@
 
   function saveHighScore(score) {
     try {
-      localStorage.setItem("rift-sentinel-high-score-v2", String(score));
+      localStorage.setItem("rift-sentinel-high-score-v2", String(clampScore(score)));
     } catch {
       // The run remains playable when storage is unavailable.
     }
   }
 
   function padScore(value) {
-    return Math.max(0, Math.round(value)).toString().padStart(6, "0");
+    return clampScore(value).toString().padStart(12, "0");
   }
 
   function getWaveDifficulty(wave) {
@@ -937,12 +942,12 @@
       this.combo += 1;
       this.comboExpiresAt = this.time.now + 2500;
       this.kills += 1;
-      this.score += Math.round(baseScore * comboMultiplier * (1 + this.wave * 0.01));
+      this.score = clampScore(this.score + Math.round(baseScore * comboMultiplier * (1 + this.wave * 0.01)));
       this.xp += enemy.getData("xp");
       this.createExplosion(enemy.x, enemy.y, type === "boss");
 
       if (type === "boss") {
-        this.score += 50 + this.wave * 10;
+        this.score = clampScore(this.score + 50 + this.wave * 10);
         this.shield = this.maxShield;
         announce("RIFT OVERLORD DESTROYED", 2200);
         logEvent("裂隙霸主已清除，护盾完全充能", "BOSS");
@@ -1052,7 +1057,7 @@
     completeWave() {
       this.waveTransitioning = true;
       const reward = 15 + this.wave * 5;
-      this.score += reward;
+      this.score = clampScore(this.score + reward);
       this.shield = Math.min(this.maxShield, this.shield + 8);
       announce(`WAVE ${this.wave} CLEAR / +${reward}`);
       logEvent(`波次 ${this.wave} 清理完成，护盾 +8`, "CLEAR");
@@ -1095,10 +1100,10 @@
       this.ended = true;
       this.spawnEvent?.remove(false);
       this.physics.pause();
-      this.highScore = Math.max(this.highScore, this.score);
+      this.highScore = clampScore(Math.max(this.highScore, this.score));
       saveHighScore(this.highScore);
       setRunState("防线失守", "danger");
-      ui.finalScore.textContent = Math.round(this.score).toLocaleString("zh-CN");
+      ui.finalScore.textContent = clampScore(this.score).toLocaleString("zh-CN");
       ui.finalWave.textContent = String(this.wave);
       ui.finalKills.textContent = String(this.kills);
       ui.gameOver.hidden = false;
@@ -1247,6 +1252,7 @@
     audioState.enabled = !audioState.enabled;
     ui.audioButton.classList.toggle("is-muted", !audioState.enabled);
     ui.audioButton.setAttribute("aria-label", audioState.enabled ? "关闭游戏音效" : "开启游戏音效");
+    ui.audioButton.title = audioState.enabled ? "关闭音效" : "开启音效";
     if (audioState.enabled) playTone("pickup");
   });
   ui.upgradeOptions.addEventListener("click", (event) => {
