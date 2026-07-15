@@ -65,7 +65,7 @@
 
   function readHighScore() {
     try {
-      return Number.parseInt(localStorage.getItem("rift-sentinel-high-score") || "0", 10) || 0;
+      return Number.parseInt(localStorage.getItem("rift-sentinel-high-score-v2") || "0", 10) || 0;
     } catch {
       return 0;
     }
@@ -73,7 +73,7 @@
 
   function saveHighScore(score) {
     try {
-      localStorage.setItem("rift-sentinel-high-score", String(score));
+      localStorage.setItem("rift-sentinel-high-score-v2", String(score));
     } catch {
       // The run remains playable when storage is unavailable.
     }
@@ -81,6 +81,20 @@
 
   function padScore(value) {
     return Math.max(0, Math.round(value)).toString().padStart(6, "0");
+  }
+
+  function getWaveDifficulty(wave) {
+    const step = Math.max(0, wave - 1);
+
+    return {
+      enemyCount: Math.min(150, Math.round(8 * Math.pow(1.36, step))),
+      spawnDelay: Math.max(110, Math.round(820 / Math.pow(1.14, step))),
+      healthScale: Math.min(16, Math.pow(1.2, step)),
+      speedScale: Math.min(2.25, Math.pow(1.09, step)),
+      damageScale: Math.min(4, Math.pow(1.1, step)),
+      bossCooldown: Math.max(520, 1450 - wave * 55),
+      bossBulletSpeed: Math.min(620, 330 + wave * 18),
+    };
   }
 
   function setMeter(element, ratio) {
@@ -317,6 +331,12 @@
     bullet.fillStyle(0x50e9ff, 0.74).fillRoundedRect(2, 8, 14, 28, 7);
     bullet.generateTexture("sentinel-bullet", 18, 38).destroy();
 
+    const bossBullet = scene.add.graphics();
+    bossBullet.fillStyle(0xffffff, 1).fillRoundedRect(7, 0, 8, 34, 4);
+    bossBullet.fillStyle(0xff4fae, 0.82).fillRoundedRect(2, 9, 18, 38, 8);
+    bossBullet.lineStyle(2, 0x9b5cff, 0.96).strokeRoundedRect(2, 9, 18, 38, 8);
+    bossBullet.generateTexture("boss-bullet", 22, 50).destroy();
+
     const basic = scene.add.graphics();
     basic.fillStyle(0xff587d, 1).fillCircle(32, 32, 27);
     basic.lineStyle(3, 0xffcad5, 0.9).strokeCircle(32, 32, 23);
@@ -493,9 +513,10 @@
         .setImmovable(true);
       this.player.body.setSize(58, 70).setOffset(19, 14);
 
-      this.bullets = this.physics.add.group({ maxSize: 140 });
-      this.enemies = this.physics.add.group({ maxSize: 90 });
-      this.pickups = this.physics.add.group({ maxSize: 20 });
+      this.bullets = this.physics.add.group({ maxSize: 220 });
+      this.enemyBullets = this.physics.add.group({ maxSize: 100 });
+      this.enemies = this.physics.add.group({ maxSize: 180 });
+      this.pickups = this.physics.add.group({ maxSize: 30 });
     }
 
     createInput() {
@@ -520,6 +541,7 @@
 
     createCollisions() {
       this.physics.add.overlap(this.bullets, this.enemies, this.handleProjectileHit, undefined, this);
+      this.physics.add.overlap(this.player, this.enemyBullets, this.handleBossProjectileHit, undefined, this);
       this.physics.add.overlap(this.player, this.enemies, this.handleEnemyCollision, undefined, this);
       this.physics.add.overlap(this.player, this.pickups, this.collectPickup, undefined, this);
     }
@@ -542,11 +564,17 @@
       this.spawned = 0;
       this.waveTransitioning = false;
       const bossWave = this.wave % 5 === 0;
-      this.spawnTotal = bossWave ? 6 + Math.floor(this.wave / 2) : 7 + this.wave * 2;
-      const delay = Math.max(260, 820 - this.wave * 26);
+      this.waveDifficulty = getWaveDifficulty(this.wave);
+      this.spawnTotal = this.waveDifficulty.enemyCount + (bossWave ? Math.min(8, Math.ceil(this.wave / 2)) : 0);
+      const delay = this.waveDifficulty.spawnDelay;
 
       announce(bossWave ? `WARNING / BOSS WAVE ${this.wave}` : `WAVE ${String(this.wave).padStart(2, "0")}`);
-      logEvent(bossWave ? `波次 ${this.wave} 检测到裂隙霸主` : `波次 ${this.wave} 开始`, bossWave ? "BOSS" : "WAVE");
+      logEvent(
+        bossWave
+          ? `波次 ${this.wave} 检测到裂隙霸主，威胁单位 ${this.spawnTotal}`
+          : `波次 ${this.wave} 开始，威胁单位 ${this.spawnTotal}`,
+        bossWave ? "BOSS" : "WAVE",
+      );
       if (bossWave) playTone("boss");
 
       this.spawnEvent = this.time.addEvent({
@@ -565,18 +593,22 @@
       let type = forcedType || "basic";
 
       if (!forcedType) {
-        if (this.wave >= 3 && roll > 0.82) type = "tank";
-        else if (this.wave >= 2 && roll > 0.56) type = "swift";
+        const tankChance = this.wave >= 3 ? Math.min(0.34, 0.05 + this.wave * 0.025) : 0;
+        const swiftChance = this.wave >= 2 ? Math.min(0.45, 0.16 + this.wave * 0.025) : 0;
+
+        if (roll < tankChance) type = "tank";
+        else if (roll < tankChance + swiftChance) type = "swift";
       }
 
       const definitions = {
-        basic: { texture: "enemy-basic", health: 18, speed: 70, score: 70, xp: 2, damage: 12, scale: 1 },
-        swift: { texture: "enemy-swift", health: 12, speed: 126, score: 95, xp: 2, damage: 10, scale: 1 },
-        tank: { texture: "enemy-tank", health: 52, speed: 48, score: 165, xp: 4, damage: 20, scale: 1 },
-        boss: { texture: "enemy-boss", health: 420, speed: 28, score: 1600, xp: 12, damage: 38, scale: 1 },
+        basic: { texture: "enemy-basic", health: 18, speed: 70, score: 8, xp: 2, damage: 12, scale: 1 },
+        swift: { texture: "enemy-swift", health: 12, speed: 126, score: 12, xp: 2, damage: 10, scale: 1 },
+        tank: { texture: "enemy-tank", health: 52, speed: 48, score: 20, xp: 4, damage: 20, scale: 1 },
+        boss: { texture: "enemy-boss", health: 420, speed: 28, score: 100, xp: 12, damage: 38, scale: 1 },
       };
       const definition = definitions[type];
-      const healthScale = type === "boss" ? 1 + this.wave * 0.16 : 1 + this.wave * 0.11;
+      const difficulty = this.waveDifficulty || getWaveDifficulty(this.wave);
+      const healthScale = difficulty.healthScale * (type === "boss" ? 1.34 : 1);
       const maxHealth = Math.round(definition.health * healthScale);
       const x = type === "boss" ? GAME_WIDTH / 2 : Phaser.Math.Between(58, GAME_WIDTH - 58);
       const enemy = this.enemies.create(x, type === "boss" ? -90 : -48, definition.texture);
@@ -594,10 +626,13 @@
         maxHealth,
         score: definition.score,
         xp: definition.xp,
-        damage: definition.damage,
+        damage: Math.max(1, Math.round(definition.damage * difficulty.damageScale)),
         drift,
+        phase: Math.random() * Math.PI * 2,
+        enraged: false,
+        nextAttackAt: type === "boss" ? this.time.now + 900 : 0,
       });
-      enemy.setVelocity(drift, definition.speed + this.wave * (type === "boss" ? 1.4 : 3.4));
+      enemy.setVelocity(drift, definition.speed * difficulty.speedScale * (type === "boss" ? 0.72 : 1));
 
       if (type === "tank" || type === "boss") {
         const bar = this.add.graphics().setDepth(9);
@@ -611,7 +646,7 @@
       this.updateBackground(delta);
       this.updatePlayer();
       this.updateProjectiles();
-      this.updateEnemies();
+      this.updateEnemies(time);
       this.updatePickups();
 
       if (time >= this.nextShotAt) this.fireWeapon(time);
@@ -664,21 +699,41 @@
       this.bullets.getChildren().forEach((bullet) => {
         if (bullet.active && (bullet.y < -60 || bullet.x < -60 || bullet.x > GAME_WIDTH + 60)) bullet.destroy();
       });
+      this.enemyBullets.getChildren().forEach((bullet) => {
+        if (bullet.active && bullet.y > GAME_HEIGHT + 70) bullet.destroy();
+      });
     }
 
-    updateEnemies() {
+    updateEnemies(time) {
       this.enemies.getChildren().forEach((enemy) => {
         if (!enemy.active) return;
         const type = enemy.getData("type");
 
-        if (enemy.x < 42 || enemy.x > GAME_WIDTH - 42) {
-          const drift = -enemy.getData("drift");
+        if (enemy.x < 42) {
+          enemy.x = 42;
+          const drift = Math.abs(enemy.getData("drift"));
+          enemy.setData("drift", drift);
+          enemy.setVelocityX(drift);
+        } else if (enemy.x > GAME_WIDTH - 42) {
+          enemy.x = GAME_WIDTH - 42;
+          const drift = -Math.abs(enemy.getData("drift"));
           enemy.setData("drift", drift);
           enemy.setVelocityX(drift);
         }
 
-        if (type === "swift") enemy.rotation += 0.035;
-        if (type === "boss") enemy.rotation += 0.004;
+        if (type === "swift") {
+          const weave = Math.sin(time * 0.006 + enemy.getData("phase")) * 68;
+          enemy.setVelocityX(enemy.getData("drift") + weave);
+          enemy.rotation += 0.035;
+        }
+        if (type === "boss") {
+          enemy.rotation += 0.004;
+          if (enemy.y > 86 && time >= enemy.getData("nextAttackAt")) this.fireBossWeapon(enemy, time);
+        }
+        if (!enemy.getData("enraged") && enemy.y > GAME_HEIGHT * 0.58) {
+          enemy.setData("enraged", true);
+          enemy.setVelocityY(enemy.body.velocity.y * (type === "boss" ? 1.1 : 1.2));
+        }
         this.updateEnemyHealthBar(enemy);
 
         if (enemy.y > DEFENSE_LINE + 35) {
@@ -690,9 +745,58 @@
       });
     }
 
+    fireBossWeapon(boss, time) {
+      const difficulty = this.waveDifficulty || getWaveDifficulty(this.wave);
+      boss.setData("nextAttackAt", time + difficulty.bossCooldown);
+      const shotX = boss.x;
+      const shotY = Math.max(54, boss.y + 46);
+      const warningHeight = Math.max(40, DEFENSE_LINE - shotY);
+      const warning = this.add.rectangle(
+        shotX,
+        shotY + warningHeight / 2,
+        3,
+        warningHeight,
+        0xff4fae,
+        0.5,
+      ).setDepth(5);
+
+      this.tweens.add({
+        targets: warning,
+        alpha: 0,
+        scaleX: 2.8,
+        duration: 260,
+        ease: "Sine.Out",
+        onComplete: () => warning.destroy(),
+      });
+
+      this.time.delayedCall(250, () => {
+        if (this.ended || !boss.active) return;
+        const offsets = this.wave >= 10 ? [-72, 0, 72] : [0];
+
+        offsets.forEach((offset) => {
+          const bullet = this.enemyBullets.create(
+            Phaser.Math.Clamp(shotX + offset, 22, GAME_WIDTH - 22),
+            shotY,
+            "boss-bullet",
+          );
+          if (!bullet) return;
+
+          bullet.setDepth(9).setData("damage", Math.max(8, Math.round(16 * difficulty.damageScale)));
+          bullet.setVelocity(0, difficulty.bossBulletSpeed);
+        });
+      });
+    }
+
     updatePickups() {
       this.pickups.getChildren().forEach((pickup) => {
         if (pickup.active) {
+          if (pickup.x < 30) {
+            pickup.x = 30;
+            pickup.setVelocityX(Math.abs(pickup.body.velocity.x) || 24);
+          } else if (pickup.x > GAME_WIDTH - 30) {
+            pickup.x = GAME_WIDTH - 30;
+            pickup.setVelocityX(-Math.abs(pickup.body.velocity.x) || -24);
+          }
           pickup.rotation += 0.025;
           const label = pickup.getData("label");
 
@@ -795,6 +899,14 @@
       this.damagePlayer(damage);
     }
 
+    handleBossProjectileHit(player, bullet) {
+      if (!bullet.active) return;
+      const damage = bullet.getData("damage");
+      bullet.destroy();
+      this.damagePlayer(damage);
+      logEvent(`Boss 直线弹命中，装甲 -${damage}`, "BOSS");
+    }
+
     createImpact(x, y, critical) {
       const color = critical ? 0xffd76a : 0x50e9ff;
       const impact = this.add.circle(x, y, critical ? 12 : 7, color, 0.78).setDepth(14);
@@ -821,16 +933,16 @@
       if (!enemy.active) return;
       const type = enemy.getData("type");
       const baseScore = enemy.getData("score");
-      const comboMultiplier = 1 + Math.min(20, this.combo) * 0.05;
+      const comboMultiplier = 1 + Math.min(20, this.combo) * 0.01;
       this.combo += 1;
       this.comboExpiresAt = this.time.now + 2500;
       this.kills += 1;
-      this.score += Math.round(baseScore * comboMultiplier * (1 + this.wave * 0.03));
+      this.score += Math.round(baseScore * comboMultiplier * (1 + this.wave * 0.01));
       this.xp += enemy.getData("xp");
       this.createExplosion(enemy.x, enemy.y, type === "boss");
 
       if (type === "boss") {
-        this.score += this.wave * 220;
+        this.score += 50 + this.wave * 10;
         this.shield = this.maxShield;
         announce("RIFT OVERLORD DESTROYED", 2200);
         logEvent("裂隙霸主已清除，护盾完全充能", "BOSS");
@@ -872,7 +984,8 @@
     spawnPickup(x, y) {
       const roll = Math.random();
       const type = roll < 0.42 ? "health" : roll < 0.78 ? "shield" : "overclock";
-      const pickup = this.pickups.create(x, y, `pickup-${type}`).setDepth(8);
+      const spawnX = Phaser.Math.Clamp(x, 30, GAME_WIDTH - 30);
+      const pickup = this.pickups.create(spawnX, y, `pickup-${type}`).setDepth(8);
       if (!pickup) return;
 
       pickup.setData("type", type);
@@ -880,7 +993,7 @@
       pickup.setAngularVelocity(95);
 
       const label = type === "health" ? "+" : type === "shield" ? "S" : "⚡";
-      const text = this.add.text(x, y, label, {
+      const text = this.add.text(spawnX, y, label, {
         fontFamily: "ui-monospace, monospace",
         fontSize: "18px",
         fontStyle: "bold",
@@ -938,7 +1051,7 @@
 
     completeWave() {
       this.waveTransitioning = true;
-      const reward = 80 + this.wave * 35;
+      const reward = 15 + this.wave * 5;
       this.score += reward;
       this.shield = Math.min(this.maxShield, this.shield + 8);
       announce(`WAVE ${this.wave} CLEAR / +${reward}`);

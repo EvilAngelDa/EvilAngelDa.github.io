@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#05070d">
     <meta name="description" content="Rift Sentinel 是一款左右移动、自动射击、波次生存与武器强化的纵向网页游戏。">
     <title>Rift Sentinel / 裂隙哨兵</title>
-    <link rel="stylesheet" href="./styles.css?v=20260715-rift3">
+    <link rel="stylesheet" href="./styles.css?v=20260715-rift4">
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js" defer></script>
-    <script src="./game.js?v=20260715-rift3" defer></script>
+    <script src="./game.js?v=20260715-rift4" defer></script>
   </head>
   <body>
     <div class="game-shell">
@@ -150,6 +150,33 @@
             <span>移动端可按住左右按钮</span>
           </div>
         </section>
+
+        <aside class="supply-guide" aria-label="战场补给说明">
+          <header>
+            <span>DROP INDEX</span>
+            <b>补给说明</b>
+          </header>
+          <ul>
+            <li class="is-health">
+              <span class="supply-symbol" aria-hidden="true">+</span>
+              <div><strong>维修模块</strong><small>恢复 28 点生命</small></div>
+            </li>
+            <li class="is-shield">
+              <span class="supply-symbol" aria-hidden="true">S</span>
+              <div><strong>护盾模块</strong><small>补充 30 点护盾</small></div>
+            </li>
+            <li class="is-overclock">
+              <span class="supply-symbol" aria-hidden="true">OC</span>
+              <div><strong>超频核心</strong><small>射速提升 8 秒</small></div>
+            </li>
+          </ul>
+          <section class="threat-guide" aria-label="威胁说明">
+            <p>THREAT NOTES</p>
+            <span><i class="boss-shot-mark"></i>紫红弹为 Boss 直线攻击</span>
+            <span><i class="boundary-mark"></i>所有补给只在战场内下落</span>
+            <span><i class="wave-mark"></i>敌军强度随波次指数增长</span>
+          </section>
+        </aside>
       </main>
     </div>
   </body>
