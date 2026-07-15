@@ -58,6 +58,10 @@
   let activeScene = null;
   let touchDirection = 0;
   let announcementTimer = 0;
+  const keyboardState = {
+    left: false,
+    right: false,
+  };
 
   function readHighScore() {
     try {
@@ -639,8 +643,8 @@
     }
 
     updatePlayer() {
-      const left = this.cursors.left.isDown || this.keys.A.isDown || touchDirection < 0;
-      const right = this.cursors.right.isDown || this.keys.D.isDown || touchDirection > 0;
+      const left = this.cursors.left.isDown || this.keys.A.isDown || keyboardState.left || touchDirection < 0;
+      const right = this.cursors.right.isDown || this.keys.D.isDown || keyboardState.right || touchDirection > 0;
       let velocity = 0;
 
       if (left !== right) {
@@ -1059,12 +1063,25 @@
   }
 
   function bindHoldControl(button, direction) {
-    const release = () => {
-      if (touchDirection === direction) touchDirection = 0;
+    let pressedAt = 0;
+
+    const release = (event) => {
+      const wasPressed = touchDirection === direction;
+      const quickTap = event?.type === "pointerup" && Date.now() - pressedAt < 260;
+      if (wasPressed) touchDirection = 0;
       button.classList.remove("is-pressed");
+
+      const scene = activeScene;
+      if (wasPressed && quickTap && scene?.started && !scene.ended && !scene.pendingUpgrade && !scene.manualPaused) {
+        scene.pointerTargetX = Phaser.Math.Clamp(scene.player.x + direction * 92, 48, GAME_WIDTH - 48);
+      }
     };
     button.addEventListener("pointerdown", (event) => {
       event.preventDefault();
+      const scene = activeScene;
+      if (!scene?.started || scene.ended || scene.pendingUpgrade || scene.manualPaused) return;
+
+      pressedAt = Date.now();
       touchDirection = direction;
       button.classList.add("is-pressed");
       button.setPointerCapture?.(event.pointerId);
@@ -1127,8 +1144,19 @@
   bindHoldControl(ui.moveRight, 1);
 
   window.addEventListener("keydown", (event) => {
-    if (["ArrowLeft", "ArrowRight", " "].includes(event.key) && activeScene?.started) event.preventDefault();
+    if (event.code === "ArrowLeft" || event.code === "KeyA") keyboardState.left = true;
+    if (event.code === "ArrowRight" || event.code === "KeyD") keyboardState.right = true;
+    if (["ArrowLeft", "ArrowRight", "Space"].includes(event.code) && activeScene?.started) event.preventDefault();
     if (event.key.toLowerCase() === "p" || event.key === "Escape") togglePause();
+  });
+  window.addEventListener("keyup", (event) => {
+    if (event.code === "ArrowLeft" || event.code === "KeyA") keyboardState.left = false;
+    if (event.code === "ArrowRight" || event.code === "KeyD") keyboardState.right = false;
+  });
+  window.addEventListener("blur", () => {
+    keyboardState.left = false;
+    keyboardState.right = false;
+    touchDirection = 0;
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && activeScene?.started && !activeScene.manualPaused && !activeScene.pendingUpgrade && !activeScene.ended) {

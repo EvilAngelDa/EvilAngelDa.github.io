@@ -55,7 +55,8 @@ button {
 .game-shell {
   display: grid;
   grid-template-rows: 64px minmax(0, 1fr);
-  min-height: 100svh;
+  height: 100svh;
+  min-height: 0;
 }
 
 .command-bar {
@@ -213,7 +214,9 @@ button {
   grid-template-columns: minmax(250px, 300px) minmax(420px, 720px);
   justify-content: center;
   gap: 22px;
+  height: 100%;
   min-height: 0;
+  overflow: hidden;
   padding: 18px 24px 22px;
 }
 
@@ -439,6 +442,7 @@ button {
   grid-template-rows: 24px minmax(0, 1fr) 24px;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .arena-meta,
@@ -456,9 +460,11 @@ button {
 .arena-frame {
   position: relative;
   justify-self: center;
+  width: auto;
   height: 100%;
   min-height: 0;
   max-width: 100%;
+  max-height: 100%;
   aspect-ratio: 2 / 3;
   overflow: hidden;
   border: 1px solid rgba(86, 225, 255, 0.34);
@@ -512,6 +518,8 @@ button {
   align-items: center;
   justify-content: center;
   padding: 34px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   color: #eafaff;
   background: rgba(3, 7, 13, 0.86);
   text-align: center;
@@ -630,8 +638,8 @@ kbd {
 }
 
 .upgrade-overlay {
-  justify-content: flex-end;
-  padding-bottom: 54px;
+  justify-content: center;
+  padding-block: 28px;
   background: linear-gradient(180deg, rgba(3, 7, 13, 0.35), rgba(3, 7, 13, 0.96) 44%);
 }
 
@@ -781,7 +789,7 @@ kbd {
   right: 16px;
   bottom: 16px;
   left: 16px;
-  display: none;
+  display: flex;
   justify-content: space-between;
   pointer-events: none;
 }
@@ -817,6 +825,8 @@ kbd {
 
   .game-shell {
     grid-template-rows: 58px auto;
+    height: auto;
+    min-height: 100svh;
   }
 
   .command-bar {
@@ -837,6 +847,8 @@ kbd {
   .game-layout {
     grid-template-columns: 1fr;
     gap: 12px;
+    height: auto;
+    overflow: visible;
     padding: 12px;
   }
 
@@ -875,6 +887,7 @@ kbd {
 
   .arena-column {
     grid-template-rows: 20px auto 28px;
+    overflow: visible;
   }
 
   .arena-frame {
@@ -883,9 +896,6 @@ kbd {
     min-height: 0;
   }
 
-  .mobile-controls {
-    display: flex;
-  }
 }
 
 @media (max-width: 560px) {
