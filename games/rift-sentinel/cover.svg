@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
   <title id="title">Rift Sentinel 游戏封面</title>
-  <desc id="desc">纵向赛博战场中，裂隙怪物从上方逼近，底部哨兵自动发射能量弹。</desc>
+  <desc id="desc">纵向赛博战场中，裂隙怪物从上方逼近，底部战机自动发射能量弹。</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#050812"/>
@@ -48,17 +48,19 @@
     <path d="M405 390L448 305" opacity="0.7"/>
     <path d="M405 390L335 279" opacity="0.6"/>
   </g>
-  <g transform="translate(405 410)" filter="url(#glow)">
-    <circle cy="-24" r="16" fill="#efffff"/>
-    <path d="M-22-4Q0-18 22-4L17 34H-17z" fill="url(#player)" stroke="#d9ffff" stroke-width="2"/>
-    <path d="M-16 6L-34 22M16 6L34 22M-10 32L-20 53M10 32L20 53" stroke="#71edff" stroke-width="8" stroke-linecap="round"/>
-    <rect x="13" y="-9" width="34" height="10" rx="3" fill="#fff"/>
+  <g transform="translate(405 412)" filter="url(#glow)">
+    <path d="M0-64L15-6 58 30 18 20 0 58-18 20-58 30-15-6Z" fill="url(#player)" stroke="#d9ffff" stroke-width="2"/>
+    <path d="M0-60L-9 14H9Z" fill="#f5ffff" opacity="0.92"/>
+    <ellipse cy="-19" rx="7" ry="18" fill="#194b86" stroke="#8effff"/>
+    <path d="M-15-6L-58 30-16 19M15-6L58 30 16 19" fill="none" stroke="#ff78c9" stroke-width="3"/>
+    <rect x="-17" y="35" width="10" height="23" rx="5" fill="#8ef4ff"/>
+    <rect x="7" y="35" width="10" height="23" rx="5" fill="#ff8ad5"/>
   </g>
   <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
     <text x="72" y="75" fill="#7c9cad" font-size="15" font-weight="700">DEFENSE NODE / 002</text>
     <text x="72" y="104" fill="#f4fdff" font-size="38" font-weight="900">RIFT SENTINEL</text>
     <text x="550" y="76" fill="#6cf3a6" font-size="14" font-weight="800">AUTO FIRE / ONLINE</text>
-    <text x="72" y="475" fill="#8ba5b5" font-size="13">左右移动 · 自动攻击 · 波次生存 · 武器强化</text>
+    <text x="72" y="475" fill="#8ba5b5" font-size="13">驾驶战机 · 自动攻击 · 波次生存 · 武器强化</text>
     <text x="650" y="475" fill="#ff72c7" font-size="13" font-weight="800">PHASER 3</text>
   </g>
 </svg>

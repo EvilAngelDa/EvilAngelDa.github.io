@@ -287,13 +287,26 @@
     if (scene.textures.exists("sentinel-player")) return;
 
     const player = scene.add.graphics();
-    player.fillStyle(0xeaffff, 1).fillCircle(36, 18, 13);
-    player.fillStyle(0x50e9ff, 1).fillRoundedRect(18, 32, 36, 38, 8);
-    player.fillStyle(0x5673ff, 1).fillTriangle(18, 42, 4, 68, 24, 61);
-    player.fillStyle(0xff5ebc, 1).fillTriangle(54, 42, 68, 68, 48, 61);
-    player.fillStyle(0xffffff, 1).fillRoundedRect(47, 30, 24, 8, 3);
-    player.lineStyle(7, 0x8ef4ff, 1).lineBetween(25, 67, 17, 89).lineBetween(47, 67, 55, 89);
-    player.generateTexture("sentinel-player", 72, 92).destroy();
+    player.fillStyle(0x07101f, 0.95).fillTriangle(48, 2, 39, 88, 57, 88);
+    player.fillStyle(0x50e9ff, 1).fillPoints([
+      new Phaser.Geom.Point(48, 2),
+      new Phaser.Geom.Point(62, 54),
+      new Phaser.Geom.Point(89, 82),
+      new Phaser.Geom.Point(58, 76),
+      new Phaser.Geom.Point(48, 101),
+      new Phaser.Geom.Point(38, 76),
+      new Phaser.Geom.Point(7, 82),
+      new Phaser.Geom.Point(34, 54),
+    ], true);
+    player.fillStyle(0x5673ff, 1).fillTriangle(34, 54, 7, 82, 39, 72);
+    player.fillStyle(0xff5ebc, 1).fillTriangle(62, 54, 89, 82, 57, 72);
+    player.fillStyle(0xeaffff, 1).fillTriangle(48, 5, 41, 55, 55, 55);
+    player.fillStyle(0x163c72, 1).fillEllipse(48, 42, 12, 29);
+    player.lineStyle(2, 0xd9ffff, 0.9).strokeTriangle(48, 4, 37, 78, 59, 78);
+    player.fillStyle(0xffffff, 1).fillCircle(48, 25, 3);
+    player.fillStyle(0x8ef4ff, 1).fillRoundedRect(34, 83, 9, 17, 4);
+    player.fillStyle(0xff8ad5, 1).fillRoundedRect(53, 83, 9, 17, 4);
+    player.generateTexture("sentinel-player", 96, 104).destroy();
 
     const bullet = scene.add.graphics();
     bullet.fillStyle(0xffffff, 1).fillRoundedRect(5, 0, 8, 28, 4);
@@ -474,7 +487,7 @@
         .setDepth(10)
         .setCollideWorldBounds(true)
         .setImmovable(true);
-      this.player.body.setSize(46, 58).setOffset(13, 26);
+      this.player.body.setSize(58, 70).setOffset(19, 14);
 
       this.bullets = this.physics.add.group({ maxSize: 140 });
       this.enemies = this.physics.add.group({ maxSize: 90 });
@@ -562,12 +575,14 @@
       const healthScale = type === "boss" ? 1 + this.wave * 0.16 : 1 + this.wave * 0.11;
       const maxHealth = Math.round(definition.health * healthScale);
       const x = type === "boss" ? GAME_WIDTH / 2 : Phaser.Math.Between(58, GAME_WIDTH - 58);
-      const enemy = this.physics.add.sprite(x, type === "boss" ? -90 : -48, definition.texture)
+      const enemy = this.enemies.create(x, type === "boss" ? -90 : -48, definition.texture);
+      if (!enemy) return;
+
+      enemy
         .setScale(definition.scale)
         .setDepth(type === "boss" ? 8 : 6);
       const drift = type === "boss" ? 42 : Phaser.Math.Between(-38, 38);
 
-      enemy.setVelocity(drift, definition.speed + this.wave * (type === "boss" ? 1.4 : 3.4));
       enemy.setData({
         id: ++this.enemySequence,
         type,
@@ -578,7 +593,7 @@
         damage: definition.damage,
         drift,
       });
-      this.enemies.add(enemy);
+      enemy.setVelocity(drift, definition.speed + this.wave * (type === "boss" ? 1.4 : 3.4));
 
       if (type === "tank" || type === "boss") {
         const bar = this.add.graphics().setDepth(9);
@@ -727,7 +742,10 @@
         const offset = (index - (this.weapon.shots - 1) / 2) * spread;
         const angle = baseAngle + offset;
         const critical = Math.random() < this.weapon.crit;
-        const bullet = this.physics.add.image(this.player.x, this.player.y - 44, "sentinel-bullet")
+        const bullet = this.bullets.create(this.player.x, this.player.y - 56, "sentinel-bullet");
+        if (!bullet) continue;
+
+        bullet
           .setScale(this.weapon.bulletScale)
           .setDepth(7)
           .setRotation(angle + Math.PI / 2);
@@ -738,10 +756,9 @@
           hitIds: new Set(),
         });
         this.physics.velocityFromRotation(angle, 780, bullet.body.velocity);
-        this.bullets.add(bullet);
       }
 
-      const flash = this.add.circle(this.player.x, this.player.y - 46, 8, 0x8effff, 0.9).setDepth(12);
+      const flash = this.add.circle(this.player.x, this.player.y - 58, 8, 0x8effff, 0.9).setDepth(12);
       this.tweens.add({ targets: flash, scale: 2.8, alpha: 0, duration: 95, onComplete: () => flash.destroy() });
       playTone("shot");
     }
@@ -851,11 +868,12 @@
     spawnPickup(x, y) {
       const roll = Math.random();
       const type = roll < 0.42 ? "health" : roll < 0.78 ? "shield" : "overclock";
-      const pickup = this.physics.add.image(x, y, `pickup-${type}`).setDepth(8);
+      const pickup = this.pickups.create(x, y, `pickup-${type}`).setDepth(8);
+      if (!pickup) return;
+
       pickup.setData("type", type);
       pickup.setVelocity(Phaser.Math.Between(-28, 28), 150);
       pickup.setAngularVelocity(95);
-      this.pickups.add(pickup);
 
       const label = type === "health" ? "+" : type === "shield" ? "S" : "⚡";
       const text = this.add.text(x, y, label, {
